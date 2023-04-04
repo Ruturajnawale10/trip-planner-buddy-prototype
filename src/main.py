@@ -2,6 +2,7 @@ from typing import Union
 from fastapi import FastAPI
 import requests
 from src.configs.configs import settings
+
 #alternate way to import file objects from other folder
 # import sys
 # sys.path.append('src/configs') 
