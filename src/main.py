@@ -10,8 +10,26 @@ from src.configs.configs import settings
 
 from src.routers.destination_router import router as destination_router
 
-app = FastAPI()
+# Allow CORS
+from fastapi.middleware.cors import CORSMiddleware
 
+origins = [
+    "http://localhost",
+    "http://localhost:19006",
+    "http://localhost:3000"]
+
+
+
+
+
+app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def read_root():
