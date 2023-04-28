@@ -42,7 +42,7 @@ def places_list(destination: str):
     print("Minimum cost is ", min_cost)
     
 
-    return {"Shortest Path for POIs is ": shortest_path_names}
+    return {"shortest_path": shortest_path_names}
 
 
 
