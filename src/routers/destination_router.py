@@ -35,14 +35,9 @@ def places_list(destination: str):
 
     # Use the Google Directions API to get the optimal route
     route, destinations = find_shortest_route(filtered_results)
+    final_path = extract_path(route, destinations)
 
-    print("Shortest Path for POIs is ", shortest_path)
-    print("Minimum cost is ", min_cost)
-    
-
-    return {"shortest_path": shortest_path_names}
-
-    return {"Follow the optimal route ": final_path}
+    return {"shortest_path": final_path}
 
 
 def get_coordinates(destination: str):
