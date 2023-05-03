@@ -2,6 +2,7 @@ from typing import Union
 from fastapi import FastAPI
 import requests
 from src.configs.configs import settings
+from src.configs.db import db
 
 #alternate way to import file objects from other folder
 # import sys
@@ -39,5 +40,13 @@ def read_root():
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
+
+#test api for adding entry in mongodb
+@app.get("/addEntry")
+def add_mongo_test_entry():
+    mycollection = db['users']
+    result = mycollection.insert_one({'name': 'John', 'age': 30})
+    print(result.inserted_id)
+    return {"Hello": "World"}
 
 app.include_router(destination_router)
