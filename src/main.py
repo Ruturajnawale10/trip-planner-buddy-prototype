@@ -14,6 +14,8 @@ from src.routers.destination_router import router as destination_router
 # Allow CORS
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.models.user import User
+
 origins = [
     "http://localhost",
     "http://localhost:19006",
@@ -48,5 +50,13 @@ def add_mongo_test_entry():
     result = mycollection.insert_one({'name': 'John', 'age': 30})
     print(result.inserted_id)
     return {"Hello": "World"}
+
+#test api for adding entry in mongodb
+@app.get("/addUser")
+def add_mongo_user_entry():
+    new_user = User(first_name='johndoe', email='johndoe@example.com', password='password123')
+    new_user.save()
+    return {"user": "created"}
+
 
 app.include_router(destination_router)
