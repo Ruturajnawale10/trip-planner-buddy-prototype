@@ -5,6 +5,7 @@ from src.configs.configs import settings
 from src.middleware.tsp_solver import SimpleTSP
 import googlemaps
 from datetime import datetime
+import string
 
 router = APIRouter(
     tags=['Destination']
@@ -13,6 +14,9 @@ router = APIRouter(
 
 @router.get("/destination/{destination}")
 def places_list(destination: str):
+    destination = destination.replace("%", " ")
+    destination = string.capwords(destination)
+
     API_KEY = settings.google_api_key
     query = "tourist attractions in " + destination
 
@@ -34,7 +38,7 @@ def places_list(destination: str):
     filtered_results = filter_results(response_dict)
 
     # Use the Google Directions API to get the optimal route
-    route, destinations = find_shortest_route(filtered_results)
+    route, destinations = find_shortest_route(filtered_results, destination)
     final_path = extract_path(route, destinations)
 
     return {"shortest_path": final_path}
@@ -83,7 +87,7 @@ def filter_results(response_dict):
     return filtered_results
 
 
-def find_shortest_route(filtered_results):
+def find_shortest_route(filtered_results, destination):
     # Define the Google Maps API key
     gmaps = googlemaps.Client(key=settings.google_api_key)
 
@@ -92,6 +96,7 @@ def find_shortest_route(filtered_results):
 
     # Define the list of destinations (tourist attractions)
     destinations = []
+    
     for result in filtered_results:
         destinations.append(result['name'])
 
@@ -102,8 +107,9 @@ def find_shortest_route(filtered_results):
 
     # Define the list of destinations (tourist attractions)
     destinations = []
+
     for result in filtered_results:
-        destinations.append(result['name'])
+        destinations.append(result['name'] + ", " + destination)
 
     # Use the Google Directions API to get the optimal route
     route = gmaps.directions(
