@@ -140,6 +140,6 @@ def extract_path(route, destinations):
     end_location_tuple = "End Location: ({}, {})".format(
         end_location['lat'], end_location['lng'])
 
-    return [(start_location_tuple, start_location)] + optimal_route + [(end_location_tuple, end_location)]
+    return optimal_route 
 
 

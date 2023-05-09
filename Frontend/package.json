@@ -10,17 +10,22 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^0.17.4",
+    "bootstrap": "^5.2.3",
     "expo": "^46.0.21",
     "expo-status-bar": "~1.4.4",
+    "lottie-ios": "^3.1.8",
+    "lottie-react-native": "^5.1.5",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-native": "0.69.9",
     "react-native-google-places-autocomplete": "^2.5.1",
-    "react-native-web": "~0.18.10",
-    "react-native-maps": "0.31.1"
+    "react-native-maps": "0.31.1",
+    "react-native-svg": "^13.9.0",
+    "react-native-web": "~0.18.10"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "styled-components": "^5.3.10"
   },
   "private": true
 }
