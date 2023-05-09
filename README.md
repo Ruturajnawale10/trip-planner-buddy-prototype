@@ -7,6 +7,13 @@ For windows :python3 -m virtualenv venv
 
 # To activate virtual env
 For windows : venv\Scripts\activate
+For mac: source venv/bin/activate
+
+# To deactivate virtual env
+For mac: deactivate
+
+# To install requirements.txt python packages
+For mac: pip3 install -r requirements.txt
 
 # Download configs folder from confuence
 

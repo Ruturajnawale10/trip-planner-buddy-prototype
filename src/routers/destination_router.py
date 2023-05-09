@@ -119,9 +119,10 @@ def find_shortest_route(filtered_results):
 
 
 def extract_path(route, destinations):
-    # Print the order of the destinations in the optimal route
+
     waypoint_order = route[0]['waypoint_order']
-    optimal_route = [destinations[i] for i in waypoint_order]
+    ordered_destinations = [destinations[i] for i in waypoint_order]
+    optimal_route = [(place, route[0]['legs'][i]['end_location']) for i, place in enumerate(ordered_destinations)]
 
     # Get the start and end locations from the directions response
     start_location = route[0]['legs'][0]['start_location']
@@ -133,4 +134,6 @@ def extract_path(route, destinations):
     end_location_tuple = "End Location: ({}, {})".format(
         end_location['lat'], end_location['lng'])
 
-    return [start_location_tuple] + optimal_route + [end_location_tuple]
+    return [(start_location_tuple, start_location)] + optimal_route + [(end_location_tuple, end_location)]
+
+
