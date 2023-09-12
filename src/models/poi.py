@@ -1,29 +1,30 @@
 from pymodm import MongoModel, fields
 
-class Poi(MongoModel):
-    placeId = fields.IntegerField(primary_key=True)
+class Pois(MongoModel):
+    # placeId = fields.ObjectIdField(primary_key=True)
     name = fields.CharField()
-    address = fields.EmbeddedDocumentField('Address')
+    city = fields.CharField()
+    address = fields.CharField()
     location = fields.EmbeddedDocumentField('Location')
     openHrs = fields.EmbeddedDocumentField('OpeningHours')
     type = fields.ListField(fields.CharField())
     rating = fields.FloatField()
-    review = fields.ListField(fields.CharField())
-    price = fields.FloatField()
+    review = fields.ListField(required=False)
+    price = fields.FloatField(required=False)
     isFree = fields.BooleanField()
     timeSpent = fields.EmbeddedDocumentField('TimeSpent')
     description = fields.CharField()
     pincode = fields.IntegerField()
     images = fields.ListField(fields.CharField())
-    tripadvisorRating = fields.FloatField()
+    # tripadvisorRating = fields.FloatField()
     website = fields.CharField()
     internationalPhoneNumber = fields.CharField()
     generatedDescription = fields.CharField()
 
 class Address(MongoModel):
-    city = fields.CharField()
-    country = fields.CharField()
-    state = fields.CharField()
+    city = fields.CharField(required=False)
+    country = fields.CharField(required=False)
+    state = fields.CharField(required=False)
 
 class Location(MongoModel):
     latitude = fields.FloatField()
