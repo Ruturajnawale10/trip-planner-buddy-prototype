@@ -8,7 +8,7 @@ import SearchBar from "../SearchBar";
 import Card from "./Card";
 
 const HomePage = () => {
-  const [showDate, setShowDate] = useState(false);
+  // const [showDate, setShowDate] = useState(false);
   const pastTrips = () => {
     console.log("past trips");
   };
