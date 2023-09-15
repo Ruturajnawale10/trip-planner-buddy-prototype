@@ -10,6 +10,7 @@ from src.configs.db import db
 #from configs import settings
 
 from src.routers.destination_router import router as destination_router
+from src.routers.user_router import router as user_router
 
 # Allow CORS
 from fastapi.middleware.cors import CORSMiddleware
@@ -60,3 +61,4 @@ def add_mongo_user_entry():
 
 
 app.include_router(destination_router)
+app.include_router(user_router)
