@@ -1,24 +1,25 @@
 // LoginScreen.js
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-
+import React, { useState } from "react";
+import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = () => {
     // Static user data for demonstration
     const staticUserData = {
-      email: 'test',
-      password: 'test',
+      email: "Test",
+      password: "Test",
     };
-  
-    if (email === staticUserData.email && password === staticUserData.password) {
-      navigation.navigate('HomePage', { userIsLoggedIn: true });
 
+    if (
+      email === staticUserData.email &&
+      password === staticUserData.password
+    ) {
+      navigation.navigate("HomePage", { userIsLoggedIn: true });
     } else {
-      alert('Invalid credentials');
+      alert("Invalid credentials");
     }
   };
 
@@ -39,7 +40,9 @@ const LoginScreen = ({ navigation }) => {
         style={styles.input}
       />
       <Button title="Login" onPress={handleLogin} />
-      <Text onPress={() => navigation.navigate('Signup')}>Don't have an account? Sign up</Text>
+      <Text onPress={() => navigation.navigate("Signup")}>
+        Don't have an account? Sign up
+      </Text>
     </View>
   );
 };
@@ -47,11 +50,11 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   input: {
-    width: '80%',
+    width: "80%",
     height: 40,
     borderBottomWidth: 1,
     marginVertical: 10,
