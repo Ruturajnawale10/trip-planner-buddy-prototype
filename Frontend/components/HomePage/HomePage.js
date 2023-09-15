@@ -1,7 +1,13 @@
 // Create boilerplate reactnative page for a home page with a search bar and a list of items
 
 import React, { Component } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
 import { SafeAreaView } from "react-native";
 import { Image } from "react-native";
 import SearchBar from "../SearchBar";
@@ -38,7 +44,7 @@ const HomePage = () => {
     <SafeAreaView style={styles.container}>
       <SearchBar onSearch={onSearch} />
 
-      <>
+      <ScrollView>
         <Card onPress={pastTrips} bgColor="#F4727F" title="Past Trips" />
         <Card onPress={pastTrips} bgColor="#F4727F" title="All Trips" />
         <Text style={styles.text}> Top Rated Trips </Text>
@@ -50,7 +56,7 @@ const HomePage = () => {
         />
         <Card onPress={pastTrips} bgColor="#F4727F" title="Trip to Arizona" />
         <Card onPress={pastTrips} bgColor="#F4727F" title="Trip to Yosemite" />
-      </>
+      </ScrollView>
     </SafeAreaView>
   );
 };
