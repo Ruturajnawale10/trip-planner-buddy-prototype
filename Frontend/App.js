@@ -9,6 +9,7 @@ import LoginScreen from "./components/LoginScreen";
 import SignupScreen from "./components/SignupScreen";
 import MapViewPage from "./components/MapViewPage";
 import HomePage from "./components/HomePage/HomePage";
+import SearchPage from "./components/SearchPage";
 import NavigationButton from "./components/NavigationButton/NavigationButton";
 
 const App = () => {
@@ -78,6 +79,7 @@ const AppNavigator = createAppContainer(
       LoginSignup: LoginSignupStack,
       MapView: MapViewPage,
       HomePage: HomePage,
+      SearchPage: SearchPage, 
     },
     {
       initialRouteName: "LoginSignup", // Starts with the login/signup screens
