@@ -19,6 +19,9 @@ class Pois(MongoModel):
     website = fields.CharField(blank=True)
     internationalPhoneNumber = fields.CharField(blank=True)
     generatedDescription = fields.CharField(blank=True)
+    lat = fields.FloatField(blank=True)
+    lon = fields.FloatField(blank=True)
+    
 
     class Meta:
         indexes = [IndexModel([("name", 1), ("city", 1)], unique=True)]
