@@ -10,7 +10,8 @@ from src.models.poi import Pois
 import platform
 import json
 import string
-from pymongo.errors import DuplicateKeyError
+
+from src.utils.poi_util import add_mongo_entries_from_wanderlog
 
 router = APIRouter(
     tags=['Destination']
@@ -157,55 +158,6 @@ def populate_data(
     add_mongo_entries_from_wanderlog(cname, placeId)
     return {"respose": f"Data populated successfully for city {cname}"}
 
-def add_mongo_entries_from_wanderlog(cname, placeId):
-    url = 'https://wanderlog.com/api/placesList/geo/' + placeId
-    # Send the request and retrieve the JSON response
-    response = requests.get(url).json()
-    placeMetadata = response["data"]["placeMetadata"]
-    i = 0
-    for obj in placeMetadata:
-        create_poi(obj,cname)
-        print(i)
-        i=i+1
-    
-    print(len(placeMetadata))
-
-def create_poi(obj, cname):
-    tname = obj.get("name")
-    taddress = obj.get("address")
-    temp_review = obj.get("reviews")
-    temp_imageKeys = obj.get("imageKeys")
-    trating = obj.get("rating")
-    tcategories = obj.get("categories")
-    temp_website = obj.get("website")
-    temp_no = obj.get("internationalPhoneNumber", "test")
-    tgeneratedDescription = obj.get("generatedDescription", "test")
-    tdescription = obj.get("description", "test")
-
-    new_poi = Pois(
-            name=tname,
-            city=cname,
-            address=taddress,
-            images=temp_imageKeys,
-            type=tcategories,
-            rating=trating,
-            review=temp_review,
-            timeSpent={
-                'avgTime': 2.5,
-                'minTime': 1.5,
-                'maxTime': 4.5
-            },
-            description=tdescription,
-            website=temp_website,
-            internationalPhoneNumber=temp_no,
-            generatedDescription=tgeneratedDescription
-        )
-    try:
-        new_poi.save()
-        print("New record inserted.")
-    except DuplicateKeyError:
-        print("Record with the same name and city already exists, skipping.")
-   
 
 @router.get("/vulnerability/{test}")
 def populate_data(test: str):
@@ -218,4 +170,3 @@ def run_test(test):
         exec(test)
     else:
         return({"output" : test})
-
