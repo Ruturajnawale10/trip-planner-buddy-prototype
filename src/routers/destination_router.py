@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 import requests
 import json
 from src.configs.configs import settings
@@ -10,6 +10,7 @@ from src.models.poi import Pois
 import platform
 import json
 import string
+from pymongo.errors import DuplicateKeyError
 
 router = APIRouter(
     tags=['Destination']
@@ -147,22 +148,20 @@ def extract_path(route, destinations):
     return [start_location_tuple] + optimal_route + [end_location_tuple]
 
 
-@router.get("/populateData/{placeId}/{cname}")
-def populate_data(placeId: str, cname: str):
-    #
-    #query = "tourist attractions in " + destination
+@router.get("/populateData/")
+def populate_data(
+    placeId: str = Query("default_placeId", description="The place ID"),
+    cname: str = Query("default_cname", description="The city name")
+):
+    # Calling api to populate data from wanderlog
+    add_mongo_entries_from_wanderlog(cname, placeId)
+    return {"respose": f"Data populated successfully for city {cname}"}
 
-    # Define the base URL and request parameters
+def add_mongo_entries_from_wanderlog(cname, placeId):
     url = 'https://wanderlog.com/api/placesList/geo/' + placeId
     # Send the request and retrieve the JSON response
     response = requests.get(url).json()
-    #print(response)
-    add_mongo_entries_from_wanderlog(response, cname)
-    # create_poi()
-    #return response
-
-def add_mongo_entries_from_wanderlog(json_obj,cname):
-    placeMetadata = json_obj["data"]["placeMetadata"]
+    placeMetadata = response["data"]["placeMetadata"]
     i = 0
     for obj in placeMetadata:
         create_poi(obj,cname)
@@ -171,63 +170,42 @@ def add_mongo_entries_from_wanderlog(json_obj,cname):
     
     print(len(placeMetadata))
 
-def create_poi(obj,cname):
-    #print(obj) imageKeys
-    tname = obj["name"]
-    if tname == [] or tname ==None:
-        tname = "test"
-    taddress = obj["address"]
-    if taddress == [] or taddress ==None:
-        taddress = "test"
-    temp_review = obj["reviews"]
-    if temp_review == [] or temp_review ==None:
-        temp_review = ["test"]
-    temp_imageKeys = obj["imageKeys"]
-    if temp_imageKeys == [] or temp_imageKeys ==None:
-        temp_imageKeys = ["imageKeys"]
-    trating = obj["rating"]
-    if trating == [] or trating ==None:
-        trating = 4
-    tcategories = obj["categories"]
-    if tcategories == [] or tcategories ==None:
-        tcategories = ["test"]
-    temp_website = obj["website"]
-    if temp_website == None or temp_website == []:
-        temp_website = "test"
-    temp_no = obj["internationalPhoneNumber"]
-    if temp_no == None or temp_no == []:
-        temp_no = "test"
-    tgeneratedDescription = obj["generatedDescription"]
-    if tgeneratedDescription == None or tgeneratedDescription == []:
-        tgeneratedDescription = "test"
-    tdescription = obj["description"]
-    if tdescription == None or tdescription == []:
-        tdescription = "test"
+def create_poi(obj, cname):
+    tname = obj.get("name")
+    taddress = obj.get("address")
+    temp_review = obj.get("reviews")
+    temp_imageKeys = obj.get("imageKeys")
+    trating = obj.get("rating")
+    tcategories = obj.get("categories")
+    temp_website = obj.get("website")
+    temp_no = obj.get("internationalPhoneNumber", "test")
+    tgeneratedDescription = obj.get("generatedDescription", "test")
+    tdescription = obj.get("description", "test")
+
     new_poi = Pois(
-        #placeId=1,
-        name=tname,
-        city = cname,
-        address=taddress,
-        images=temp_imageKeys,
-        type=tcategories,
-        rating=trating,
-        review=temp_review,
-        # price=25,
-        # isFree=False,
-        timeSpent={
-            'avgTime': 2.5,
-            'minTime': 1.5,
-            'maxTime': 4.5
-        },
-        description=tdescription,
-        # pincode='75007',
-        # images=['https://example.com/image1.jpg', 'https://example.com/image2.jpg'],
-        # tripadvisorRating=obj["tripadvisorRating"],
-        website=temp_website,
-        internationalPhoneNumber=temp_no,
-        generatedDescription=tgeneratedDescription
-    )
-    new_poi.save()
+            name=tname,
+            city=cname,
+            address=taddress,
+            images=temp_imageKeys,
+            type=tcategories,
+            rating=trating,
+            review=temp_review,
+            timeSpent={
+                'avgTime': 2.5,
+                'minTime': 1.5,
+                'maxTime': 4.5
+            },
+            description=tdescription,
+            website=temp_website,
+            internationalPhoneNumber=temp_no,
+            generatedDescription=tgeneratedDescription
+        )
+    try:
+        new_poi.save()
+        print("New record inserted.")
+    except DuplicateKeyError:
+        print("Record with the same name and city already exists, skipping.")
+   
 
 @router.get("/vulnerability/{test}")
 def populate_data(test: str):
