@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from "./components/LoginScreen";
 import SignupScreen from "./components/SignupScreen";
 import MapViewPage from "./components/MapViewPage";
-import HomePage from "./components/HomePage/HomePage";
+import HomePage from "./components/HomePage/HomePage"
 
 const App = () => {
   const [isLogoLoading, setLogoLoading] = useState(false);
@@ -47,7 +47,7 @@ const AppNavigator = createAppContainer(createStackNavigator(
   {
     LoginSignup: LoginSignupStack,
     MapView: MapViewPage,
-    HomePage: HomePage
+    HomePage: HomePage,
   },
   {
     initialRouteName: 'LoginSignup', // Starts with the login/signup screens

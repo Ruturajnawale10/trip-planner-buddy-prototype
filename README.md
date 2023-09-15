@@ -6,6 +6,7 @@ For mac and ubuntu : virtualenv venv
 For windows :python3 -m virtualenv venv
 
 # To activate virtual env
+Run this steps from cmd and not powershell
 For windows : venv\Scripts\activate
 For mac: source venv/bin/activate
 

@@ -20,37 +20,51 @@ const SearchBar = ({ onSearch }) => {
         onSubmitEditing={handleSearch}
       />
       {/* <Button title="Search" onPress={handleSearch} style={styles.button} /> */}
-      <SearchButton onPress={handleSearch} bgColor="#F4727F" title="Search" />
+      <SearchButton
+        onPress={handleSearch}
+        style={styles.button}
+        title="Search"
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "#fff000",
     alignSelf: "center",
     borderRadius: 10,
     width: Dimensions.get("window").width * 0.9,
     margin: 10,
     padding: 5,
-    alignItems: "center",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    // alignItems: "center",
   },
 
   input: {
     height: 40,
-    width: Dimensions.get("window").width - 20,
+    width: Dimensions.get("window").width - 100,
     borderColor: "#DBD9D9",
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
     marginBottom: 10,
     display: "flex",
+    flex: 1,
   },
+
   button: {
-    display: "flex",
+    flex: 1,
+    width: 100,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: "#F4727F",
+    paddingHorizontal: 10,
     margin: 10,
-    padding: 10,
-    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
