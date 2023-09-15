@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import MapViewPage from "./components/MapViewPage";
 import { SafeAreaView } from "react-native";
 import { Image } from "react-native";
+import HomePage from "./components/HomePage/HomePage";
 
 const App = () => {
   const [isLogoLoading, setLogoLoading] = useState(false);
@@ -11,23 +12,7 @@ const App = () => {
     setLogoLoading(bool);
   };
 
-  return (
-    // <View style={styles.container}>
-    <SafeAreaView style={styles.container}>
-      {isLogoLoading ? (
-        <></>
-      ) : (
-        <Image
-          source={require("./assets/logo.png")}
-          style={{ alignSelf: "center", marginTop: 20 }}
-        />
-      )}
-
-      <MapViewPage logoLoaded={logoLoaded} />
-    </SafeAreaView>
-    // {/* <MapScreen /> */}
-    // </View>
-  );
+  return <HomePage />;
 };
 
 const styles = StyleSheet.create({
