@@ -9,8 +9,9 @@ from src.configs.db import db
 # sys.path.append('src/configs') 
 #from configs import settings
 
-from src.routers.destination_router import router as destination_router
+from src.routers.google_api import router as google_api
 from src.routers.user_router import router as user_router
+from src.routers.destination import router as destination
 
 # Allow CORS
 from fastapi.middleware.cors import CORSMiddleware
@@ -60,5 +61,6 @@ def add_mongo_user_entry():
     return {"user": "created"}
 
 
-app.include_router(destination_router)
+app.include_router(google_api)
 app.include_router(user_router)
+app.include_router(destination)

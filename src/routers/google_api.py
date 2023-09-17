@@ -14,11 +14,11 @@ import string
 from src.utils.poi_util import add_mongo_entries_from_wanderlog
 
 router = APIRouter(
-    tags=['Destination']
+    tags=['GoogleAPI']
 )
 
 
-@router.get("/destination/{destination}")
+@router.get("/google/api/destination/{destination}")
 def places_list(destination: str):
     destination = destination.replace("%", " ")
     destination = string.capwords(destination)
