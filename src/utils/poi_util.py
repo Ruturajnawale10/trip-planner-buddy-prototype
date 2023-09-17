@@ -1,7 +1,8 @@
 import requests
 
 from pymongo.errors import DuplicateKeyError
-from src.models.poi import Pois
+from src.configs.configs import settings
+from src.models.poi import Poi, City
 
 def add_mongo_entries_from_wanderlog(cname, placeId):
     url = 'https://wanderlog.com/api/placesList/geo/' + placeId
@@ -9,13 +10,21 @@ def add_mongo_entries_from_wanderlog(cname, placeId):
     response = requests.get(url).json()
     placeMetadata = response["data"]["placeMetadata"]
     i = 0
+    pois_list = []
     for obj in placeMetadata:
-        create_poi(obj,cname)
-        print(i)
+        poi = create_poi(obj,cname)
+        print("Fetching poi ", i, "..." )
+        if poi:
+            pois_list.append(poi)
         i=i+1
     
-    print(len(placeMetadata))
-
+    new_city = City(city_name=cname, pois=pois_list)
+    try:
+        new_city.save()
+        print("Record for new city inserted.")
+    except DuplicateKeyError:
+        print("Record with the same city already exists, skipping.")
+    
 def get_coordinate_info_from_address(address, limit=1):
     base_url = "https://nominatim.openstreetmap.org/search"
     params = {
@@ -39,48 +48,63 @@ def get_coordinate_info_from_address(address, limit=1):
         print(f"Error: {e}")
         return None
     
+def get_coordinates_from_address_google_api(address: str):
+    url = "https://maps.googleapis.com/maps/api/geocode/json?"
+
+    payload = {"address": address, "key": settings.google_api_key}
+    
+    try:
+        # Send an HTTP GET request to the Geocoding API
+        response = requests.request("GET", url, params=payload).json()
+        # Check if the request was successful
+        print(response)
+        if response['status'] == "OK":
+            # Extract latitude and longitude
+            location = response['results'][0]['geometry']['location']
+            latitude = location['lat']
+            longitude = location['lng']
+            return latitude, longitude
+        else:
+            print(f'HTTP request failed')
+    except Exception as e:
+        print(f'An error occurred: {e}')
+    
+    return None
+
+
 def create_poi(obj, cname):
-    tname = obj.get("name")
-    taddress = obj.get("address")
-    temp_review = obj.get("reviews")
-    temp_imageKeys = obj.get("imageKeys")
-    trating = obj.get("rating")
-    tcategories = obj.get("categories")
-    temp_website = obj.get("website")
-    temp_no = obj.get("internationalPhoneNumber", "test")
-    tgeneratedDescription = obj.get("generatedDescription", "test")
-    tdescription = obj.get("description", "test")
-    lat = 0
-    lon = 0
-    coordinate_info = get_coordinate_info_from_address(taddress)
+    poi_address = obj.get("address")
+    coordinate_info = get_coordinate_info_from_address(poi_address)
+
     if coordinate_info is not None:
         lat, lon = coordinate_info
     else:
-        print("Error: Unable to get coordinates for address:", taddress)
-        return
+        coordinate_info_google = get_coordinates_from_address_google_api(poi_address)
 
-    new_poi = Pois(
-            name=tname,
+        if coordinate_info_google is not None:
+            lat, lon = coordinate_info_google
+        else:
+            print("Error: Unable to get coordinates for address:", poi_address)
+            return None
+
+    new_poi = Poi(
+            poi_id=obj.get("id"),
+            name=obj.get("name"),
             city=cname,
-            address=taddress,
-            images=temp_imageKeys,
-            type=tcategories,
-            rating=trating,
-            review=temp_review,
-            timeSpent={
-                'avgTime': 2.5,
-                'minTime': 1.5,
-                'maxTime': 4.5
-            },
-            description=tdescription,
-            website=temp_website,
-            internationalPhoneNumber=temp_no,
-            generatedDescription=tgeneratedDescription,
-            lat=lat,
-            lon=lon
+            address=poi_address,
+            images=obj.get("imageKeys"),
+            type=obj.get("categories"),
+            rating=obj.get("rating"),
+            minMinutesSpent=obj.get("minMinutesSpent"),
+            maxMinutesSpent=obj.get("maxMinutesSpent"),
+            description=obj.get("description", "test"),
+            website=obj.get("website"),
+            internationalPhoneNumber=obj.get("internationalPhoneNumber", "test"),
+            generatedDescription=obj.get("generatedDescription", "test"),
+            location={
+                'latitude': lat,
+                'longitude': lon
+            }
         )
-    try:
-        new_poi.save()
-        print("New record inserted.")
-    except DuplicateKeyError:
-        print("Record with the same name and city already exists, skipping.")
+    
+    return new_poi

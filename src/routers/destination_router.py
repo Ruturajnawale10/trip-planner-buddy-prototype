@@ -6,7 +6,7 @@ from src.middleware.tsp_solver import SimpleTSP
 import googlemaps
 from datetime import datetime
 from src.configs.db import db
-from src.models.poi import Pois
+from src.models.poi import Poi
 import platform
 import json
 import string
