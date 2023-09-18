@@ -19,49 +19,12 @@ const App = () => {
     setLogoLoading(bool);
   };
 
-  const dummyFunction = () => {
-    console.log("dummy function");
-  };
-
   return (
     <NavigationContainer>
       <AppNavigator />
-      <SafeAreaView style={styles.navButtons}>
-        <NavigationButton
-          onPress={dummyFunction}
-          bgColor="#F4727F"
-          iconName="home"
-          title="Home"
-        />
-        <NavigationButton
-          onPress={dummyFunction}
-          bgColor="#F4727F"
-          iconName="search"
-          title="Search"
-        />
-        <NavigationButton
-          onPress={dummyFunction}
-          bgColor="#F4727F"
-          iconName="person"
-          title="Profile"
-        />
-      </SafeAreaView>
     </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#E9E3E4",
-  },
-  navButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: "#E9E3E4",
-  },
-});
 
 const LoginSignupStack = createStackNavigator(
   {
@@ -79,10 +42,10 @@ const AppNavigator = createAppContainer(
       LoginSignup: LoginSignupStack,
       MapView: MapViewPage,
       HomePage: HomePage,
-      SearchPage: SearchPage, 
+      SearchPage: SearchPage,
     },
     {
-      initialRouteName: "LoginSignup", // Starts with the login/signup screens
+      initialRouteName: "HomePage", // Starts with the login/signup screens
       headerMode: "none", // Hide the navigation header
     }
   )

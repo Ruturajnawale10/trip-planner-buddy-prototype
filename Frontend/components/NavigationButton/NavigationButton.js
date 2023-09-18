@@ -15,10 +15,16 @@ const ButtonText = styled.Text`
   text-align: center;
 `;
 
-const NavigationButton = ({ onPress, bgColor, iconName, title }) => (
-  <ButtonContainer onPress={onPress} bgColor={bgColor}>
-    <Icon name={iconName} />
-    <ButtonText>{title}</ButtonText>
-  </ButtonContainer>
-);
+const NavigationButton = ({ bgColor, iconName, title, page, navigation }) => {
+  const onPress = () => {
+    console.log("pressed");
+    navigation.navigate(page);
+  };
+  return (
+    <ButtonContainer bgColor={bgColor} onPress={onPress}>
+      <Icon name={iconName} />
+      <ButtonText>{title}</ButtonText>
+    </ButtonContainer>
+  );
+};
 export default NavigationButton;

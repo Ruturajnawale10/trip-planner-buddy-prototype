@@ -12,8 +12,9 @@ import { SafeAreaView } from "react-native";
 import { Image } from "react-native";
 import SearchBar from "../SearchBar";
 import Card from "./Card";
+import NavigationBar from "../NavigationButton/NavigationBar";
 
-const HomePage = () => {
+const HomePage = ({ navigation }) => {
   // const [showDate, setShowDate] = useState(false);
   const pastTrips = () => {
     console.log("past trips");
@@ -57,6 +58,7 @@ const HomePage = () => {
         <Card onPress={pastTrips} bgColor="#F4727F" title="Trip to Arizona" />
         <Card onPress={pastTrips} bgColor="#F4727F" title="Trip to Yosemite" />
       </ScrollView>
+      <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
 };
