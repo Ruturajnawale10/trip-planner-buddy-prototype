@@ -16,6 +16,11 @@ const SearchPage = ({ navigation }) => {
     console.log("Selected Start Date:", selectedDates.start);
     console.log("Selected End Date:", selectedDates.end);
     // Perform the search based on user input
+    navigation.navigate("ListPOIs", {
+      location: destination,
+      startDate: selectedDates.start,
+      endDate: selectedDates.end,
+    });
   };
 
   return (
