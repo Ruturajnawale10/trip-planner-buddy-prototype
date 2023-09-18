@@ -7,7 +7,7 @@ const SearchBar = ({ onSearch }) => {
   const [text, setText] = useState("");
 
   const handleSearch = () => {
-    onSearch(text);
+    onSearch();
   };
 
   return (
@@ -15,15 +15,10 @@ const SearchBar = ({ onSearch }) => {
       <TextInput
         style={styles.input}
         placeholder="Search"
-        onChangeText={(text) => setText(text)}
+        onFocus={handleSearch}
+        onChange={handleSearch}
         value={text}
         onSubmitEditing={handleSearch}
-      />
-      {/* <Button title="Search" onPress={handleSearch} style={styles.button} /> */}
-      <SearchButton
-        onPress={handleSearch}
-        style={styles.button}
-        title="Search"
       />
     </View>
   );

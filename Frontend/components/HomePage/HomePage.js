@@ -20,25 +20,28 @@ const HomePage = ({ navigation }) => {
     console.log("past trips");
   };
 
-  const onSearch = (text) => {
-    Keyboard.dismiss();
-    fetch("http://10.0.0.27:8000/destination/" + text, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        setInitialRegion({
-          latitude: json.shortest_path[0][1].lat,
-          longitude: json.shortest_path[0][1].lng,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-        setData(json);
-      })
-      .catch((error) => console.error(error));
+  // const onSearch = (text) => {
+  //   Keyboard.dismiss();
+  //   fetch("http://10.0.0.27:8000/destination/" + text, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       setInitialRegion({
+  //         latitude: json.shortest_path[0][1].lat,
+  //         longitude: json.shortest_path[0][1].lng,
+  //         latitudeDelta: 0.0922,
+  //         longitudeDelta: 0.0421,
+  //       });
+  //       setData(json);
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
+  const onSearch = () => {
+    navigation.navigate("SearchPage");
   };
 
   return (

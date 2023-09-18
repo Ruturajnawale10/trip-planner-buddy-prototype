@@ -44,18 +44,6 @@ const SearchPage = ({ navigation }) => {
   );
 };
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#E9E3E4",
-//   },
-//   input: {
-//     height: 40,
-//     borderColor: "gray",
-//     borderWidth: 1,
-//     marginBottom: 10,
-//   },
-// });
 const styles = StyleSheet.create({
   container: {
     flex: 1,
