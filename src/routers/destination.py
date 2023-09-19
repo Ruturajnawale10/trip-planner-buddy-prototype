@@ -1,6 +1,6 @@
 import json
 from fastapi import APIRouter, HTTPException
-from src.models.poi import City
+from models.poi import City
 import string
 
 router = APIRouter(

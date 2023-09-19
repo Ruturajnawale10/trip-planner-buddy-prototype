@@ -19,9 +19,10 @@ For mac: pip3 install -r requirements.txt
 # Download configs folder from confuence
 
 
-# To run backend Project: (outside src)
+# To run backend Project: (inside src)
 first enter/ activate virtual env
-For mac and ubuntu : uvicorn src.main:app
+For mac and ubuntu : python main.py
+# TODO: update run command accordingly for windows
 For windows : python -m uvicorn src.main:app
 
 # the url to access apidocs
