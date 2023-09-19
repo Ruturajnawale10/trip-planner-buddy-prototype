@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from src.models.user import User  # Import your User model
-from src.configs.db import db
+from models.user import User
+from configs.db import db
 
 router = APIRouter(
     tags=['User']

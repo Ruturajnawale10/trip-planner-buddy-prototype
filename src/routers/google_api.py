@@ -1,17 +1,11 @@
 from fastapi import APIRouter, Query
 import requests
-import json
-from src.configs.configs import settings
-from src.middleware.tsp_solver import SimpleTSP
+from configs.configs import settings
 import googlemaps
 from datetime import datetime
-from src.configs.db import db
-from src.models.poi import Poi
-import platform
-import json
 import string
 
-from src.utils.poi_util import add_mongo_entries_from_wanderlog
+from utils.poi_util import add_mongo_entries_from_wanderlog
 
 router = APIRouter(
     tags=['GoogleAPI']

@@ -1,8 +1,8 @@
 import requests
 
 from pymongo.errors import DuplicateKeyError
-from src.configs.configs import settings
-from src.models.poi import Poi, City
+from configs.configs import settings
+from models.poi import Poi, City
 
 def add_mongo_entries_from_wanderlog(cname, placeId):
     url = 'https://wanderlog.com/api/placesList/geo/' + placeId
@@ -57,7 +57,6 @@ def get_coordinates_from_address_google_api(address: str):
         # Send an HTTP GET request to the Geocoding API
         response = requests.request("GET", url, params=payload).json()
         # Check if the request was successful
-        print(response)
         if response['status'] == "OK":
             # Extract latitude and longitude
             location = response['results'][0]['geometry']['location']
