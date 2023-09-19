@@ -12,6 +12,7 @@ from src.configs.db import db
 from src.routers.google_api import router as google_api
 from src.routers.user_router import router as user_router
 from src.routers.destination import router as destination
+from src.routers.trip import router as trip
 
 # Allow CORS
 from fastapi.middleware.cors import CORSMiddleware
@@ -64,3 +65,4 @@ def add_mongo_user_entry():
 app.include_router(google_api)
 app.include_router(user_router)
 app.include_router(destination)
+app.include_router(trip)
