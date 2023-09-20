@@ -1,4 +1,5 @@
 from datetime import date
+import json
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from models.trip import Trip
@@ -24,6 +25,12 @@ class TripAddPoi(BaseModel):
     
 class TripResponse(BaseModel):
     trip_id: str
+
+class UsernameRequestBody(BaseModel):
+    username: str
+
+collection_trip = db['trip']
+collection_user = db['user']
 
 @router.post("/api/trip/create/own", response_model=TripResponse)
 def create_trip_own(trip_data: TripCreation):
@@ -70,8 +77,7 @@ def add_poi_to_trip(poi_data: TripAddPoi):
     try:
         #find out why this does not work, i.e. why it does not return document. this works similarly for user objects
         # trip = Trip.objects.get({'_id': trip_id})
-        collection = db['trip']
-        trip = collection.find_one({'_id': trip_id})
+        trip = collection_trip.find_one({'_id': trip_id})
         print("finally", trip)
         trip["pois"][poi_data.day].append(poi_data.poi_id)
 
@@ -80,7 +86,7 @@ def add_poi_to_trip(poi_data: TripAddPoi):
             f"pois.{poi_data.day}": poi_data.poi_id
         }
 }
-        collection.update_one({"_id": trip_id}, update_query)
+        collection_trip.update_one({"_id": trip_id}, update_query)
         # trip.save()
         
         return {"message": "Success"}
@@ -89,3 +95,24 @@ def add_poi_to_trip(poi_data: TripAddPoi):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/api/trip/list/upcoming")
+def add_poi_to_trip(user: UsernameRequestBody):
+    print("upcoming trips list trip api called")
+
+    existing_user = collection_user.find_one({'username': user.username})
+    try:
+        trips = collection_trip.find({"_id": {"$in": existing_user['upcoming_trips']}})
+    except Trip.DoesNotExist:
+        raise HTTPException(status_code=404, detail=f"Trip object for  username {user.username} not found")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    # Convert MongoDB cursor to a list of dictionaries
+    trip_list = [trip for trip in trips]
+    # Covert ObjectId to string before returning as ObjectId is bson n ot json type
+    for trip in trip_list:
+        trip['_id'] = str(trip["_id"])
+    
+    return trip_list
