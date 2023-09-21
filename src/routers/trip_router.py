@@ -19,11 +19,11 @@ class TripCreation(BaseModel):
 
 class TripAddPoi(BaseModel):
     trip_id: str
-    poi_id: str
+    poi_id: int
     day: int
 
     
-class TripResponse(BaseModel):
+class TripRequestResponse(BaseModel):
     trip_id: str
 
 class UsernameRequestBody(BaseModel):
@@ -31,8 +31,9 @@ class UsernameRequestBody(BaseModel):
 
 collection_trip = db['trip']
 collection_user = db['user']
+collection_city = db['city']
 
-@router.post("/api/trip/create/own", response_model=TripResponse)
+@router.post("/api/trip/create/own", response_model=TripRequestResponse)
 def create_trip_own(trip_data: TripCreation):
     print("create trip api called")
     start_date = trip_data.startDate
@@ -59,7 +60,7 @@ def create_trip_own(trip_data: TripCreation):
         user = User.objects.get({'username': created_by})
         user.upcoming_trips.append(new_trip._id)
         user.save()
-        return TripResponse(
+        return TripRequestResponse(
             trip_id=str(new_trip._id),
         )
     except User.DoesNotExist:
@@ -97,7 +98,7 @@ def add_poi_to_trip(poi_data: TripAddPoi):
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.get("/api/trip/list/upcoming")
-def add_poi_to_trip(user: UsernameRequestBody):
+def get_upcoming_trips_list(user: UsernameRequestBody):
     print("upcoming trips list trip api called")
 
     existing_user = collection_user.find_one({'username': user.username})
@@ -116,3 +117,47 @@ def add_poi_to_trip(user: UsernameRequestBody):
         trip['_id'] = str(trip["_id"])
     
     return trip_list
+
+@router.get("/api/trip/poi_list/")
+def get_pois_of_a_trip(trip: TripRequestResponse):
+    print("POIs list for a trip api called")
+    try:
+        existing_trip = collection_trip.find_one({"_id": ObjectId(trip.trip_id)})
+        city_name = existing_trip['cityName']
+        poi_ids = existing_trip['pois']
+        total_pois = len(poi_ids)
+        poi_list = [[] for _ in range(total_pois)]
+        for i in range(total_pois):
+            # Define the aggregation pipeline to match the documents
+            pipeline = [
+                {
+                    "$match": {
+                        "city_name": city_name
+                    }
+                },
+                {
+                    "$project": {
+                        "_id": 0,
+                        "pois": {
+                            "$filter": {
+                                "input": "$pois",
+                                "as": "poi",
+                                "cond": {
+                                    "$in": ["$$poi.poi_id", poi_ids[i]]
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+
+            # Execute the aggregation pipeline
+            poi_list[i] = list(collection_city.aggregate(pipeline))
+    except Trip.DoesNotExist:
+        raise HTTPException(status_code=404, detail=f"Trip object not found")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    existing_trip['_id'] = str(existing_trip["_id"])
+    return {"pois": poi_list, "trip_details": existing_trip}
