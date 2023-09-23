@@ -1,26 +1,57 @@
 // LoginScreen.js
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // Static user data for demonstration
-    const staticUserData = {
-      email: "Test",
-      password: "Test",
-    };
-
-    if (
-      email === staticUserData.email &&
-      password === staticUserData.password
-    ) {
-      navigation.navigate("HomePage", { userIsLoggedIn: true });
-    } else {
-      alert("Invalid credentials");
+  const storeData = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, value);
+      console.log('Data stored successfully');
+    } catch (error) {
+      console.error('Error storing data:', error);
     }
+  };
+  
+  const handleLogin = () => {
+    // Static user data for demonstration   
+      // Prepare the request body
+      const requestBody = {
+        username: email, // Assuming 'email' in your state corresponds to the username
+        password: password,
+      };
+    console.log(requestBody);
+      // Make a POST request to the sign-in API
+      fetch('http://192.168.56.1:8000/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            // Successful login, parse the response JSON
+            return response.json();
+          } else {
+            // Invalid credentials or other error, show an alert
+            alert('Invalid credentials');
+            throw new Error('Invalid credentials');
+          }
+        })
+        .then((data) => {
+          // Assuming the response contains the username
+          const { username } = data;
+          storeData('username', username);
+          // Navigate to the "HomePage" with the username
+          navigation.navigate('HomePage', { userIsLoggedIn: true });
+        })
+        .catch((error) => {
+          console.error('Login failed:', error);
+        });
   };
 
   return (
