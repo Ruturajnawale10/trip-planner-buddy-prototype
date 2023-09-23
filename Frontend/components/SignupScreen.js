@@ -24,7 +24,7 @@ const SignupScreen = ({ navigation }) => {
     };
 
     // Make a POST request to the sign-up API
-    fetch('http://192.168.56.1:8000/signup', {
+    fetch('http://127.0.0.1:8000/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

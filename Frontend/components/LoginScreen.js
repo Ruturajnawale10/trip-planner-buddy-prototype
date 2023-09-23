@@ -25,7 +25,7 @@ const LoginScreen = ({ navigation }) => {
       };
     console.log(requestBody);
       // Make a POST request to the sign-in API
-      fetch('http://192.168.56.1:8000/signin', {
+      fetch('http://127.0.0.1:8000/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -28,7 +28,7 @@ const ListPOIs = ({ navigation }) => {
   };
 
   const getPOIs = (location) => {
-    fetch("http://192.168.56.1:8000/api/destination/" + location, {
+    fetch("http://127.0.0.1:8000/api/destination/" + location, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
