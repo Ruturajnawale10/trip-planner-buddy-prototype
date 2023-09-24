@@ -27,27 +27,18 @@ const App = () => {
   );
 };
 
-const LoginSignupStack = createStackNavigator(
-  {
-    Login: LoginScreen,
-    Signup: SignupScreen,
-  },
-  {
-    initialRouteName: "Login", // You can change this to 'Signup' if you want to start with signup
-  }
-);
-
 const AppNavigator = createAppContainer(
   createStackNavigator(
     {
-      LoginSignup: LoginSignupStack,
+      Login: LoginScreen,
+      Signup: SignupScreen,
       MapView: MapViewPage,
       HomePage: HomePage,
       SearchPage: SearchPage,
       ListPOIs: ListPOIs,
     },
     {
-      initialRouteName: "LoginSignup", // Starts with the login/signup screens
+      initialRouteName: "Login", // Starts with the login/signup screens
       headerMode: "none", // Hide the navigation header
     }
   )
