@@ -1,13 +1,13 @@
 // LoginScreen.js
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, TouchableOpacity,StyleSheet } from "react-native";
+import { View, Text, TextInput,Image, Button, TouchableOpacity,StyleSheet } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const theme = {
-    primaryBackground: 'orange', // Change this color to your desired shade of orange
+    primaryBackground: 'gainsboro', // Change this color to your desired shade of orange
     // Define other theme colors and styles here if needed
   };
   
@@ -30,7 +30,7 @@ const LoginScreen = ({ navigation }) => {
       };
     console.log(requestBody);
       // Make a POST request to the sign-in API
-       fetch('http://:192.168.56.1:8000/signin', {
+       fetch('http://:127.0.0.1:8000:8000/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,8 +61,15 @@ const LoginScreen = ({ navigation }) => {
 
  
 
+ 
   return (
     <View style={[styles.container, { backgroundColor: theme.primaryBackground }]}>
+    <View style={styles.imageContainer}>
+        <Image
+          source={require('../assets/logo.png')} // Update the path to your logo image
+          style={styles.logo}
+        />
+      </View>
       <View style={styles.inputContainer}>
         <Text>Login</Text>
         <TextInput
@@ -98,12 +105,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  imageContainer: {
+    marginTop: 40, // Adjust the margin to control the space between the logo and form
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
   inputContainer: {
     backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
-    marginBottom: 20,
     width: '80%', // Increase the width of the input container
+    marginTop: 20, // Adjust this margin to create a space between the image and the form
   },
   input: {
     width: "100%",
@@ -117,7 +129,11 @@ const styles = StyleSheet.create({
     borderRadius: 10, // Rounded corners
     padding: 8, // Padding (smaller)
     width: '60%', // Decrease the width of the button
+    alignSelf: "center", // Center the button horizontally
+  },
+  logo: {
+    width: 300,
+    height: 120,
   },
 });
-
 export default LoginScreen;

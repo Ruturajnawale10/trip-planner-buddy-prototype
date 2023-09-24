@@ -1,13 +1,13 @@
 // SignupScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, TouchableOpacity,Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const theme = {
-    primaryBackground: 'orange', // Change this color to your desired shade of orange
+    primaryBackground: 'gainsboro', // Change this color to your desired shade of orange
     // Define other theme colors and styles here if needed
   };
 
@@ -61,6 +61,12 @@ const SignupScreen = ({ navigation }) => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.primaryBackground }]}>
+      <View style={styles.imageContainer}>
+        <Image
+          source={require('../assets/logo.png')} // Update the path to your logo image
+          style={styles.logo}
+        />
+      </View>
       <View style={styles.inputContainer}>
         <Text>Create Account</Text>
         <TextInput
@@ -80,7 +86,7 @@ const SignupScreen = ({ navigation }) => {
           title="Create Account"
           onPress={handleSignup}
           color="blue" // Set the text color to white
-          style={styles.loginButton} // Apply custom styles
+          style={styles.signupButton} // Apply custom styles
         />
       </View>
       <Text onPress={() => navigation.navigate('Login')}>
@@ -96,12 +102,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  imageContainer: {
+    marginTop: 40, // Adjust the margin to control the space between the logo and form
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
   inputContainer: {
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
-    marginBottom: 20,
     width: '80%', // Increase the width of the input container
+    marginTop: 20, // Adjust this margin to create a space between the image and the form
   },
   input: {
     width: '100%',
@@ -120,6 +131,10 @@ const styles = StyleSheet.create({
     color: 'white', // Text color
     fontSize: 18, // Text size
     fontWeight: 'bold', // Bold text
+  },
+  logo: {
+    width: 300,
+    height: 120,
   },
 });
 
