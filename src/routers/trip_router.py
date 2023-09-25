@@ -98,7 +98,7 @@ def add_poi_to_trip(poi_data: TripAddPoi):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/api/trip/list/upcoming")
+@router.post("/api/trip/list/upcoming")
 def get_upcoming_trips_list(user: UsernameRequestBody):
     print("upcoming trips list trip api called")
 

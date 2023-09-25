@@ -91,12 +91,12 @@ const ListPOIs = ({ navigation }) => {
         onChangeText={(text) => setDestination(text)}
         style={styles.input}
       />
-      {flag && (
+      {flag && ( 
         <ScrollView>
           {data.pois.map((item) => (
             <View key={item.id}>
               <POIsCard
-                bgColor="#e7e7e7"
+                bgColor="#F4727F"
                 title={item.name}
                 imageID={item.images[0]}
                 rating={item.rating}
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     textAlign: "left",
-    color: "#F4727F",
+    color: "#d1c9d4",
     fontWeight: "bold",
   },
   submitButton: {
