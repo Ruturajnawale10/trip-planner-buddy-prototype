@@ -73,9 +73,11 @@ const ListPOIs = ({ navigation }) => {
         .then((response) => response.json())
         .then((json) => {
           console.log(json);
-          navigation.navigate("ShowCurrentTrip", {
-            trip_id: trip_id,
-          });
+          if (i === pois.length - 1) {
+            navigation.navigate("ShowCurrentTrip", {
+              trip_id: trip_id,
+            });
+          }
         })
         .catch((error) => console.error(error));
     }
@@ -94,12 +96,12 @@ const ListPOIs = ({ navigation }) => {
         onChangeText={(text) => setDestination(text)}
         style={styles.input}
       />
-      {flag && ( 
+      {flag && (
         <ScrollView>
           {data.pois.map((item) => (
             <View key={item.id}>
               <POIsCard
-                bgColor="#F4727F"
+                bgColor="#d1c9d4"
                 title={item.name}
                 imageID={item.images[0]}
                 rating={item.rating}
@@ -131,19 +133,20 @@ const styles = StyleSheet.create({
   },
   input: {
     height: Dimensions.get("window").height * 0.05,
-    width: Dimensions.get("window").width - 10,
+    width: Dimensions.get("window").width - 20,
     borderColor: "#DBD9D9",
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 10,
     paddingHorizontal: 10,
-    marginBottom: 10,
+    margin: 10,
     display: "flex",
   },
   text: {
     fontSize: 20,
     textAlign: "left",
-    color: "#d1c9d4",
+    color: "#412a47",
     fontWeight: "bold",
+    marginLeft: 20,
   },
   submitButton: {
     backgroundColor: "#F4727F",
