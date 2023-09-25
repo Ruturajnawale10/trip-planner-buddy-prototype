@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native";
 
 export default function POIs({ navigation, route }) {
-  const [isFavourite, toggleFavourite] = useState(false);
-  console.log(navigation.state);
   // Extract the POI data from the route params
-  const { item } = navigation.state.params;
-  console.log(item);
+  const { item, showRemove, handleCardPress } = navigation.state.params;
+  const [localRemove, setLocalRemove] = useState(showRemove);
+
+  const toggleRemove = () => {
+    setLocalRemove(!localRemove);
+    handleCardPress(item.poi_id, showRemove ? "remove" : "add");
+  };
+
+  console.log(handleCardPress);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Image */}
       <Image
         source={{
@@ -31,12 +37,12 @@ export default function POIs({ navigation, route }) {
       <TouchableOpacity
         style={[
           styles.favouriteButton,
-          { backgroundColor: isFavourite ? "red" : "blue" },
+          { backgroundColor: localRemove ? "red" : "blue" },
         ]}
-        onPress={() => toggleFavourite(!isFavourite)}
+        onPress={() => toggleRemove()}
       >
         <Text style={styles.buttonText}>
-          {isFavourite ? "Remove from Itinerary" : "Add to Itinerary"}
+          {localRemove ? "Remove from Itinerary" : "Add to Itinerary"}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -45,7 +51,7 @@ export default function POIs({ navigation, route }) {
       >
         <Text style={styles.buttonText}>Go Back</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -55,6 +61,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start", // Adjust the vertical alignment as needed
     padding: 16,
+    margin: 16,
   },
   image: {
     width: 300, // Adjust the image width as needed

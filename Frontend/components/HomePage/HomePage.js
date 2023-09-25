@@ -46,20 +46,24 @@ const HomePage = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Image
+        source={require("../../assets/logo.png")} // Update the path to your logo image
+        style={styles.logo}
+      />
       <SearchBar onSearch={onSearch} />
 
       <ScrollView>
-        <Card onPress={pastTrips} bgColor="#F4727F" title="Past Trips" />
-        <Card onPress={pastTrips} bgColor="#F4727F" title="All Trips" />
+        <Card onPress={pastTrips} bgColor="#e7e7e7" title="Past Trips" />
+        <Card onPress={pastTrips} bgColor="#e7e7e7" title="All Trips" />
         <Text style={styles.text}> Top Rated Trips </Text>
-        <Card onPress={pastTrips} bgColor="#F4727F" title="Trip to New York" />
+        <Card onPress={pastTrips} bgColor="#e7e7e7" title="Trip to New York" />
         <Card
           onPress={pastTrips}
-          bgColor="#F4727F"
+          bgColor="#e7e7e7"
           title="Trip to San Fransisco"
         />
-        <Card onPress={pastTrips} bgColor="#F4727F" title="Trip to Arizona" />
-        <Card onPress={pastTrips} bgColor="#F4727F" title="Trip to Yosemite" />
+        <Card onPress={pastTrips} bgColor="#e7e7e7" title="Trip to Arizona" />
+        <Card onPress={pastTrips} bgColor="#e7e7e7" title="Trip to Yosemite" />
       </ScrollView>
       <NavigationBar navigation={navigation} />
     </SafeAreaView>
@@ -76,6 +80,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#F4727F",
     fontWeight: "bold",
+  },
+  logo: {
+    width: 100,
+    height: 40,
+    resizeMode: "contain",
+    alignSelf: "center",
   },
 });
 

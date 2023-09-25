@@ -7,6 +7,7 @@ const CardContainer = styled.TouchableOpacity`
   width: 90%;
   height: 100px;
   padding: 12px;
+  border: 1px solid black;
   border-radius: 10px;
   align-self: center;
   justify-content: center;

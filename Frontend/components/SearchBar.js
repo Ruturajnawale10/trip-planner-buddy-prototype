@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     width: Dimensions.get("window").width - 100,
-    borderColor: "#DBD9D9",
+    border: "1px solid #DBD9D9",
+    placeholderTextColor: "#DBD9D9",
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,

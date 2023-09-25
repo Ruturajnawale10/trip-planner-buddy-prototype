@@ -23,7 +23,7 @@ const ListPOIs = ({ navigation }) => {
   //   const route = useRoute();
   //   console.log(navigation.state.params.location);
   const [data, setData] = useState([]);
-  const { location, startDate, endDate,trip_id } = navigation.state.params;
+  const { location, startDate, endDate, trip_id } = navigation.state.params;
   //   const { destination, startDate, endDate } = route.params;
   const onPress = () => {
     console.log("pressed");
@@ -65,7 +65,7 @@ const ListPOIs = ({ navigation }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          trip_id: "65113471a2142d6229c78301",
+          trip_id: trip_id,
           poi_id: pois[i],
           day: i / 3,
         }),
@@ -96,7 +96,7 @@ const ListPOIs = ({ navigation }) => {
           {data.pois.map((item) => (
             <View key={item.id}>
               <POIsCard
-                bgColor="#F4727F"
+                bgColor="#e7e7e7"
                 title={item.name}
                 imageID={item.images[0]}
                 rating={item.rating}
@@ -110,8 +110,8 @@ const ListPOIs = ({ navigation }) => {
           ))}
         </ScrollView>
       )}
-      <TouchableOpacity onPress={submitPOIs}>
-        <Button title="Submit" />
+      <TouchableOpacity onPress={submitPOIs} style={styles.submitButton}>
+        <Text> Submit </Text>
       </TouchableOpacity>
       <NavigationBar navigation={navigation} />
     </SafeAreaView>
@@ -141,6 +141,13 @@ const styles = StyleSheet.create({
     textAlign: "left",
     color: "#F4727F",
     fontWeight: "bold",
+  },
+  submitButton: {
+    backgroundColor: "#F4727F",
+    borderRadius: 10,
+    padding: 10,
+    margin: 10,
+    alignItems: "center",
   },
 });
 

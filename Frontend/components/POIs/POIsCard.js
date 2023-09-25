@@ -4,12 +4,13 @@ import React from "react";
 import styled from "styled-components";
 import { Icon } from "@rneui/themed";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Button, StyleSheet } from "react-native";
+import { Button, StyleSheet, Text } from "react-native";
 
 const CardContainer = styled.TouchableOpacity`
   width: 90%;
-  height: 500px;
+  height: 600px;
   padding: 12px;
+  border: 1px solid black;
   border-radius: 10px;
   align-self: center;
   justify-content: center;
@@ -43,10 +44,19 @@ const POIsCard = ({
   removePOI,
 }) => {
   // const navigation = useNavigation(); // Initialize navigation
+  const [showRemove, setShowRemove] = React.useState(false);
+  const handleCardPress = (poi_id, task) => {
+    if (task == "add") {
+      setShowRemove(true);
+      addPOI(poi_id);
+    } else {
+      setShowRemove(false);
+      removePOI(poi_id);
+    }
+  };
 
-  const handleCardPress = () => {
-    console.log("posidata", item);
-    navigation.navigate("POIs", { item: item });
+  const handleDetailsPress = (item) => {
+    navigation.navigate("POIs", { item, showRemove, handleCardPress });
   };
 
   return (
@@ -64,11 +74,26 @@ const POIsCard = ({
 
       <CardText>{rating}</CardText>
       <CardText>{description}</CardText>
-      <TouchableOpacity onPress={() => addPOI(item.poi_id)}>
-        <Button title="Add to Itinerary" style={styles.addButton} />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => removePOI(item.poi_id)}>
-        <Button title="Remove from Itinerary" style={styles.removeButton} />
+      {showRemove ? (
+        <TouchableOpacity
+          onPress={() => handleCardPress(item.poi_id, "remove")}
+          style={styles.removeButton}
+        >
+          <Text>Remove</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={() => handleCardPress(item.poi_id, "add")}
+          style={styles.addButton}
+        >
+          <Text>Add</Text>
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity
+        onPress={() => handleDetailsPress(item)}
+        style={styles.moreDetailsButton}
+      >
+        <Text>Details</Text>
       </TouchableOpacity>
     </CardContainer>
   );
@@ -76,28 +101,42 @@ const POIsCard = ({
 
 const styles = StyleSheet.create({
   addButton: {
-    flex: 1,
     width: 100,
     height: 40,
     borderRadius: 10,
-    backgroundColor: "#F4727F",
+    backgroundColor: "#4CAF50",
     paddingHorizontal: 10,
     margin: 10,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    alignSelf: "center",
   },
   removeButton: {
-    flex: 1,
+    // flex: 1,
     width: 100,
     height: 40,
     borderRadius: 10,
-    backgroundColor: "#F4727F",
+    backgroundColor: "#f44336",
     paddingHorizontal: 10,
     margin: 10,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    alignSelf: "center",
+  },
+  moreDetailsButton: {
+    // flex: 1,
+    width: 100,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: "#2196F3",
+    paddingHorizontal: 10,
+    margin: 10,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
   },
 });
 export default POIsCard;
