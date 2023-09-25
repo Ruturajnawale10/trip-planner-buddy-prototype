@@ -68,7 +68,8 @@ const ListPOIs = ({ navigation }) => {
                 imageID={item.images[0]}
                 rating={item.rating}
                 description={item.description}
-                item = {item}
+                item={item}
+                navigation={navigation}
               />
             </View>
           ))}

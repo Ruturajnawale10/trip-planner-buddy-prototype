@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 
-export default function DestinationScreen({ navigation, route }) {
+export default function POIs({ navigation, route }) {
   const [isFavourite, toggleFavourite] = useState(false);
-
+  console.log(navigation.state);
   // Extract the POI data from the route params
-  const { item } = route.params;
+  const { item } = navigation.state.params;
+  console.log(item);
 
   return (
     <View style={styles.container}>
       {/* Image */}
-      <Image source={{ uri: "https://itin-dev.sfo2.cdn.digitaloceanspaces.com/freeImageSmall/" 
-      + item.images[0] }} style={styles.image} />
+      <Image
+        source={{
+          uri:
+            "https://itin-dev.sfo2.cdn.digitaloceanspaces.com/freeImageSmall/" +
+            item.images[0],
+        }}
+        style={styles.image}
+      />
 
       {/* Destination details */}
       <Text style={styles.title}>{item.name}</Text>
@@ -22,14 +29,20 @@ export default function DestinationScreen({ navigation, route }) {
 
       {/* Favorite and Back buttons */}
       <TouchableOpacity
-        style={[styles.favouriteButton, { backgroundColor: isFavourite ? 'red' : 'blue' }]}
+        style={[
+          styles.favouriteButton,
+          { backgroundColor: isFavourite ? "red" : "blue" },
+        ]}
         onPress={() => toggleFavourite(!isFavourite)}
       >
         <Text style={styles.buttonText}>
-          {isFavourite ? 'Remove from Itinerary' : 'Add to Itinerary'}
+          {isFavourite ? "Remove from Itinerary" : "Add to Itinerary"}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
         <Text style={styles.buttonText}>Go Back</Text>
       </TouchableOpacity>
     </View>
@@ -39,8 +52,8 @@ export default function DestinationScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start', // Adjust the vertical alignment as needed
+    alignItems: "center",
+    justifyContent: "flex-start", // Adjust the vertical alignment as needed
     padding: 16,
   },
   image: {
@@ -52,7 +65,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   description: {
@@ -64,18 +77,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   favouriteButton: {
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     padding: 12,
     borderRadius: 8,
     marginBottom: 16,
   },
   buttonText: {
     fontSize: 16,
-    color: 'white',
-    textAlign: 'center',
+    color: "white",
+    textAlign: "center",
   },
   backButton: {
-    backgroundColor: 'gray',
+    backgroundColor: "gray",
     padding: 12,
     borderRadius: 8,
   },

@@ -36,29 +36,32 @@ const POIsCard = ({
   imageID,
   rating,
   description,
-  poisData
+  item,
+  navigation,
 }) => {
-  const navigation = useNavigation(); // Initialize navigation
+  // const navigation = useNavigation(); // Initialize navigation
 
   const handleCardPress = () => {
-    navigation.navigate("POIs", { poisData });
+    console.log("posidata", item);
+    navigation.navigate("POIs", { item: item });
   };
 
-   return ( <CardContainer onPress={onPress} bgColor={bgColor}>
-    <CardText>{title}</CardText>
+  return (
+    <CardContainer onPress={handleCardPress} bgColor={bgColor}>
+      <CardText>{title}</CardText>
 
-    <CardImage
-      source={{
-        uri:
-          "https://itin-dev.sfo2.cdn.digitaloceanspaces.com/freeImageSmall/" +
-          imageID,
-      }}
-    />
-    <Icon name="star" />
+      <CardImage
+        source={{
+          uri:
+            "https://itin-dev.sfo2.cdn.digitaloceanspaces.com/freeImageSmall/" +
+            imageID,
+        }}
+      />
+      <Icon name="star" />
 
-    <CardText>{rating}</CardText>
-    <CardText>{description}</CardText>
-  </CardContainer>);
- 
-  };
+      <CardText>{rating}</CardText>
+      <CardText>{description}</CardText>
+    </CardContainer>
+  );
+};
 export default POIsCard;
