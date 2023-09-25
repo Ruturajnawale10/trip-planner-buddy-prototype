@@ -40,7 +40,7 @@ const AppNavigator = createAppContainer(
       POIs: POIs,
     },
     {
-      initialRouteName: "SearchPage", // Starts with the login/signup screens
+      initialRouteName: "Login", // Starts with the login/signup screens
       headerMode: "none", // Hide the navigation header
     }
   )

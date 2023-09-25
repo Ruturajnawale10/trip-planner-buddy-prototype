@@ -23,7 +23,7 @@ const ListPOIs = ({ navigation }) => {
   //   const route = useRoute();
   //   console.log(navigation.state.params.location);
   const [data, setData] = useState([]);
-  const { location, startDate, endDate } = navigation.state.params;
+  const { location, startDate, endDate,trip_id } = navigation.state.params;
   //   const { destination, startDate, endDate } = route.params;
   const onPress = () => {
     console.log("pressed");
