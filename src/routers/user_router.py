@@ -29,6 +29,14 @@ def signup(user_data: UserSignupRequest):
     new_user = User(
         username=user_data.username,
         password=user_data.password,  # You should hash the password here
+        google_auth=False,
+        profile={
+            'first_name': '',
+            'last_name': '',
+        },
+        upcoming_trips=[],
+        past_trips=[],
+        shared_itineraries=[],
     )
 
     new_user.save()

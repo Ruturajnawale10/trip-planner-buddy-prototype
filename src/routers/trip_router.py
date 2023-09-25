@@ -57,9 +57,10 @@ def create_trip_own(trip_data: TripCreation):
 
     new_trip.save()
     try:
-        user = User.objects.get({'username': created_by})
-        user.upcoming_trips.append(new_trip._id)
-        user.save()
+        user_document = collection_user.find_one({'username': created_by})
+        if user_document:
+            user_document['upcoming_trips'].append(new_trip._id)
+            collection_user.update_one({'_id': user_document['_id']}, {'$set': {'upcoming_trips': user_document['upcoming_trips']}})
         return TripRequestResponse(
             trip_id=str(new_trip._id),
         )
