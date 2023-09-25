@@ -1,6 +1,4 @@
-// Create boilerplate reactnative page for a home page with a search bar and a list of items
-
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,35 +9,46 @@ import {
 import { SafeAreaView } from "react-native";
 import { Image } from "react-native";
 import SearchBar from "../SearchBar";
-import Card from "./Card";
+import TripCard from "./TripCard";
 import NavigationBar from "../NavigationButton/NavigationBar";
 
 const HomePage = ({ navigation }) => {
-  // const [showDate, setShowDate] = useState(false);
+  const [data, setData] = useState([]);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const trip_img_url =
+    "https://helios-i.mashable.com/imagery/articles/06zoscMHTZxU5KEFx8SRyDg/hero-image.fill.size_1200x900.v1630023012.jpg";
+
+  const getUpcomingTrips = () => {
+    const requestBody = {
+      username: "ruturaj",
+    };
+
+    fetch("http://127.0.0.1:8000/api/trip/list/upcoming", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("wow");
+        console.log(json);
+        setData(json);
+        setIsLoadingData(false);
+        console.log(json);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  useEffect(() => {
+    getUpcomingTrips();
+  }, []);
+
   const pastTrips = () => {
     console.log("past trips");
   };
 
-  // const onSearch = (text) => {
-  //   Keyboard.dismiss();
-  //   fetch("http://10.0.0.27:8000/destination/" + text, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((json) => {
-  //       setInitialRegion({
-  //         latitude: json.shortest_path[0][1].lat,
-  //         longitude: json.shortest_path[0][1].lng,
-  //         latitudeDelta: 0.0922,
-  //         longitudeDelta: 0.0421,
-  //       });
-  //       setData(json);
-  //     })
-  //     .catch((error) => console.error(error));
-  // };
   const onSearch = () => {
     navigation.navigate("SearchPage");
   };
@@ -51,20 +60,46 @@ const HomePage = ({ navigation }) => {
         style={styles.logo}
       />
       <SearchBar onSearch={onSearch} />
-
+      {!isLoadingData && (
       <ScrollView>
-        <Card onPress={pastTrips} bgColor="#e7e7e7" title="Past Trips" />
-        <Card onPress={pastTrips} bgColor="#e7e7e7" title="All Trips" />
-        <Text style={styles.text}> Top Rated Trips </Text>
-        <Card onPress={pastTrips} bgColor="#e7e7e7" title="Trip to New York" />
-        <Card
+        <Text style={styles.text}> Continue planning trip </Text>
+        <TripCard
           onPress={pastTrips}
-          bgColor="#e7e7e7"
-          title="Trip to San Fransisco"
+          bgColor="#d1c9d4"
+          imageSource={
+            "https://images.squarespace-cdn.com/content/v1/5c7f5f60797f746a7d769cab/ed578728-b35e-4336-ba27-8eced4e968f9/golden+gate+bridge+sarowly.jpg"
+          }
+          tripName={data[data.length - 1].tripName}
+          startDate={data[data.length - 1].startDate}
+          pois={data[data.length - 1].pois}
         />
-        <Card onPress={pastTrips} bgColor="#e7e7e7" title="Trip to Arizona" />
-        <Card onPress={pastTrips} bgColor="#e7e7e7" title="Trip to Yosemite" />
+        <Text style={styles.text}> Top Rated Trips </Text>
+        <TripCard
+          onPress={pastTrips}
+          bgColor="#d1c9d4"
+          imageSource={trip_img_url}
+          tripName="Trip to Washington"
+        />
+        <TripCard
+          onPress={pastTrips}
+          bgColor="#d1c9d4"
+          imageSource={trip_img_url}
+          tripName="Trip to San Fransisco"
+        />
+        <TripCard
+          onPress={pastTrips}
+          bgColor="#d1c9d4"
+          imageSource={trip_img_url}
+          tripName="Trip to Arizona"
+        />
+        <TripCard
+          onPress={pastTrips}
+          bgColor="#d1c9d4"
+          imageSource={trip_img_url}
+          tripName="Trip to Yosemite"
+        />
       </ScrollView>
+      )}
       <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
@@ -77,9 +112,9 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    textAlign: "center",
-    color: "#F4727F",
+    color: "#412a47",
     fontWeight: "bold",
+    marginLeft: 10,
   },
   logo: {
     width: 100,

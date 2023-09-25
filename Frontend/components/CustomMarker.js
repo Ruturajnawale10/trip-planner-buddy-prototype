@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   numberTop: {
     // paddingVertical: 3,
     // paddingHorizontal: 3,
-    backgroundColor: "#F4727F",
+    backgroundColor: "#d1c9d4",
     borderColor: "#eee",
     borderRadius: 100,
     width: 20,

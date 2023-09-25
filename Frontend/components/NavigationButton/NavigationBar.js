@@ -8,21 +8,21 @@ const NavigationBar = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.navButtons}>
       <NavigationButton
-        bgColor="#F4727F"
+        bgColor="#9b87a1"
         iconName="home"
         title="Home"
         page="HomePage"
         navigation={navigation}
       />
       <NavigationButton
-        bgColor="#F4727F"
+        bgColor="#9b87a1"
         iconName="search"
         title="Search"
         page="SearchPage"
         navigation={navigation}
       />
       <NavigationButton
-        bgColor="#F4727F"
+        bgColor="#9b87a1"
         iconName="person"
         title="Profile"
         page="ProfilePage"
