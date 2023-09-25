@@ -11,6 +11,7 @@ import MapViewPage from "./components/MapViewPage";
 import HomePage from "./components/HomePage/HomePage";
 import SearchPage from "./components/SearchPage";
 import ListPOIs from "./components/POIs/ListPOIs";
+import POIs from "./components/POIs/POIs";
 import NavigationButton from "./components/NavigationButton/NavigationButton";
 
 const App = () => {
@@ -36,6 +37,7 @@ const AppNavigator = createAppContainer(
       HomePage: HomePage,
       SearchPage: SearchPage,
       ListPOIs: ListPOIs,
+      POIs: POIs,
     },
     {
       initialRouteName: "Login", // Starts with the login/signup screens

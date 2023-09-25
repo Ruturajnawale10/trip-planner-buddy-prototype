@@ -36,8 +36,15 @@ const POIsCard = ({
   imageID,
   rating,
   description,
-}) => (
-  <CardContainer onPress={onPress} bgColor={bgColor}>
+  poisData
+}) => {
+  const navigation = useNavigation(); // Initialize navigation
+
+  const handleCardPress = () => {
+    navigation.navigate("POIs", { poisData });
+  };
+
+   return ( <CardContainer onPress={onPress} bgColor={bgColor}>
     <CardText>{title}</CardText>
 
     <CardImage
@@ -51,6 +58,7 @@ const POIsCard = ({
 
     <CardText>{rating}</CardText>
     <CardText>{description}</CardText>
-  </CardContainer>
-);
+  </CardContainer>);
+ 
+  };
 export default POIsCard;
