@@ -13,10 +13,12 @@ import { useRoute } from "@react-navigation/native";
 import { Dimensions } from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
 import POIsCard from "./POIsCard";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const ListPOIs = ({ navigation }) => {
   const [destination, setDestination] = useState("");
   const [flag, setFlag] = useState(false);
+  const [pois, setPOIs] = useState([]);
 
   //   const route = useRoute();
   //   console.log(navigation.state.params.location);
@@ -42,11 +44,43 @@ const ListPOIs = ({ navigation }) => {
       })
       .catch((error) => console.error(error));
   };
-  getPOIs(location);
 
-  //   useEffect(() => {
-  //     console.log(data.city_name);
-  //   }, [data]);
+  const addPOI = (POIid) => {
+    console.log(POIid);
+    setPOIs([...pois, POIid]);
+  };
+
+  const removePOI = (POIid) => {
+    console.log(POIid);
+    setPOIs(pois.filter((id) => id !== POIid));
+  };
+
+  const submitPOIs = () => {
+    console.log("submitting");
+    console.log(pois);
+    for (let i = 0; i < pois.length; i++) {
+      fetch("http://127.0.0.1:8000/api/trip/add/poi", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          trip_id: "65113471a2142d6229c78301",
+          poi_id: pois[i],
+          day: i / 3,
+        }),
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          console.log(json);
+        })
+        .catch((error) => console.error(error));
+    }
+  };
+
+  useEffect(() => {
+    getPOIs(location);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -62,7 +96,6 @@ const ListPOIs = ({ navigation }) => {
           {data.pois.map((item) => (
             <View key={item.id}>
               <POIsCard
-                onPress={onPress}
                 bgColor="#F4727F"
                 title={item.name}
                 imageID={item.images[0]}
@@ -70,12 +103,16 @@ const ListPOIs = ({ navigation }) => {
                 description={item.description}
                 item={item}
                 navigation={navigation}
+                addPOI={addPOI}
+                removePOI={removePOI}
               />
             </View>
           ))}
         </ScrollView>
       )}
-
+      <TouchableOpacity onPress={submitPOIs}>
+        <Button title="Submit" />
+      </TouchableOpacity>
       <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );

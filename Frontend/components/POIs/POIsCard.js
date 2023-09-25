@@ -3,6 +3,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Icon } from "@rneui/themed";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { Button, StyleSheet } from "react-native";
 
 const CardContainer = styled.TouchableOpacity`
   width: 90%;
@@ -30,7 +32,6 @@ const CardImage = styled.Image`
 `;
 
 const POIsCard = ({
-  onPress,
   bgColor,
   title,
   imageID,
@@ -38,6 +39,8 @@ const POIsCard = ({
   description,
   item,
   navigation,
+  addPOI,
+  removePOI,
 }) => {
   // const navigation = useNavigation(); // Initialize navigation
 
@@ -47,7 +50,7 @@ const POIsCard = ({
   };
 
   return (
-    <CardContainer onPress={handleCardPress} bgColor={bgColor}>
+    <CardContainer bgColor={bgColor}>
       <CardText>{title}</CardText>
 
       <CardImage
@@ -61,7 +64,40 @@ const POIsCard = ({
 
       <CardText>{rating}</CardText>
       <CardText>{description}</CardText>
+      <TouchableOpacity onPress={() => addPOI(item.poi_id)}>
+        <Button title="Add to Itinerary" style={styles.addButton} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => removePOI(item.poi_id)}>
+        <Button title="Remove from Itinerary" style={styles.removeButton} />
+      </TouchableOpacity>
     </CardContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  addButton: {
+    flex: 1,
+    width: 100,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: "#F4727F",
+    paddingHorizontal: 10,
+    margin: 10,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  removeButton: {
+    flex: 1,
+    width: 100,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: "#F4727F",
+    paddingHorizontal: 10,
+    margin: 10,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 export default POIsCard;
