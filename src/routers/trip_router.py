@@ -11,27 +11,32 @@ router = APIRouter(
     tags=['Trip']
 )
 
+
 class TripCreation(BaseModel):
     createdBy: str
     startDate: date
     endDate: date
     cityName: str
 
+
 class TripAddPoi(BaseModel):
     trip_id: str
     poi_id: int
     day: int
 
-    
+
 class TripRequestResponse(BaseModel):
     trip_id: str
+
 
 class UsernameRequestBody(BaseModel):
     username: str
 
+
 collection_trip = db['trip']
 collection_user = db['user']
 collection_city = db['city']
+
 
 @router.post("/api/trip/create/own", response_model=TripRequestResponse)
 def create_trip_own(trip_data: TripCreation):
@@ -60,16 +65,18 @@ def create_trip_own(trip_data: TripCreation):
         user_document = collection_user.find_one({'username': created_by})
         if user_document:
             user_document['upcoming_trips'].append(new_trip._id)
-            collection_user.update_one({'_id': user_document['_id']}, {'$set': {'upcoming_trips': user_document['upcoming_trips']}})
+            collection_user.update_one({'_id': user_document['_id']}, {
+                                       '$set': {'upcoming_trips': user_document['upcoming_trips']}})
         return TripRequestResponse(
             trip_id=str(new_trip._id),
         )
     except User.DoesNotExist:
-        raise HTTPException(status_code=404, detail=f"User with username {created_by} not found")
+        raise HTTPException(
+            status_code=404, detail=f"User with username {created_by} not found")
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
 
 @router.post("/api/trip/add/poi")
 def add_poi_to_trip(poi_data: TripAddPoi):
@@ -77,36 +84,40 @@ def add_poi_to_trip(poi_data: TripAddPoi):
     trip_id = ObjectId(poi_data.trip_id)
 
     try:
-        #find out why this does not work, i.e. why it does not return document. this works similarly for user objects
+        # find out why this does not work, i.e. why it does not return document. this works similarly for user objects
         # trip = Trip.objects.get({'_id': trip_id})
         trip = collection_trip.find_one({'_id': trip_id})
         print("finally", trip)
         trip["pois"][poi_data.day].append(poi_data.poi_id)
 
         update_query = {
-        "$push": {
-            f"pois.{poi_data.day}": poi_data.poi_id
+            "$push": {
+                f"pois.{poi_data.day}": poi_data.poi_id
+            }
         }
-}
         collection_trip.update_one({"_id": trip_id}, update_query)
         # trip.save()
-        
+
         return {"message": "Success"}
     except Trip.DoesNotExist:
-        raise HTTPException(status_code=404, detail=f"Trip with trip_id {poi_data.trip_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Trip with trip_id {poi_data.trip_id} not found")
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
+
 @router.get("/api/trip/list/upcoming")
 def get_upcoming_trips_list(user: UsernameRequestBody):
     print("upcoming trips list trip api called")
 
     existing_user = collection_user.find_one({'username': user.username})
     try:
-        trips = collection_trip.find({"_id": {"$in": existing_user['upcoming_trips']}})
+        trips = collection_trip.find(
+            {"_id": {"$in": existing_user['upcoming_trips']}})
     except Trip.DoesNotExist:
-        raise HTTPException(status_code=404, detail=f"Trip object for  username {user.username} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Trip object for  username {user.username} not found")
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -116,14 +127,16 @@ def get_upcoming_trips_list(user: UsernameRequestBody):
     # Covert ObjectId to string before returning as ObjectId is bson n ot json type
     for trip in trip_list:
         trip['_id'] = str(trip["_id"])
-    
+
     return trip_list
 
-@router.get("/api/trip/poi_list/")
+
+@router.post("/api/trip/poi_list/")
 def get_pois_of_a_trip(trip: TripRequestResponse):
     print("POIs list for a trip api called")
     try:
-        existing_trip = collection_trip.find_one({"_id": ObjectId(trip.trip_id)})
+        existing_trip = collection_trip.find_one(
+            {"_id": ObjectId(trip.trip_id)})
         city_name = existing_trip['cityName']
         poi_ids = existing_trip['pois']
         total_pois = len(poi_ids)

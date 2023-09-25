@@ -57,7 +57,7 @@ const ListPOIs = ({ navigation }) => {
 
   const submitPOIs = () => {
     console.log("submitting");
-    console.log(pois);
+    console.log(pois, trip_id);
     for (let i = 0; i < pois.length; i++) {
       fetch("http://127.0.0.1:8000/api/trip/add/poi", {
         method: "POST",
@@ -73,6 +73,9 @@ const ListPOIs = ({ navigation }) => {
         .then((response) => response.json())
         .then((json) => {
           console.log(json);
+          navigation.navigate("ShowCurrentTrip", {
+            trip_id: trip_id,
+          });
         })
         .catch((error) => console.error(error));
     }
