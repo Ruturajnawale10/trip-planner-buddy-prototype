@@ -6,6 +6,7 @@ from routers.google_api import router as google_api
 from routers.user_router import router as user_router
 from routers.destination import router as destination
 from routers.trip_router import router as trip
+from routers.trip_ai import router as trip_ai
 
 # Allow CORS
 from fastapi.middleware.cors import CORSMiddleware
@@ -41,3 +42,4 @@ app.include_router(google_api)
 app.include_router(user_router)
 app.include_router(destination)
 app.include_router(trip)
+app.include_router(trip_ai)
