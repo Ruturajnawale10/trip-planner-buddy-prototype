@@ -66,6 +66,11 @@ const LoginScreen = ({ navigation }) => {
       });
   };
 
+  handleUsernameChange = (text) => {
+    // Convert the input to lowercase before setting it in the state.
+    setEmail(text.toLowerCase());
+  }
+
   return (
     <View
       style={[styles.container, { backgroundColor: theme.primaryBackground }]}
@@ -79,9 +84,10 @@ const LoginScreen = ({ navigation }) => {
       <View style={styles.inputContainer}>
         <Text>Login</Text>
         <TextInput
-          placeholder="Username"
+          placeholder="username"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={this.handleUsernameChange}
+          
           style={[styles.input, { width: "80%" }]} // Increase the width
         />
         <TextInput
