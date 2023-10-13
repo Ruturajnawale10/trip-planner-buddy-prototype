@@ -2,12 +2,18 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 
 const TripCard = ({ imageSource, tripName, startDate, pois }) => {
-  const date = new Date(startDate);
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-  const startDateString = date.getDate() + " " + (months[date.getMonth()]) + " " + date.getFullYear();
+  let startDateString = "";
+  if (startDate == null || startDate == undefined || startDate == "") {
+    startDateString = "";
+  } else {
+    const date = new Date(startDate);
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    startDateString = date.getDate() + " " + (months[date.getMonth()]) + " " + date.getFullYear();
+  }
+  
   let totalPlaces = 0;
   let place = "places"
   if (pois != null) {
