@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  ScrollView,
-} from "react-native";
+import { Text, StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native";
 import { Image } from "react-native";
 import SearchBar from "../SearchBar";
@@ -37,7 +31,6 @@ const HomePage = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isCurrentTripPresent, setIsCurrentTripPresent] = useState(false);
-  // var username = fetchValue("username");
 
   const [username, setUsername] = useState(null);
 
