@@ -29,6 +29,7 @@ const fetchValue = async (key) => {
 
 const HomePage = ({ navigation }) => {
   const [data, setData] = useState([]);
+  const [latestTrip, setLatestTrip] = useState(null);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isCurrentTripPresent, setIsCurrentTripPresent] = useState(false);
 
@@ -71,6 +72,7 @@ const HomePage = ({ navigation }) => {
       .then((response) => response.json())
       .then((json) => {
         setData(json);
+        setLatestTrip(json[json.length - 1]);
         if (json.length > 0) {
           setIsCurrentTripPresent(true);
         }
@@ -92,9 +94,11 @@ const HomePage = ({ navigation }) => {
   };
 
   const goToTrip = () => {
-    const latest_trip_id = data[data.length - 1]._id;
-    navigation.navigate("ShowCurrentTrip", {
-      trip_id: latest_trip_id,
+    navigation.navigate("ListPOIs", {
+      location: latestTrip.cityName,
+      startDate: latestTrip.startDate,
+      endDate: latestTrip.endDate,
+      trip_id: latestTrip._id,
     });
   };
 
@@ -117,9 +121,9 @@ const HomePage = ({ navigation }) => {
                   imageSource={
                     "https://images.squarespace-cdn.com/content/v1/5c7f5f60797f746a7d769cab/ed578728-b35e-4336-ba27-8eced4e968f9/golden+gate+bridge+sarowly.jpg"
                   }
-                  tripName={data[data.length - 1].tripName}
-                  startDate={data[data.length - 1].startDate}
-                  pois={data[data.length - 1].pois}
+                  tripName={latestTrip.tripName}
+                  startDate={latestTrip.startDate}
+                  pois={latestTrip.pois}
                 />
               </TouchableOpacity>
             </>
