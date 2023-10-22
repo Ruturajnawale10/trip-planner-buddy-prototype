@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 
 import { SafeAreaView } from "react-native";
-import { useRoute } from "@react-navigation/native";
-import { Dimensions } from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
-import POIsCard from "./POIsCard";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import ListPOIs from "./ListPOIs";
+import POIAddedCard from "./POIAddedCard";
 
-const ShowCurrentTrip = ({ navigation }) => {
-  const [formattedData, setFormattedData] = useState(new Map());
+const CurrentTrip = ({ navigation }) => {
+  const [data, setData] = useState(new Map());
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
-  const { trip_id } = navigation.state.params;
+  const { location, startDate, endDate, trip_id } = navigation.state.params;
 
   const getCurrentTrip = () => {
     fetch("http://127.0.0.1:8000/api/trip/poi_list/", {
@@ -33,21 +25,15 @@ const ShowCurrentTrip = ({ navigation }) => {
     })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json["trip_details"]);
         setCity(json["trip_details"]["cityName"]);
         for (let i = 0; i < json["pois"].length; i++) {
           let day = json["pois"][i][0]["pois"];
           let formattedDay = [];
           for (let j = 0; j < day.length; j++) {
-            formattedDay.push(day[j]["name"]);
+            formattedDay.push(day[j]);
           }
-          console.log("data", formattedDay);
-          setFormattedData((formattedData) =>
-            formattedData.set(i + 1, formattedDay)
-          );
+          setData((data) => data.set(i + 1, formattedDay));
         }
-
-        console.log("final datas", formattedData);
         setLoading(true);
       })
       .catch((error) => console.error(error));
@@ -55,27 +41,30 @@ const ShowCurrentTrip = ({ navigation }) => {
 
   useEffect(() => {
     getCurrentTrip();
-    console.log(formattedData);
   }, []);
+
+  const handleDetailsPress = (item) => {
+    navigation.navigate("POIs", { item });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
         <ScrollView>
           <View style={styles.container}>
-            <Text style={styles.text}>Your Current Trip to {city}</Text>
+            <Text style={styles.title}>Trip to {location}</Text>
             {/* Loop days and data in a tabular format  */}
-            {Array.from(formattedData, ([key, value]) => (
-              <View style={styles.container}>
+            {Array.from(data, ([key, value]) => (
+              <View key={key} style={styles.container}>
                 <Text style={styles.text}>Day {key}</Text>
                 {value.map((item) => (
-                  <View style={styles.locations}>
-                    <Text style={styles.location}>{item}</Text>
-                    <TouchableOpacity style={styles.removeButton}>
-                      <Text>Remove</Text>
+                  <View key={item.name}>
+                    <TouchableOpacity onPress={() => handleDetailsPress(item)}>
+                      <POIAddedCard item={item} />
                     </TouchableOpacity>
                   </View>
                 ))}
+                <ListPOIs navigation={navigation} day={key - 1} />
               </View>
             ))}
           </View>
@@ -94,9 +83,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingBottom: 30,
+    paddingLeft: 6,
     backgroundColor: "gainsboro",
   },
   text: {
@@ -110,7 +98,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: "center",
     paddingTop: 20,
-    width: "70%",
+    width: "100%",
   },
   logo: {
     width: 200,
@@ -140,6 +128,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
   },
+  title: {
+    fontSize: 30,
+    textAlign: "center",
+    color: "#412a47",
+    fontWeight: "bold",
+    margin: 10,
+  },
 });
 
-export default ShowCurrentTrip;
+export default CurrentTrip;

@@ -6,6 +6,12 @@ import NavigationBar from "../NavigationButton/NavigationBar";
 export default function POIs({ navigation }) {
   // Extract the POI data from the route params
   const { item, addPOI } = navigation.state.params;
+  if (addPOI == null) {
+    console.log("addPOI is null");
+    showAdded = false;
+  } else {
+    showAdded = true;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -17,21 +23,21 @@ export default function POIs({ navigation }) {
         }}
         style={styles.image}
       />
-
       {/* Destination details */}
       <Text style={styles.title}>{item.name}</Text>
       <Text style={styles.description}>{item.description}</Text>
       <Text style={styles.details}>City: {item.city}</Text>
       <Text style={styles.details}>Address: {item.address}</Text>
       <Text style={styles.details}>Rating: {item.rating} / 5</Text>
+      {showAdded && (
+        <TouchableOpacity
+          style={[styles.favouriteButton, { backgroundColor: "blue" }]}
+          onPress={() => addPOI(item.poi_id)}
+        >
+          <Text style={styles.buttonText}>Add to Itinerary</Text>
+        </TouchableOpacity>
+      )}
 
-      {/* Favorite and Back buttons */}
-      <TouchableOpacity
-        style={[styles.favouriteButton, { backgroundColor: "blue" }]}
-        onPress={() => addPOI(item.poi_id)}
-      >
-        <Text style={styles.buttonText}>Add to Itinerary</Text>
-      </TouchableOpacity>
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.goBack()}
@@ -54,7 +60,6 @@ const styles = StyleSheet.create({
     height: 400, // Adjust the image height as needed
     marginTop: 16,
     marginBottom: 16,
-    // padding: 16,
   },
   title: {
     fontSize: 24,

@@ -94,7 +94,7 @@ const HomePage = ({ navigation }) => {
   };
 
   const goToTrip = () => {
-    navigation.navigate("ListPOIs", {
+    navigation.navigate("CurrentTrip", {
       location: latestTrip.cityName,
       startDate: latestTrip.startDate,
       endDate: latestTrip.endDate,
