@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import React from "react";
+import { StyleSheet } from "react-native";
 
 import { SafeAreaView } from "react-native";
 import NavigationButton from "./NavigationButton";
@@ -37,6 +37,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "#E9E3E4",
+    width: "100%",
+    position: "absolute",
+    bottom: 0,
   },
 });
 
