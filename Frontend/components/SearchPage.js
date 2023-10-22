@@ -118,7 +118,7 @@ const SearchPage = ({ navigation }) => {
             .then((data) => {
               // Assuming the response contains the username
               const { trip_id } = data;
-              navigation.navigate("ListPOIs", {
+              navigation.navigate("CurrentTrip", {
                 location: destination,
                 startDate: startDateString,
                 endDate: endDateString,

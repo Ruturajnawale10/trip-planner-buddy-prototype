@@ -12,7 +12,7 @@ import HomePage from "./components/HomePage/HomePage";
 import SearchPage from "./components/SearchPage";
 import ListPOIs from "./components/POIs/ListPOIs";
 import POIs from "./components/POIs/POIs";
-import ShowCurrentTrip from "./components/POIs/ShowCurrentTrip";
+import CurrentTrip from "./components/POIs/CurrentTrip";
 
 const App = () => {
   const [isLogoLoading, setLogoLoading] = useState(false);
@@ -38,7 +38,7 @@ const AppNavigator = createAppContainer(
       SearchPage: SearchPage,
       ListPOIs: ListPOIs,
       POIs: POIs,
-      ShowCurrentTrip: ShowCurrentTrip,
+      CurrentTrip: CurrentTrip,
     },
     {
       initialRouteName: "Login", // Starts with the login/signup screens

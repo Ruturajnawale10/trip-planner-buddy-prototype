@@ -15,18 +15,15 @@ import NavigationBar from "../NavigationButton/NavigationBar";
 import POIsCard from "./POIsCard";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const ListPOIs = ({ navigation }) => {
+const ListPOIs = ({ navigation, day }) => {
   const [destination, setDestination] = useState("");
   const [flag, setFlag] = useState(false);
   const [pois, setPOIs] = useState([]);
   const scrollViewRef = useRef();
   const [scrollX, setScrollX] = useState(0);
 
-  //   const route = useRoute();
-  //   console.log(navigation.state.params.location);
   const [data, setData] = useState([]);
   const { location, startDate, endDate, trip_id } = navigation.state.params;
-  //   const { destination, startDate, endDate } = route.params;
   const onPress = () => {
     console.log("pressed");
   };
@@ -42,13 +39,11 @@ const ListPOIs = ({ navigation }) => {
       .then((json) => {
         setData(json);
         setFlag(true);
-        // console.log(json);
       })
       .catch((error) => console.error(error));
   };
 
   const addPOI = (POIid) => {
-    // const desiredX = Dimensions.get("window").width;
     const desiredX = scrollX + 300;
 
     // Scroll to the desired position
@@ -63,7 +58,7 @@ const ListPOIs = ({ navigation }) => {
       body: JSON.stringify({
         trip_id: trip_id,
         poi_id: POIid,
-        day: 0,
+        day: day,
       }),
     })
       .then((response) => response.json())
@@ -83,7 +78,6 @@ const ListPOIs = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Trip to {location}</Text>
       {flag && (
         <ScrollView
           horizontal={true}
@@ -108,7 +102,6 @@ const ListPOIs = ({ navigation }) => {
           ))}
         </ScrollView>
       )}
-      <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
 };
@@ -118,8 +111,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#E9E3E4",
     display: "flex",
-    // justifyContent: "center",
-    // alignItems: "center",
   },
   input: {
     height: Dimensions.get("window").height * 0.05,
@@ -144,13 +135,6 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     alignItems: "center",
-  },
-  title: {
-    fontSize: 30,
-    textAlign: "center",
-    color: "#412a47",
-    fontWeight: "bold",
-    margin: 10,
   },
 });
 
