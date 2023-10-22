@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -6,11 +6,11 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
+  Dimensions,
 } from "react-native";
 
 import { SafeAreaView } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import { Dimensions } from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
 import POIsCard from "./POIsCard";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -19,6 +19,8 @@ const ListPOIs = ({ navigation }) => {
   const [destination, setDestination] = useState("");
   const [flag, setFlag] = useState(false);
   const [pois, setPOIs] = useState([]);
+  const scrollViewRef = useRef();
+  const [scrollX, setScrollX] = useState(0);
 
   //   const route = useRoute();
   //   console.log(navigation.state.params.location);
@@ -46,41 +48,33 @@ const ListPOIs = ({ navigation }) => {
   };
 
   const addPOI = (POIid) => {
-    console.log(POIid);
-    setPOIs([...pois, POIid]);
+    // const desiredX = Dimensions.get("window").width;
+    const desiredX = scrollX + 300;
+
+    // Scroll to the desired position
+    scrollViewRef.current.scrollTo({ x: desiredX, animated: true });
+    setScrollX(desiredX);
+
+    fetch("http://127.0.0.1:8000/api/trip/add/poi", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        trip_id: trip_id,
+        poi_id: POIid,
+        day: 0,
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("POI added with poi_id " + POIid);
+      })
+      .catch((error) => console.error(error));
   };
 
   const removePOI = (POIid) => {
     console.log(POIid);
-    setPOIs(pois.filter((id) => id !== POIid));
-  };
-
-  const submitPOIs = () => {
-    console.log("submitting");
-    console.log(pois, trip_id);
-    for (let i = 0; i < pois.length; i++) {
-      fetch("http://127.0.0.1:8000/api/trip/add/poi", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          trip_id: trip_id,
-          poi_id: pois[i],
-          day: i / 3,
-        }),
-      })
-        .then((response) => response.json())
-        .then((json) => {
-          console.log(json);
-          if (i === pois.length - 1) {
-            navigation.navigate("ShowCurrentTrip", {
-              trip_id: trip_id,
-            });
-          }
-        })
-        .catch((error) => console.error(error));
-    }
   };
 
   useEffect(() => {
@@ -89,35 +83,31 @@ const ListPOIs = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.text}>Destination:</Text>
-      <TextInput
-        placeholder="Enter destination"
-        value={data.city_name}
-        onChangeText={(text) => setDestination(text)}
-        style={styles.input}
-      />
+      <Text style={styles.title}>Trip to {location}</Text>
       {flag && (
-        <ScrollView>
+        <ScrollView
+          horizontal={true}
+          ref={scrollViewRef}
+          onScroll={(event) => {
+            setScrollX(event.nativeEvent.contentOffset.x);
+          }}
+          scrollEventThrottle={16}
+        >
           {data.pois.map((item) => (
-            <View key={item.id}>
+            <View key={item.id} style={styles.poiCard}>
               <POIsCard
-                bgColor="#d1c9d4"
-                title={item.name}
                 imageID={item.images[0]}
-                rating={item.rating}
-                description={item.description}
-                item={item}
+                poi_name={item.name}
+                poi_id={item.poi_id}
                 navigation={navigation}
                 addPOI={addPOI}
                 removePOI={removePOI}
+                item={item}
               />
             </View>
           ))}
         </ScrollView>
       )}
-      <TouchableOpacity onPress={submitPOIs} style={styles.submitButton}>
-        <Text> Submit </Text>
-      </TouchableOpacity>
       <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
@@ -154,6 +144,13 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     alignItems: "center",
+  },
+  title: {
+    fontSize: 30,
+    textAlign: "center",
+    color: "#412a47",
+    fontWeight: "bold",
+    margin: 10,
   },
 });
 

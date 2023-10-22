@@ -1,22 +1,14 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native";
+import NavigationBar from "../NavigationButton/NavigationBar";
 
-export default function POIs({ navigation, route }) {
+export default function POIs({ navigation }) {
   // Extract the POI data from the route params
-  const { item, showRemove, handleCardPress } = navigation.state.params;
-  const [localRemove, setLocalRemove] = useState(showRemove);
-
-  const toggleRemove = () => {
-    setLocalRemove(!localRemove);
-    handleCardPress(item.poi_id, showRemove ? "remove" : "add");
-  };
-
-  console.log(handleCardPress);
+  const { item, addPOI } = navigation.state.params;
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Image */}
       <Image
         source={{
           uri:
@@ -35,15 +27,10 @@ export default function POIs({ navigation, route }) {
 
       {/* Favorite and Back buttons */}
       <TouchableOpacity
-        style={[
-          styles.favouriteButton,
-          { backgroundColor: localRemove ? "red" : "blue" },
-        ]}
-        onPress={() => toggleRemove()}
+        style={[styles.favouriteButton, { backgroundColor: "blue" }]}
+        onPress={() => addPOI(item.poi_id)}
       >
-        <Text style={styles.buttonText}>
-          {localRemove ? "Remove from Itinerary" : "Add to Itinerary"}
-        </Text>
+        <Text style={styles.buttonText}>Add to Itinerary</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.backButton}
@@ -51,6 +38,7 @@ export default function POIs({ navigation, route }) {
       >
         <Text style={styles.buttonText}>Go Back</Text>
       </TouchableOpacity>
+      <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
 }
@@ -60,34 +48,35 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start", // Adjust the vertical alignment as needed
-    padding: 16,
-    margin: 16,
   },
   image: {
-    width: 300, // Adjust the image width as needed
+    width: "100%", // Adjust the image width as needed
     height: 400, // Adjust the image height as needed
     marginTop: 16,
     marginBottom: 16,
-    borderRadius: 8, // Optional: Add border radius for a rounded image
+    // padding: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 16,
+    marginBottom: 8,
   },
   description: {
     fontSize: 16,
     marginBottom: 16,
+    margin: 16,
   },
   details: {
     fontSize: 14,
     marginBottom: 8,
+    margin: 8,
   },
   favouriteButton: {
     backgroundColor: "blue",
     padding: 12,
     borderRadius: 8,
     marginBottom: 16,
+    margin: 8,
   },
   buttonText: {
     fontSize: 16,
