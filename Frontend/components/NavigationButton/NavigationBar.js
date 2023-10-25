@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
   navButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "#E9E3E4",
     width: "100%",
     position: "absolute",
     bottom: 0,

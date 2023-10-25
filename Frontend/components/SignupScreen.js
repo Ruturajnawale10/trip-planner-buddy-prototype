@@ -6,10 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const theme = {
-    primaryBackground: 'gainsboro', // Change this color to your desired shade of orange
-    // Define other theme colors and styles here if needed
-  };
 
   const storeData = async (key, value) => {
     try {
@@ -60,7 +56,7 @@ const SignupScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.primaryBackground }]}>
+    <View style={[styles.container, { backgroundColor: "#ffffff" }]}>
       <View style={styles.imageContainer}>
         <Image
           source={require('../assets/logo.png')} // Update the path to your logo image
@@ -111,6 +107,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
+    borderColor: 'black',
+    borderWidth: 1,
     width: '80%', // Increase the width of the input container
     marginTop: 20, // Adjust this margin to create a space between the image and the form
   },
@@ -119,6 +117,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderBottomWidth: 1,
     marginVertical: 10,
+    fontSize: 16,
   },
   signupButton: {
     backgroundColor: 'orange', // Background color
