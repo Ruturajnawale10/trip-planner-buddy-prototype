@@ -109,7 +109,6 @@ const ListPOIs = ({ navigation, day }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#E9E3E4",
     display: "flex",
   },
   input: {

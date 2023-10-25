@@ -14,10 +14,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const theme = {
-    primaryBackground: "gainsboro", // Change this color to your desired shade of orange
-    // Define other theme colors and styles here if needed
-  };
 
   const storeData = async (key, value) => {
     try {
@@ -73,7 +69,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View
-      style={[styles.container, { backgroundColor: theme.primaryBackground }]}
+      style={[styles.container, { backgroundColor: "#ffffff" }]}
     >
       <View style={styles.imageContainer}>
         <Image
@@ -84,7 +80,7 @@ const LoginScreen = ({ navigation }) => {
       <View style={styles.inputContainer}>
         <Text>Login</Text>
         <TextInput
-          placeholder="username"
+          placeholder="Username"
           value={email}
           onChangeText={this.handleUsernameChange}
           
@@ -118,14 +114,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   imageContainer: {
-    marginTop: 40, // Adjust the margin to control the space between the logo and form
     justifyContent: "flex-end",
     alignItems: "center",
   },
   inputContainer: {
-    backgroundColor: "white",
+    backgroundColor: "#ffffff",
     padding: 20,
     borderRadius: 10,
+    borderColor: "black",
+    borderWidth: 1,
     width: "80%", // Increase the width of the input container
     marginTop: 20, // Adjust this margin to create a space between the image and the form
   },
@@ -134,6 +131,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderBottomWidth: 1,
     marginVertical: 10,
+    fontSize: 16,
   },
   loginButton: {
     // Define your custom button styles here

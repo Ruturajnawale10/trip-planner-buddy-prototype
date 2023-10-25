@@ -94,7 +94,7 @@ const HomePage = ({ navigation }) => {
   };
 
   const goToTrip = () => {
-    navigation.navigate("CurrentTrip", {
+    navigation.navigate("ItineraryHome", {
       location: latestTrip.cityName,
       startDate: latestTrip.startDate,
       endDate: latestTrip.endDate,
@@ -117,7 +117,7 @@ const HomePage = ({ navigation }) => {
               <TouchableOpacity onPress={goToTrip} style={styles.submitButton}>
                 <TripCard
                   onPress={pastTrips}
-                  bgColor="#d1c9d4"
+                  bgColor="#ffffff"
                   imageSource={
                     "https://images.squarespace-cdn.com/content/v1/5c7f5f60797f746a7d769cab/ed578728-b35e-4336-ba27-8eced4e968f9/golden+gate+bridge+sarowly.jpg"
                   }
@@ -131,25 +131,25 @@ const HomePage = ({ navigation }) => {
           <Text style={styles.text}> Top Rated Trips </Text>
           <TripCard
             onPress={pastTrips}
-            bgColor="#d1c9d4"
+            bgColor="#ffffff"
             imageSource={trip_img_url}
             tripName="Trip to Washington"
           />
           <TripCard
             onPress={pastTrips}
-            bgColor="#d1c9d4"
+            bgColor="#ffffff"
             imageSource={trip_img_url}
             tripName="Trip to San Fransisco"
           />
           <TripCard
             onPress={pastTrips}
-            bgColor="#d1c9d4"
+            bgColor="#ffffff"
             imageSource={trip_img_url}
             tripName="Trip to Arizona"
           />
           <TripCard
             onPress={pastTrips}
-            bgColor="#d1c9d4"
+            bgColor="#ffffff"
             imageSource={trip_img_url}
             tripName="Trip to Yosemite"
           />
@@ -162,8 +162,8 @@ const HomePage = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "#ffffff",
     flex: 1,
-    backgroundColor: "#E9E3E4",
   },
   text: {
     fontSize: 20,

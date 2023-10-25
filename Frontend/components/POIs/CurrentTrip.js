@@ -52,7 +52,6 @@ const CurrentTrip = ({ navigation }) => {
       {loading ? (
         <ScrollView>
           <View style={styles.container}>
-            <Text style={styles.title}>Trip to {location}</Text>
             {/* Loop days and data in a tabular format  */}
             {Array.from(data, ([key, value]) => (
               <View key={key} style={styles.container}>
@@ -72,8 +71,6 @@ const CurrentTrip = ({ navigation }) => {
       ) : (
         <Text>Loading...</Text>
       )}
-
-      <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
 };
@@ -81,11 +78,10 @@ const CurrentTrip = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     paddingTop: 10,
     paddingBottom: 30,
     paddingLeft: 6,
-    backgroundColor: "gainsboro",
+    backgroundColor: "#ffffff",
   },
   text: {
     fontSize: 20,
@@ -108,7 +104,7 @@ const styles = StyleSheet.create({
   },
   day: {
     border: "1px solid black",
-    backgroundColor: "gainsboro",
+    backgroundColor: "#ffffff",
   },
   locations: {
     flexDirection: "row",
@@ -127,13 +123,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
-  },
-  title: {
-    fontSize: 30,
-    textAlign: "center",
-    color: "#412a47",
-    fontWeight: "bold",
-    margin: 10,
   },
 });
 

@@ -118,7 +118,7 @@ const SearchPage = ({ navigation }) => {
             .then((data) => {
               // Assuming the response contains the username
               const { trip_id } = data;
-              navigation.navigate("CurrentTrip", {
+              navigation.navigate("ItineraryHome", {
                 location: destination,
                 startDate: startDateString,
                 endDate: endDateString,
@@ -199,7 +199,6 @@ const SearchPage = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#E9E3E4",
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",

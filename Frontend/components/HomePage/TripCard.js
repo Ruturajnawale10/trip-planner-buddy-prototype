@@ -8,14 +8,25 @@ const TripCard = ({ imageSource, tripName, startDate, pois }) => {
   } else {
     const date = new Date(startDate);
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
-    startDateString = date.getDate() + " " + (months[date.getMonth()]) + " " + date.getFullYear();
+    startDateString =
+      date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear();
   }
-  
+
   let totalPlaces = 0;
-  let place = "places"
+  let place = "places";
   if (pois != null) {
     for (let i = 0; i < pois.length; i++) {
       totalPlaces += pois[i].length;
@@ -24,20 +35,25 @@ const TripCard = ({ imageSource, tripName, startDate, pois }) => {
       place = "place";
     }
   }
-  
+
   return (
-    <View style={styles.card}> 
-      <Image
-        source={{
-          uri: imageSource,
-        }}
-        style={styles.image}
-      />
-      <View style={styles.textContainer}>
-        <Text style={styles.tripName}>{tripName}</Text>
-        <Text style={styles.startDate}>{startDateString}</Text>
-        <Text style={styles.startDate}>{totalPlaces} {place}</Text>
+    <View>
+      <View style={styles.card}>
+        <Image
+          source={{
+            uri: imageSource,
+          }}
+          style={styles.image}
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.tripName}>{tripName}</Text>
+          <Text style={styles.startDate}>{startDateString}</Text>
+          <Text style={styles.startDate}>
+            {totalPlaces} {place}
+          </Text>
+        </View>
       </View>
+      <View style={styles.separator} />
     </View>
   );
 };
@@ -45,11 +61,9 @@ const TripCard = ({ imageSource, tripName, startDate, pois }) => {
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
+    padding: 8,
     borderRadius: 8,
-    marginBottom: 16,
+    marginBottom: 12,
     alignItems: "center",
   },
   image: {
@@ -70,6 +84,11 @@ const styles = StyleSheet.create({
   startDate: {
     fontSize: 16,
     color: "#837b85",
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#D3D3D3", // Color of the separator line
+    marginVertical: 16, // Adjust the margin as needed
   },
 });
 
