@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, TextInput, StyleSheet, Button } from "react-native";
 import { Dimensions } from "react-native";
-import SearchButton from "./SearchButton";
 
 const SearchBar = ({ onSearch }) => {
   const [text, setText] = useState("");
@@ -34,14 +33,11 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    // alignItems: "center",
   },
 
   input: {
     height: 40,
     width: Dimensions.get("window").width - 100,
-    border: "1px solid #DBD9D9",
-    placeholderTextColor: "#DBD9D9",
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,

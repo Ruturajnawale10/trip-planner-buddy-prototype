@@ -1,19 +1,16 @@
 // LoginScreen.js
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Image,
-  Button,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import { View, Text, TextInput, Image, Button, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const usernameInputRef = useRef(null);
+
+  useEffect(() => {
+    usernameInputRef.current.focus();
+  }, []);
 
   const storeData = async (key, value) => {
     try {
@@ -65,12 +62,10 @@ const LoginScreen = ({ navigation }) => {
   handleUsernameChange = (text) => {
     // Convert the input to lowercase before setting it in the state.
     setEmail(text.toLowerCase());
-  }
+  };
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: "#ffffff" }]}
-    >
+    <View style={[styles.container, { backgroundColor: "#ffffff" }]}>
       <View style={styles.imageContainer}>
         <Image
           source={require("../assets/logo.png")} // Update the path to your logo image
@@ -83,7 +78,7 @@ const LoginScreen = ({ navigation }) => {
           placeholder="Username"
           value={email}
           onChangeText={this.handleUsernameChange}
-          
+          ref={usernameInputRef}
           style={[styles.input, { width: "80%" }]} // Increase the width
         />
         <TextInput

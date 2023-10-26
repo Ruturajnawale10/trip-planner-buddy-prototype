@@ -1,11 +1,16 @@
 // SignupScreen.js
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity,Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const usernameInputRef = useRef(null);
+
+  useEffect(() => {
+    usernameInputRef.current.focus();
+  }, []);
 
   const storeData = async (key, value) => {
     try {
@@ -69,6 +74,7 @@ const SignupScreen = ({ navigation }) => {
           placeholder="Username"
           value={email}
           onChangeText={setEmail}
+          ref={usernameInputRef}
           style={[styles.input, { width: '80%' }]} // Increase the width
         />
         <TextInput

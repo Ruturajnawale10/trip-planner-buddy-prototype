@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native";
-import NavigationBar from "../NavigationButton/NavigationBar";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ListPOIs from "./ListPOIs";
 import POIAddedCard from "./POIAddedCard";
 
 const CurrentTrip = ({ navigation }) => {
   const [data, setData] = useState(new Map());
-  const [city, setCity] = useState("");
+  const [POIListData, setPOIListData] = useState([]);
+  const [flag, setFlag] = useState(false);
   const [loading, setLoading] = useState(false);
   const { location, startDate, endDate, trip_id } = navigation.state.params;
 
@@ -25,7 +30,6 @@ const CurrentTrip = ({ navigation }) => {
     })
       .then((response) => response.json())
       .then((json) => {
-        setCity(json["trip_details"]["cityName"]);
         for (let i = 0; i < json["pois"].length; i++) {
           let day = json["pois"][i][0]["pois"];
           let formattedDay = [];
@@ -39,8 +43,24 @@ const CurrentTrip = ({ navigation }) => {
       .catch((error) => console.error(error));
   };
 
+  const getPOIs = (location) => {
+    fetch("http://127.0.0.1:8000/api/destination/" + location, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        setPOIListData(json);
+        setFlag(true);
+      })
+      .catch((error) => console.error(error));
+  };
+
   useEffect(() => {
     getCurrentTrip();
+    getPOIs(location);
   }, []);
 
   const handleDetailsPress = (item) => {
@@ -63,13 +83,19 @@ const CurrentTrip = ({ navigation }) => {
                     </TouchableOpacity>
                   </View>
                 ))}
-                <ListPOIs navigation={navigation} day={key - 1} />
+                {flag && (
+                  <ListPOIs
+                    navigation={navigation}
+                    data={POIListData}
+                    day={key - 1}
+                  />
+                )}
               </View>
             ))}
           </View>
         </ScrollView>
       ) : (
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" color="#0000ff" />
       )}
     </SafeAreaView>
   );
