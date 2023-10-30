@@ -15,7 +15,7 @@ const Weather = ({ navigation }) => {
   const [isForecastAvailable, setIsForecastAvailable] = useState(false);
   useEffect(() => {
     fetch(
-      `http://localhost:8000/api/trip/weather?location=San%20Jose&start_date=${formatted_start_date}&end_date=${formatted_end_date}`,
+      `http://localhost:8000/api/trip/weather?location=${location}&start_date=${formatted_start_date}&end_date=${formatted_end_date}`,
       {
         method: "GET",
         headers: {
