@@ -7,7 +7,7 @@ import CalendarPicker from "react-native-calendar-picker"; // Import the calenda
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 
-const SearchPage = ({ navigation }) => {
+const SearchPage = ({ navigation, getUpcomingTrips }) => {
   const [selectedStartDate, setSelectedStartDate] = useState("");
   const [selectedEndDate, setSelectedEndDate] = useState("");
   const [destination, setDestination] = useState("");
@@ -75,15 +75,17 @@ const SearchPage = ({ navigation }) => {
 
     const startMoment = moment(selectedStartDate);
     const endMoment = moment(selectedEndDate);
-    const currentMoment = moment();
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const currentMoment = moment(today);
 
     if (startMoment.isBefore(currentMoment)) {
       setValidationError("Start date must be the current date or later.");
       return;
     }
 
-    if (endMoment.isSameOrBefore(startMoment)) {
-      setValidationError("End date must be later than the start date.");
+    if (endMoment.isBefore(startMoment)) {
+      setValidationError("End date must be same or later than the start date.");
       return;
     }
 

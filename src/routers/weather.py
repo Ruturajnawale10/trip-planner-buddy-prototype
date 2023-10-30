@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from configs.configs import settings
 from datetime import datetime, timedelta
 import requests
+from utils.poi_util import get_coordinates_from_address_google_api, get_coordinate_info_from_address
 
 import openai
 
@@ -29,15 +30,26 @@ def weather_recommendation(location: str, start_date: date, end_date: date):
     else:
         is_forecast_available = True
         print("Fetching weather data...")
-        url = "https://api.openweathermap.org/data/2.5/forecast?"
+        lat = lon = 0
+        coordinate_info = get_coordinate_info_from_address(location)
+        if coordinate_info is not None:
+            print("Wow")
+            lat, lon = coordinate_info
+        else:
+            coordinate_info_google = get_coordinates_from_address_google_api(location)
+            if coordinate_info_google is not None:
+                lat, lon = coordinate_info_google
+            else:
+                print("Error: Unable to get coordinates for address")
+                return {"isForecastAvailable": False,"weatherData":"Weather data is not available"}
 
-        payload = {"q": location, "appid": settings.openweather_api_key}
-        print(location, start_date, end_date)
+        url = "https://api.openweathermap.org/data/3.0/onecall?&exclude=minutely,hourly"
+        payload = {"lat": lat, "lon": lon, "appid": settings.openweather_api_key}
 
         weather_data = requests.request("GET", url, params=payload).json()
-        filtered_data = []
+        filtered_data = [weather_data['current']]
 
-        for forecast in weather_data['list']:
+        for forecast in weather_data['daily']:
             forecast_date = datetime.utcfromtimestamp(forecast['dt']).date()
             if start_date <= forecast_date <= end_date:
                 filtered_data.append(forecast)
