@@ -14,6 +14,8 @@ import ListPOIs from "./components/POIs/ListPOIs";
 import POIs from "./components/POIs/POIs";
 import CurrentTrip from "./components/POIs/CurrentTrip";
 import ItineraryHome from "./components/POIs/ItineraryHome";
+import PreferenceScreen1 from "./components/UserPreferences/PreferenceScreen1";
+import PreferenceScreen2 from "./components/UserPreferences/PreferenceScreen2";
 
 const App = () => {
   const [isLogoLoading, setLogoLoading] = useState(false);
@@ -41,6 +43,8 @@ const AppNavigator = createAppContainer(
       POIs: POIs,
       CurrentTrip: CurrentTrip,
       ItineraryHome: ItineraryHome,
+      PreferenceScreen1: PreferenceScreen1,
+      PreferenceScreen2: PreferenceScreen2,
     },
     {
       initialRouteName: "Login", // Starts with the login/signup screens
