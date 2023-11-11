@@ -1,0 +1,29 @@
+{
+  "object": "file",
+  "id": "file-pXYJOT4p0YdXLW0cGlQlRyV9",
+  "purpose": "fine-tune",
+  "filename": "file",
+  "bytes": 106651,
+  "created_at": 1699665959,
+  "status": "processed",
+  "status_details": null
+}
+
+MODEL
+ft:gpt-3.5-turbo-1106:personal::8JXMQvLB
+Succeeded
+Job ID
+ftjob-WvMISbDw48JQpPE52nMwqHlA
+Base model
+gpt-3.5-turbo-1106
+Created at
+Nov 10, 2023, 5:36 PM
+Trained tokens
+242,604
+Epochs
+9
+Files
+Training
+train_gpt.jsonl
+Validation
+-
