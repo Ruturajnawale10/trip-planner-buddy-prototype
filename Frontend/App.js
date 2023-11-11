@@ -47,7 +47,7 @@ const AppNavigator = createAppContainer(
       PreferenceScreen2: PreferenceScreen2,
     },
     {
-      initialRouteName: "Login", // Starts with the login/signup screens
+      initialRouteName: "HomePage", // Starts with the login/signup screens
       headerMode: "none", // Hide the navigation header
     }
   )

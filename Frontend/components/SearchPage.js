@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Text, Button, StyleSheet, TextInput, Pressable } from "react-native";
+import {
+  Text,
+  Button,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native";
 import NavigationBar from "./NavigationButton/NavigationBar";
 import { Dimensions } from "react-native";
@@ -156,34 +163,47 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
         placeholderTextColor={"#381b42"}
         ref={destinationInputRef}
       />
+      <View style={styles.dateContainer}>
+        <View style={styles.startDateContainer}>
+          <Button
+            title="Start Date"
+            color="#8130b3"
+            onPress={toggleStartDatePicker}
+          />
+          {selectedStartDate && (
+            <Text style={styles.dateText}>{formatDate(selectedStartDate)}</Text>
+          )}
+        </View>
 
-      <Button
-        title="Start Date"
-        color="#8130b3"
-        onPress={toggleStartDatePicker}
-      />
-      {isStartDatePickerVisible && (
-        <CalendarPicker
-          onDateChange={(date) => {
-            handleStartDateSelect(date);
-          }}
-          width={Dimensions.get("window").width - 10}
-        />
-      )}
-      {selectedStartDate && (
-        <Text style={styles.dateText}>{formatDate(selectedStartDate)}</Text>
-      )}
+        <View style={styles.startDateContainer}>
+          <Button
+            title="End Date"
+            color="#8130b3"
+            onPress={toggleEndDatePicker}
+          />
+          {selectedEndDate && (
+            <Text style={styles.dateText}>{formatDate(selectedEndDate)}</Text>
+          )}
+        </View>
+      </View>
 
-      <Button title="End Date" color="#8130b3" onPress={toggleEndDatePicker} />
-      {isEndDatePickerVisible && (
-        <CalendarPicker
-          onDateChange={(date) => handleEndDateSelect(date)}
-          width={Dimensions.get("window").width - 10}
-        />
-      )}
-      {selectedEndDate && (
-        <Text style={styles.dateText}>{formatDate(selectedEndDate)}</Text>
-      )}
+      <View style={styles.calendarPicker}>
+        {isStartDatePickerVisible && (
+          <CalendarPicker
+            onDateChange={(date) => {
+              handleStartDateSelect(date);
+            }}
+            width={Dimensions.get("window").width - 10}
+          />
+        )}
+
+        {isEndDatePickerVisible && (
+          <CalendarPicker
+            onDateChange={(date) => handleEndDateSelect(date)}
+            width={Dimensions.get("window").width - 10}
+          />
+        )}
+      </View>
 
       <Pressable style={styles.button} onPress={handleSearch}>
         <Text style={styles.text}>Start Planning</Text>
@@ -242,14 +262,15 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     color: "white",
   },
-  date: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: "bold",
-    letterSpacing: 0.25,
-    color: "black",
-    marginTop: 10,
+  dateContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: Dimensions.get("window").width - 10,
   },
+  startDateContainer: {
+    flexDirection: "column",
+  },
+  calendarPicker: {},
   errorText: {
     color: "red",
     fontSize: 16,
