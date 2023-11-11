@@ -53,7 +53,7 @@ const SignupScreen = ({ navigation }) => {
         const { username } = data;
         storeData('username', username);
         // Navigate to the "HomePage" with the username
-        navigation.navigate('HomePage', { userIsLoggedIn: true });
+        navigation.navigate('PreferenceScreen1', { userIsLoggedIn: true });
       })
       .catch((error) => {
         console.error('Signup failed:', error);
