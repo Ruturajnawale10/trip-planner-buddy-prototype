@@ -105,6 +105,36 @@ def add_poi_to_trip(poi_data: TripAddPoi):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.delete("/api/trip/delete/poi")
+def delete_poi_from_trip(trip_id: str, day: int, poi_id: int):
+    try:
+        trip_id = ObjectId(trip_id)
+        trip = collection_trip.find_one({'_id': trip_id})
+        if not trip:
+            raise HTTPException(status_code=404, detail=f"Trip with trip_id {str(trip_id)} not found")
+
+        day_poilist = trip["pois"][day]
+        print("day pois", day_poilist)
+        
+        update_day_poilist = []
+        for curr_poi_id in day_poilist:
+            if curr_poi_id != poi_id:
+                update_day_poilist.append(curr_poi_id)
+
+        trip["pois"][day-1] = update_day_poilist
+        print("update_day_poilist pois", update_day_poilist)
+        print("trip", trip)
+        
+        update_query = {
+            "$set": { f"pois.{day}": update_day_poilist }
+        }
+        print("update query", update_query)
+        collection_trip.save(trip)
+        return {"message": "POI deleted successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/api/trip/list/upcoming")
