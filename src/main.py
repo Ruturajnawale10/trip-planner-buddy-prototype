@@ -9,6 +9,7 @@ from routers.trip_router import router as trip
 from routers.trip_ai import router as trip_ai
 from routers.weather import router as weather
 from routers.fine_tune_model import router as fine_tune_model
+from routers.test_apis import router as test_apis
 
 # Allow CORS
 from fastapi.middleware.cors import CORSMiddleware
@@ -47,3 +48,4 @@ app.include_router(trip)
 app.include_router(trip_ai)
 app.include_router(weather)
 app.include_router(fine_tune_model)
+app.include_router(test_apis)
