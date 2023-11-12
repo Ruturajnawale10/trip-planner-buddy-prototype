@@ -5,7 +5,7 @@ import NavigationBar from "../NavigationButton/NavigationBar";
 
 export default function POIs({ navigation }) {
   // Extract the POI data from the route params
-  const { item, addPOI } = navigation.state.params;
+  const { item, addPOI, removePOI, day } = navigation.state.params;
   if (addPOI == null) {
     console.log("addPOI is null");
     showAdded = false;
@@ -35,6 +35,14 @@ export default function POIs({ navigation }) {
           onPress={() => addPOI(item.poi_id)}
         >
           <Text style={styles.buttonText}>Add to Itinerary</Text>
+        </TouchableOpacity>
+      )}
+      {!showAdded && (
+        <TouchableOpacity
+          style={[styles.favouriteButton, { backgroundColor: "red" }]}
+          onPress={() => removePOI(item.poi_id, day)}
+        >
+          <Text style={styles.buttonText}>Remove from Itinerary</Text>
         </TouchableOpacity>
       )}
 

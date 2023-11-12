@@ -24,6 +24,10 @@ class TripAddPoi(BaseModel):
     poi_id: int
     day: int
 
+class TripDeletePoi(BaseModel):
+    trip_id: str
+    poi_id: int
+    day: int
 
 class TripRequestResponse(BaseModel):
     trip_id: str
@@ -107,14 +111,16 @@ def add_poi_to_trip(poi_data: TripAddPoi):
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.delete("/api/trip/delete/poi")
-def delete_poi_from_trip(trip_id: str, day: int, poi_id: int):
+def delete_poi_from_trip(poi_data: TripDeletePoi):
     try:
-        trip_id = ObjectId(trip_id)
+        trip_id = ObjectId(poi_data.trip_id)
+        poi_id = poi_data.poi_id
+        day = poi_data.day
         trip = collection_trip.find_one({'_id': trip_id})
         if not trip:
             raise HTTPException(status_code=404, detail=f"Trip with trip_id {str(trip_id)} not found")
 
-        day_poilist = trip["pois"][day]
+        day_poilist = trip["pois"][day-1]
         print("day pois", day_poilist)
         
         update_day_poilist = []

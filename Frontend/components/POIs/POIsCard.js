@@ -13,14 +13,15 @@ const POIsCard = ({
   addPOI,
   removePOI,
   item,
+  day,
 }) => {
   const handleAddPress = (poi_id) => {
     console.log("add pressed", poi_id);
     addPOI(poi_id);
   };
 
-  const handleDetailsPress = (item) => {
-    navigation.navigate("POIs", { item, addPOI });
+  const handleDetailsPress = (item, day) => {
+    navigation.navigate("POIs", { item, addPOI, removePOI, day });
   };
 
   return (
@@ -37,7 +38,7 @@ const POIsCard = ({
         <View style={styles.textContainer}>
           <Text style={styles.poiName}>{poi_name}</Text>
         </View>
-        <TouchableOpacity onPress={() => handleAddPress(poi_id)}>
+        <TouchableOpacity onPress={() => handleAddPress(poi_id, day)}>
           <AntDesign style={styles.add} name="pluscircle" size={38} />
         </TouchableOpacity>
       </View>
