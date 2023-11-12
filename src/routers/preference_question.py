@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
 router = APIRouter(
-    tags=['Destination']
+    tags=['Preference Question']
 )
 
 # This function will return a list of questions and list of options for each question for user preferences
