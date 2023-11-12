@@ -29,7 +29,10 @@ def generate_recommendation(city_name: str, preferences: list):
     response = client.chat.completions.create(
         model= settings.gpt_model,
         messages=[
-        {"role": "user", "content": gpt_prompt}
+            {"role": "system", "content": "You are a helpful recommendation engine which returns the array of ids of recommended places based on the given preferences. If possible it will suggest 5 places i.e output will be array of size 5"}, 
+            {"role": "user", "content": "Create recommendations for a user based on preferences : ['Museum'] for the places in city :San Jose from the follwoing array of point_of_intrests : point_of_intrests in [ name : Rosicrucian Egyptian Museum id : 47435 type of place : [Museum,Archaeological museum,History Museums,Specialty Museums,] name : San Pedro Square Market Bar id : 112876 type of place : [Bar,Shopping,Flea & Street Markets,]]"},
+            {"role": "assistant", "content": "[47435]"},
+            {"role": "user", "content": gpt_prompt}
         ]
     )
 
