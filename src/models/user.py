@@ -9,6 +9,7 @@ class User(MongoModel):
     upcoming_trips = fields.ListField(field=fields.ObjectIdField(), blank=True)
     past_trips = fields.ListField(field=fields.ObjectIdField(), blank=True)
     shared_itineraries = fields.ListField(field=fields.ObjectIdField(), blank=True)
+    preferences = fields.ListField(required=False, blank=True)
     # Other user-related data
 
     class Profile(MongoModel):
