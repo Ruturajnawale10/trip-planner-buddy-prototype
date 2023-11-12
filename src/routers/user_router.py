@@ -14,6 +14,9 @@ class UserSignupRequest(BaseModel):
 class UserResponse(BaseModel):
     username: str
 
+class UserUpdatePreferencesRequest(BaseModel):
+    preferences: list
+
 @router.post("/signup", response_model=UserResponse)
 def signup(user_data: UserSignupRequest):
     print("signup api called", user_data.username)
@@ -63,4 +66,22 @@ def signin(user_data: UserSignupRequest):
 
     return UserResponse(
         username=user_valid['username'],
+    )
+
+@router.put("/update/preferences/{username}", response_model=UserResponse)
+def update_preferences(username: str, preferences_data: UserUpdatePreferencesRequest):
+    collection = db['user']
+    existing_user = collection.find_one({'username': username})
+    if not existing_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    update_query = {
+        "$set": {
+            "preferences": preferences_data.preferences
+        }
+    }
+    collection.update_one({'username': username}, update_query)
+    updated_user = collection.find_one({'username': username})
+    return UserResponse(
+        username=updated_user['username'],
     )
