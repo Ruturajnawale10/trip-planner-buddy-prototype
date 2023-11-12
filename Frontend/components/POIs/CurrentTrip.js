@@ -57,14 +57,65 @@ const CurrentTrip = ({ navigation }) => {
       })
       .catch((error) => console.error(error));
   };
+  const addPOI = (POIid) => {
+    const desiredX = scrollX + 300;
 
+    // Scroll to the desired position
+    scrollViewRef.current.scrollTo({ x: desiredX, animated: true });
+    setScrollX(desiredX);
+
+    fetch("http://127.0.0.1:8000/api/trip/add/poi", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        trip_id: trip_id,
+        poi_id: POIid,
+        day: day,
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("POI added with poi_id " + POIid);
+      })
+      .catch((error) => console.error(error));
+  };
   useEffect(() => {
     getCurrentTrip();
     getPOIs(location);
-  }, []);
+    console.log("Reload");
+  }, [data]);
 
-  const handleDetailsPress = (item) => {
-    navigation.navigate("POIs", { item });
+  const handleDetailsPress = (item, key) => {
+    navigation.navigate("POIs", { item, addPOI, removePOI, key });
+  };
+
+  const removePOI = (POIid, day) => {
+    console.log(POIid);
+    console.log(day);
+    Array.from(data, ([key, value]) => {
+      if (key == day) {
+        let newData = value.filter((item) => item.poi_id !== POIid);
+        setData((data) => data.set(key, newData));
+      }
+    });
+    fetch("http://127.0.0.1:8000/api/trip/delete/poi", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        trip_id: trip_id,
+        poi_id: POIid,
+        day: day,
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("POI deleted with poi_id " + POIid, json);
+      })
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -78,8 +129,14 @@ const CurrentTrip = ({ navigation }) => {
                 <Text style={styles.text}>Day {key}</Text>
                 {value.map((item) => (
                   <View key={item.name}>
-                    <TouchableOpacity onPress={() => handleDetailsPress(item)}>
-                      <POIAddedCard item={item} />
+                    <TouchableOpacity
+                      onPress={() => handleDetailsPress(item, key)}
+                    >
+                      <POIAddedCard
+                        item={item}
+                        day={key}
+                        removePOI={removePOI}
+                      />
                     </TouchableOpacity>
                   </View>
                 ))}
@@ -88,6 +145,8 @@ const CurrentTrip = ({ navigation }) => {
                     navigation={navigation}
                     data={POIListData}
                     day={key - 1}
+                    addPOI={addPOI}
+                    removePOI={removePOI}
                   />
                 )}
               </View>

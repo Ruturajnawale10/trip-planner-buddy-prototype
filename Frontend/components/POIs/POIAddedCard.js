@@ -1,7 +1,9 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import Icon from "react-native-vector-icons/FontAwesome";
 
-const POIAddedCard = ({ item }) => {
+const POIAddedCard = ({ item, day, removePOI }) => {
   return (
     <View>
       <View style={styles.card}>
@@ -17,6 +19,11 @@ const POIAddedCard = ({ item }) => {
           }}
           style={styles.image}
         />
+        <View>
+          <TouchableOpacity onPress={() => removePOI(item.poi_id, day)}>
+            <Icon name="remove" size={30} color="#900" />
+          </TouchableOpacity>
+        </View>
       </View>
       {/* Add a horizontal line below the card */}
       <View style={styles.separator} />
