@@ -107,3 +107,9 @@ def create_poi(obj, cname):
         )
     
     return new_poi
+
+def get_poi_by_id(pois, poi_id):
+    for poi in pois:
+        if poi["poi_id"] == poi_id:
+            return poi
+    return None
