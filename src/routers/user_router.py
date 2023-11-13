@@ -2,7 +2,9 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from models.user import User
 from configs.db import db
-
+from bson import ObjectId
+from fastapi.responses import JSONResponse
+from bson import json_util
 router = APIRouter(
     tags=['User']
 )
@@ -85,3 +87,14 @@ def update_preferences(username: str, preferences_data: UserUpdatePreferencesReq
     return UserResponse(
         username=updated_user['username'],
     )
+
+@router.get("/getUser")
+def get_user_data(user_name: str):
+    collection = db['user']
+    # Check if the username is already taken
+    existing_user = collection.find_one({'username': user_name})
+    print("existing_user", existing_user)
+    if existing_user:
+        existing_user['_id'] = json_util.dumps(existing_user['_id'])
+        return JSONResponse(content=existing_user, status_code=200)
+    return None
