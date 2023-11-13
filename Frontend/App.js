@@ -45,6 +45,7 @@ const AppNavigator = createAppContainer(
       ItineraryHome: ItineraryHome,
       PreferenceScreen1: PreferenceScreen1,
       PreferenceScreen2: PreferenceScreen2,
+      MapViewPage: MapViewPage,
     },
     {
       initialRouteName: "HomePage", // Starts with the login/signup screens

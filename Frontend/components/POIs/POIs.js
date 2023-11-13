@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,10 +9,12 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
+import { Dimensions } from "react-native";
 
 export default function POIs({ navigation }) {
   // Extract the POI data from the route params
-  const { item, addPOI, day } = navigation.state.params;
+  const { item, addPOI, day, recommended } = navigation.state.params;
+  const [recommendedDescription, setRecommendedDescription] = useState(null);
   if (addPOI == null) {
     console.log("addPOI is null");
     showAdded = false;
@@ -22,12 +24,7 @@ export default function POIs({ navigation }) {
   const removePOI = (POIid, day) => {
     console.log(POIid);
     console.log(day);
-    //  Array.from(data, ([key, value]) => {
-    //    if (key == day) {
-    //      let newData = value.filter((item) => item.poi_id !== POIid);
-    //      setData((data) => data.set(key, newData));
-    //    }
-    //  });
+
     fetch("http://127.0.0.1:8000/api/trip/delete/poi", {
       method: "DELETE",
       headers: {
@@ -45,6 +42,35 @@ export default function POIs({ navigation }) {
       })
       .catch((error) => console.error(error));
   };
+
+  const fetchRecommendedDescription = (city, username, poi_id) => {
+    fetch(
+      "http://127.0.0.1:8000/api/gpt/personalized/description?city_name=" +
+        city +
+        "&user_name=" +
+        username +
+        "&poi_id=" +
+        poi_id,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("output", json);
+        setRecommendedDescription(json);
+      })
+      .catch((error) => console.error(error));
+  };
+  useEffect(() => {
+    console.log("********", recommended);
+    if (recommended) {
+      fetchRecommendedDescription(item.city, "roshan", item.poi_id);
+    }
+  }, []);
   return (
     <SafeAreaView>
       <ScrollView>
@@ -60,6 +86,17 @@ export default function POIs({ navigation }) {
           {/* Destination details */}
           <Text style={styles.title}>{item.name}</Text>
           <Text style={styles.description}>{item.description}</Text>
+          {recommended && (
+            <View>
+              <Text style={styles.whyText}>Why we recommend this for you:</Text>
+
+              <TouchableOpacity style={styles.recommendedDescription}>
+                <Text style={styles.recommendedDescriptionText}>
+                  {recommendedDescription}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
           <Text style={styles.details}>City: {item.city}</Text>
           <Text style={styles.details}>Address: {item.address}</Text>
           <Text style={styles.details}>Rating: {item.rating} / 5</Text>
@@ -123,6 +160,29 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
     margin: 16,
+  },
+  recommendedDescription: {
+    fontSize: 16,
+    marginBottom: 16,
+    margin: 8,
+    fontWeight: "bold",
+    borderWidth: 1,
+    borderColor: "orange",
+    borderRadius: 8,
+    alignItems: "center",
+    backgroundColor: "#f9a03f",
+  },
+  recommendedDescriptionText: {
+    fontSize: 16,
+    marginBottom: 4,
+    margin: 8,
+    padding: 8,
+  },
+  whyText: {
+    fontSize: 16,
+    margin: 8,
+    padding: 8,
+    fontWeight: "bold",
   },
   details: {
     fontSize: 14,

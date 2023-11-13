@@ -15,7 +15,6 @@ router = APIRouter(
     tags=['GPT Recommender']
 )
 
-
 @router.post("/api/get/gpt/recommendation")
 def generate_recommendation(city_name: str, user_name: str):
     print("Generating training data for recommendation of places in city : ", city_name)
@@ -31,7 +30,7 @@ def generate_recommendation(city_name: str, user_name: str):
     poi_list = city['pois']
 
     gpt_prompt = prompt_util.generate_gpt_prompt(destination, preferences, poi_list)
-    print(gpt_prompt)
+    # print(gpt_prompt)
     response = client.chat.completions.create(
         model= settings.gpt_model,
         messages=[
