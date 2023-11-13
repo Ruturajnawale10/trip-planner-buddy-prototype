@@ -6,6 +6,7 @@ from configs.db import db
 from configs.configs import settings
 from utils import file_util
 from utils import prompt_util
+from utils import poi_util
 
 
 client = OpenAI(api_key=settings.gpt_key)
@@ -42,4 +43,25 @@ def generate_recommendation(city_name: str, preferences: list):
     print(gpt_prompt)
     file_util.write_string_to_file("prompt.josnl", gpt_prompt)
 
+    return gpt_output
+
+# This function is used to generate presonalized description for a place using gpt model based on a particular user preferences.
+@router.post("/api/gpt/personalized/description")
+def generate_recommendation(city_name: str, preferences: list, poi_id: int):
+    destination = string.capwords(city_name)
+    collection_city = db['city']
+    city = collection_city.find_one({'city_name': destination})
+    poi_list = city['pois']
+    poi = poi_util.get_poi_by_id(poi_list, poi_id)
+    gpt_prompt = prompt_util.generate_gpt_prompt_for_personalized_description(destination, preferences, poi)
+    print(gpt_prompt)
+    response = client.chat.completions.create(
+        model= settings.gpt_model,
+        messages=[
+            {"role": "user", "content": gpt_prompt}
+        ]
+    )
+    gpt_output = str(response.choices[0].message.content)
+    print(gpt_output)
+    
     return gpt_output
