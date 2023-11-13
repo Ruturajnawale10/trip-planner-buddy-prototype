@@ -15,18 +15,22 @@ router = APIRouter(
     tags=['GPT Recommender']
 )
 
-
 @router.post("/api/get/gpt/recommendation")
-def generate_recommendation(city_name: str, preferences: list):
+def generate_recommendation(city_name: str, user_name: str):
     print("Generating training data for recommendation of places in city : ", city_name)
-    print("Preferences: ", preferences)
+    
     destination = string.capwords(city_name)
     collection_city = db['city']
     city = collection_city.find_one({'city_name': destination})
+    collection = db['user']
+    # Check if the username is already taken
+    existing_user = collection.find_one({'username': user_name})
+    preferences = existing_user['preferences']
+    print("Preferences: ", preferences)
     poi_list = city['pois']
 
     gpt_prompt = prompt_util.generate_gpt_prompt(destination, preferences, poi_list)
-    print(gpt_prompt)
+    # print(gpt_prompt)
     response = client.chat.completions.create(
         model= settings.gpt_model,
         messages=[
@@ -47,12 +51,17 @@ def generate_recommendation(city_name: str, preferences: list):
 
 # This function is used to generate presonalized description for a place using gpt model based on a particular user preferences.
 @router.post("/api/gpt/personalized/description")
-def generate_recommendation(city_name: str, preferences: list, poi_id: int):
+def generate_recommendation(city_name: str, user_name : str, poi_id: int):
     destination = string.capwords(city_name)
     collection_city = db['city']
     city = collection_city.find_one({'city_name': destination})
     poi_list = city['pois']
     poi = poi_util.get_poi_by_id(poi_list, poi_id)
+    collection = db['user']
+    # Check if the username is already taken
+    existing_user = collection.find_one({'username': user_name})
+    preferences = existing_user['preferences']
+    print("Preferences: ", preferences)
     gpt_prompt = prompt_util.generate_gpt_prompt_for_personalized_description(destination, preferences, poi)
     print(gpt_prompt)
     response = client.chat.completions.create(

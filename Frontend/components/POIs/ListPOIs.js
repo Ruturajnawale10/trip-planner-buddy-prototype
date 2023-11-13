@@ -1,68 +1,77 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, StyleSheet, ScrollView, Dimensions } from "react-native";
+
+import { View, StyleSheet, ScrollView, Text, Dimensions } from "react-native";
 
 import { SafeAreaView } from "react-native";
 import POIsCard from "./POIsCard";
 
-const ListPOIs = ({ navigation, data, day, removePOI }) => {
-  const scrollViewRef = useRef();
-  const [scrollX, setScrollX] = useState(0);
-
+const ListPOIs = ({
+  navigation,
+  data,
+  setData,
+  recommendations,
+  day,
+  removePOI,
+  addPOI,
+  setScrollX,
+  scrollViewRef,
+}) => {
   const { location, startDate, endDate, trip_id } = navigation.state.params;
+  const [load, setLoad] = useState(false);
   const onPress = () => {
     console.log("pressed");
   };
-  const addPOI = (POIid) => {
-    const desiredX = scrollX + 300;
 
-    // Scroll to the desired position
-    scrollViewRef.current.scrollTo({ x: desiredX, animated: true });
-    setScrollX(desiredX);
-
-    fetch("http://127.0.0.1:8000/api/trip/add/poi", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        trip_id: trip_id,
-        poi_id: POIid,
-        day: day,
-      }),
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log("POI added with poi_id " + POIid);
-      })
-      .catch((error) => console.error(error));
+  const integrateRecommendations = () => {
+    data.pois.map((item) => {
+      if (recommendations.includes(item.poi_id)) {
+        item.recommended = true;
+      } else {
+        item.recommended = false;
+      }
+    });
+    data.pois.sort((a, b) => {
+      return b.recommended - a.recommended;
+    });
+    setData(data);
+    setLoad(true);
   };
+
+  useEffect(() => {
+    integrateRecommendations();
+  }, [data]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        horizontal={true}
-        ref={scrollViewRef}
-        onScroll={(event) => {
-          setScrollX(event.nativeEvent.contentOffset.x);
-        }}
-        scrollEventThrottle={16}
-      >
-        {data.pois.map((item) => (
-          <View key={item.poi_id} style={styles.poiCard}>
-            <POIsCard
-              imageID={item.images[0]}
-              poi_name={item.name}
-              poi_id={item.poi_id}
-              navigation={navigation}
-              addPOI={addPOI}
-              removePOI={removePOI}
-              item={item}
-              onPress={onPress}
-              day={day}
-            />
-          </View>
-        ))}
-      </ScrollView>
+      {load ? (
+        <ScrollView
+          horizontal={true}
+          ref={scrollViewRef}
+          onScroll={(event) => {
+            setScrollX(event.nativeEvent.contentOffset.x);
+          }}
+          scrollEventThrottle={16}
+        >
+          {data.pois.map((item) => (
+            <View key={item.poi_id} style={styles.poiCard}>
+              <POIsCard
+                imageID={item.images[0]}
+                poi_name={item.name}
+                poi_id={item.poi_id}
+                recommended={item.recommended}
+                navigation={navigation}
+                addPOI={addPOI}
+                removePOI={removePOI}
+                item={item}
+                onPress={onPress}
+                day={day}
+              />
+            </View>
+          ))}
+        </ScrollView>
+      ) : (
+        <Text>Loading...</Text>
+      )}
     </SafeAreaView>
   );
 };

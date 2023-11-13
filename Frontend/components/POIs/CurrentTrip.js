@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,8 @@ import { SafeAreaView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ListPOIs from "./ListPOIs";
 import POIAddedCard from "./POIAddedCard";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CurrentTrip = ({ navigation }) => {
   const [data, setData] = useState(new Map());
@@ -18,6 +20,49 @@ const CurrentTrip = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const { location, startDate, endDate, trip_id } = navigation.state.params;
   const [reload, setReload] = useState(false);
+  const [username, setUsername] = useState(null);
+  const [recommendations, setRecommendations] = useState([]);
+  const scrollViewRef = useRef();
+  const [scrollX, setScrollX] = useState(0);
+
+  const addPOI = (POIid, day) => {
+    const desiredX = scrollX + 300;
+
+    // Scroll to the desired position
+    scrollViewRef.current.scrollTo({ x: desiredX, animated: true });
+    setScrollX(desiredX);
+
+    fetch("http://127.0.0.1:8000/api/trip/add/poi", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        trip_id: trip_id,
+        poi_id: POIid,
+        day: day,
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("POI added with poi_id " + POIid);
+        setReload(!reload);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const fetchDataFromStorage = async () => {
+    try {
+      const storedData = await AsyncStorage.getItem("username");
+      if (storedData !== null) {
+        setUsername(storedData);
+      } else {
+        console.log("Data not found in storage");
+      }
+    } catch (error) {
+      console.error("Error fetching data from AsyncStorage:", error);
+    }
+  };
 
   const getCurrentTrip = () => {
     fetch("http://127.0.0.1:8000/api/trip/poi_list/", {
@@ -54,7 +99,28 @@ const CurrentTrip = ({ navigation }) => {
       .then((response) => response.json())
       .then((json) => {
         setPOIListData(json);
-        setFlag(true);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const getRecommendations = (cityName, username) => {
+    console.log("getRecommendations", cityName, username);
+    fetch(
+      "http://127.0.0.1:8000/api/get/gpt/recommendation?city_name=" +
+        cityName +
+        "&user_name=" +
+        username,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("output", json);
+        setRecommendations(json);
       })
       .catch((error) => console.error(error));
   };
@@ -62,12 +128,23 @@ const CurrentTrip = ({ navigation }) => {
   useEffect(() => {
     getCurrentTrip();
     getPOIs(location);
+    fetchDataFromStorage().then(() => {
+      console.log("username", username);
+      getRecommendations(location, "roshan");
+      setFlag(true);
+      setLoading(true);
+    });
     console.log("Reload");
   }, [reload, data]);
 
   const handleDetailsPress = (item, key) => {
     const t = true;
-    navigation.navigate("POIs", { item, t, key });
+    if (recommendations.includes(item.poi_id)) {
+      navigation.navigate("POIs", { item, addPOI: t, key, recommended: t });
+    } else {
+      const f = false;
+      navigation.navigate("POIs", { item, addPOI: t, key, recommended: f });
+    }
   };
 
   const removePOI = (POIid, day) => {
@@ -125,8 +202,13 @@ const CurrentTrip = ({ navigation }) => {
                   <ListPOIs
                     navigation={navigation}
                     data={POIListData}
+                    setData={setPOIListData}
+                    recommendations={recommendations}
                     day={key - 1}
                     removePOI={removePOI}
+                    addPOI={addPOI}
+                    setScrollX={setScrollX}
+                    scrollViewRef={scrollViewRef}
                   />
                 )}
               </View>
