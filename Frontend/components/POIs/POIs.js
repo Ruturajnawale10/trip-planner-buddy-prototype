@@ -1,57 +1,102 @@
 import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { SafeAreaView } from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
 
 export default function POIs({ navigation }) {
   // Extract the POI data from the route params
-  const { item, addPOI, removePOI, day } = navigation.state.params;
+  const { item, addPOI, day } = navigation.state.params;
   if (addPOI == null) {
     console.log("addPOI is null");
     showAdded = false;
   } else {
     showAdded = true;
   }
-
+  const removePOI = (POIid, day) => {
+    console.log(POIid);
+    console.log(day);
+    //  Array.from(data, ([key, value]) => {
+    //    if (key == day) {
+    //      let newData = value.filter((item) => item.poi_id !== POIid);
+    //      setData((data) => data.set(key, newData));
+    //    }
+    //  });
+    fetch("http://127.0.0.1:8000/api/trip/delete/poi", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        trip_id: trip_id,
+        poi_id: POIid,
+        day: day,
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("POI deleted with poi_id " + POIid, json);
+      })
+      .catch((error) => console.error(error));
+  };
   return (
-    <SafeAreaView style={styles.container}>
-      <Image
-        source={{
-          uri:
-            "https://itin-dev.sfo2.cdn.digitaloceanspaces.com/freeImageSmall/" +
-            item.images[0],
-        }}
-        style={styles.image}
-      />
-      {/* Destination details */}
-      <Text style={styles.title}>{item.name}</Text>
-      <Text style={styles.description}>{item.description}</Text>
-      <Text style={styles.details}>City: {item.city}</Text>
-      <Text style={styles.details}>Address: {item.address}</Text>
-      <Text style={styles.details}>Rating: {item.rating} / 5</Text>
-      {showAdded && (
-        <TouchableOpacity
-          style={[styles.favouriteButton, { backgroundColor: "blue" }]}
-          onPress={() => addPOI(item.poi_id)}
-        >
-          <Text style={styles.buttonText}>Add to Itinerary</Text>
-        </TouchableOpacity>
-      )}
-      {!showAdded && (
-        <TouchableOpacity
-          style={[styles.favouriteButton, { backgroundColor: "red" }]}
-          onPress={() => removePOI(item.poi_id, day)}
-        >
-          <Text style={styles.buttonText}>Remove from Itinerary</Text>
-        </TouchableOpacity>
-      )}
+    <SafeAreaView>
+      <ScrollView>
+        <SafeAreaView style={styles.container}>
+          <Image
+            source={{
+              uri:
+                "https://itin-dev.sfo2.cdn.digitaloceanspaces.com/freeImageSmall/" +
+                item.images[0],
+            }}
+            style={styles.image}
+          />
+          {/* Destination details */}
+          <Text style={styles.title}>{item.name}</Text>
+          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.details}>City: {item.city}</Text>
+          <Text style={styles.details}>Address: {item.address}</Text>
+          <Text style={styles.details}>Rating: {item.rating} / 5</Text>
+          {showAdded && (
+            <TouchableOpacity
+              style={[styles.favouriteButton, { backgroundColor: "blue" }]}
+              onPress={() => addPOI(item.poi_id)}
+            >
+              <Text style={styles.buttonText}>Add to Itinerary</Text>
+            </TouchableOpacity>
+          )}
+          {!showAdded && (
+            <TouchableOpacity
+              style={[styles.favouriteButton, { backgroundColor: "red" }]}
+              onPress={() => {
+                console.log("remove POI", item.poi_id, day);
+                try {
+                  removePOI(item.poi_id, day);
+                } catch (e) {
+                  console.log(e);
+                }
+                navigation.goBack();
+              }}
+            >
+              <Text style={styles.buttonText}>Remove from Itinerary</Text>
+            </TouchableOpacity>
+          )}
 
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
-        <Text style={styles.buttonText}>Go Back</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.buttonText}>Go Back</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
+      </ScrollView>
+
       <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );

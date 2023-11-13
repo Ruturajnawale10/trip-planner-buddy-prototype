@@ -4,13 +4,37 @@ import { View, StyleSheet, ScrollView, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native";
 import POIsCard from "./POIsCard";
 
-const ListPOIs = ({ navigation, data, day, addPOI, removePOI }) => {
+const ListPOIs = ({ navigation, data, day, removePOI }) => {
   const scrollViewRef = useRef();
   const [scrollX, setScrollX] = useState(0);
 
   const { location, startDate, endDate, trip_id } = navigation.state.params;
   const onPress = () => {
     console.log("pressed");
+  };
+  const addPOI = (POIid) => {
+    const desiredX = scrollX + 300;
+
+    // Scroll to the desired position
+    scrollViewRef.current.scrollTo({ x: desiredX, animated: true });
+    setScrollX(desiredX);
+
+    fetch("http://127.0.0.1:8000/api/trip/add/poi", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        trip_id: trip_id,
+        poi_id: POIid,
+        day: day,
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("POI added with poi_id " + POIid);
+      })
+      .catch((error) => console.error(error));
   };
 
   return (

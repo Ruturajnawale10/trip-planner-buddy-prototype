@@ -17,7 +17,6 @@ const PreferenceScreen1 = ({ navigation }) => {
       const storedData = await AsyncStorage.getItem("username");
       if (storedData !== null) {
         setUsername(storedData);
-        console.log("Username: " + storedData);
       } else {
         console.log("Data not found in storage");
       }
@@ -63,12 +62,10 @@ const PreferenceScreen1 = ({ navigation }) => {
       ...selectedAnswers,
       selectedAnswer,
     ]);
-    console.log(index, questions);
     // If there are more questions, go to the next question
     if (index < questions.length - 1) {
       setIndex(index + 1);
     } else {
-      console.log(selectedAnswers);
       fetch("http://127.0.0.1:8000/update/preferences/" + username, {
         method: "PUT",
         headers: {
@@ -80,7 +77,6 @@ const PreferenceScreen1 = ({ navigation }) => {
       })
         .then((response) => response.json())
         .then((json) => {
-          console.log(json);
           navigation.navigate("PreferenceScreen2", {
             selectedAnswers: selectedAnswers,
           });
