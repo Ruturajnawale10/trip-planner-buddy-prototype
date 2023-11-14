@@ -211,3 +211,30 @@ def get_pois_of_a_trip(trip: TripRequestResponse):
 
     existing_trip['_id'] = str(existing_trip["_id"])
     return {"pois": poi_list, "trip_details": existing_trip}
+
+@router.post("/api/trip/mark/complete")
+def mark_trip_complete(trip: TripRequestResponse):
+    print("mark trip complete api called")
+    try:
+        existing_trip = collection_trip.find_one(
+            {"_id": ObjectId(trip.trip_id)})
+        existing_trip['isUpcoming'] = False
+        collection_trip.save(existing_trip)
+        created_by = existing_trip['createdBy']
+        try :
+            user_document = collection_user.find_one({'username': created_by})
+            if user_document:
+                user_document['upcoming_trips'].remove(existing_trip['_id'])
+                user_document['past_trips'].append(existing_trip['_id'])
+                collection_user.update_one({'_id': user_document['_id']}, {
+                                        '$set': {'upcoming_trips': user_document['upcoming_trips'], 'past_trips': user_document['past_trips']}})
+        except User.DoesNotExist:
+            raise HTTPException(
+                status_code=404, detail=f"User with username {created_by} not found")
+        
+        return {"message": "Trip marked complete"}
+    except Trip.DoesNotExist:
+        raise HTTPException(status_code=404, detail=f"Trip object not found")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
