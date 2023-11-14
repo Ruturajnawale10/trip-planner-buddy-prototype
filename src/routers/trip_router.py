@@ -267,3 +267,29 @@ def mark_trip_complete(trip: TripRequestResponse):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/api/trip/past/share")
+def mark_trip_complete(trip: TripRequestResponse):
+    print("Share past trip api called")
+    try:
+        existing_trip = collection_trip.find_one(
+            {"_id": ObjectId(trip.trip_id)})
+        existing_trip['isPublic'] = True
+        collection_trip.save(existing_trip)
+        created_by = existing_trip['createdBy']
+        try :
+            user_document = collection_user.find_one({'username': created_by})
+            if user_document:
+                user_document['shared_itineraries'].append(existing_trip['_id'])
+                collection_user.update_one({'_id': user_document['_id']}, {
+                                        '$set': {'shared_itineraries': user_document['shared_itineraries']}})
+        except User.DoesNotExist:
+            raise HTTPException(
+                status_code=404, detail=f"User with username {created_by} not found")
+        
+        return {"message": "Trip marked complete and shared"}
+    except Trip.DoesNotExist:
+        raise HTTPException(status_code=404, detail=f"Trip object not found")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
