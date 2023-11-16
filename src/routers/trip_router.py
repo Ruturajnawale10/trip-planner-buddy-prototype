@@ -166,6 +166,47 @@ def get_upcoming_trips_list(user: UsernameRequestBody):
 
     return trip_list
 
+@router.get("/api/trip/list/past/{username}")
+def get_past_trips_list(username: str):
+    print("past trips list trip api called")
+    try:
+        trips = collection_trip.find(
+            {"createdBy": username, "isUpcoming": False})
+    except Trip.DoesNotExist:
+        raise HTTPException(
+            status_code=404, detail=f"Trip object for  username {username} not found")
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    # Convert MongoDB cursor to a list of dictionaries
+    trip_list = [trip for trip in trips]
+    # Covert ObjectId to string before returning as ObjectId is bson n ot json type
+    for trip in trip_list:
+        trip['_id'] = str(trip["_id"])
+    
+    return trip_list
+
+@router.get("/api/trip/list/shared/{username}")
+def get_past_trips_list(username: str):
+    print("shared trips list trip api called")
+    try:
+        trips = collection_trip.find(
+            {"createdBy": username, "isPublic": True})
+    except Trip.DoesNotExist:
+        raise HTTPException(
+            status_code=404, detail=f"Trip object for  username {username} not found")
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    # Convert MongoDB cursor to a list of dictionaries
+    trip_list = [trip for trip in trips]
+    # Covert ObjectId to string before returning as ObjectId is bson n ot json type
+    for trip in trip_list:
+        trip['_id'] = str(trip["_id"])
+    
+    return trip_list
 
 @router.post("/api/trip/poi_list/")
 def get_pois_of_a_trip(trip: TripRequestResponse):
