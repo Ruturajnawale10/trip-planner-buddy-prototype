@@ -2,23 +2,29 @@ import React, { useEffect, useState } from "react";
 import { Text, StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native";
 import { Image } from "react-native";
-import SearchBar from "../SearchBar";
-import TripCard from "./TripCard";
+import TripCard from "../HomePage/TripCard";
 import NavigationBar from "../NavigationButton/NavigationBar";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { userName } from "../RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
 import GetLocation from "react-native-get-location";
 
-const HomePage = ({ navigation }) => {
+const PastTrips = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [latestTrip, setLatestTrip] = useState(null);
+  const [upcomingTrips, setUpcomingTrips] = useState([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isCurrentTripPresent, setIsCurrentTripPresent] = useState(false);
 
   const [username, setUsername] = useRecoilState(userName);
-  
+
+  const [allCollapsed, setAllCollapsed] = useState(true);
+
+// Function to toggle collapse/expand for all trips
+const toggleAllTrips = () => {
+  setAllCollapsed(!allCollapsed);
+};
+
   const trip_img_url =
     "https://helios-i.mashable.com/imagery/articles/06zoscMHTZxU5KEFx8SRyDg/hero-image.fill.size_1200x900.v1630023012.jpg";
 
@@ -38,7 +44,7 @@ const HomePage = ({ navigation }) => {
       username: username,
     };
 
-    fetch("http://127.0.0.1:8000/api/trip/list/upcoming", {
+    fetch("http://127.0.0.1:8000/api/trip/list/past", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,8 +53,9 @@ const HomePage = ({ navigation }) => {
     })
       .then((response) => response.json())
       .then((json) => {
+        console.log(json);
         setData(json);
-        setLatestTrip(json[json.length - 1]);
+        setUpcomingTrips(json);
         if (json.length > 0) {
           setIsCurrentTripPresent(true);
         }
@@ -69,54 +76,48 @@ const HomePage = ({ navigation }) => {
     navigation.navigate("SearchPage");
   };
 
-  const goToTrip = () => {
+  const goToTrip = (trip) => {
+    if (!allCollapsed) {
+      return; // Prevent navigation when expanding/collapsing all trips
+    }
     navigation.navigate("ItineraryHome", {
-      location: latestTrip.cityName,
-      startDate: latestTrip.startDate,
-      endDate: latestTrip.endDate,
-      trip_id: latestTrip._id,
+      location: trip.cityName,
+      startDate: trip.startDate,
+      endDate: trip.endDate,
+      trip_id: trip._id,
     });
-  };
-
-  const seeAllUpcomingTrips = () => {
-    navigation.navigate("ProfilePage"); 
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image
-        source={require("../../assets/logo.png")} // Update the path to your logo image
-        style={styles.logo}
-      />
-      <SearchBar onSearch={onSearch} />
+   
       {!isLoadingData && (
         <ScrollView>
-          {isCurrentTripPresent && (
-            <>
-              <Text style={styles.text}> Continue planning trip  </Text>
-              <TouchableOpacity onPress={seeAllUpcomingTrips}>
-                <Text style={styles.seeAllText}>See All</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={goToTrip} style={styles.submitButton}>
-                <TripCard
-                  onPress={pastTrips}
-                  bgColor="#ffffff"
-                  imageSource={
-                    "https://images.squarespace-cdn.com/content/v1/5c7f5f60797f746a7d769cab/ed578728-b35e-4336-ba27-8eced4e968f9/golden+gate+bridge+sarowly.jpg"
-                  }
-                  tripName={latestTrip.tripName}
-                  startDate={latestTrip.startDate}
-                  pois={latestTrip.pois}
-                />
-              </TouchableOpacity>
-             
-            </>
-          )}
-          <Text style={styles.text}> Top Rated Trips </Text>
-          {/* ... Your other trip cards ... */}
+            
+        <TouchableOpacity onPress={toggleAllTrips}>
+        <Text style={styles.text}>
+          {upcomingTrips.length > 0 ? " Past Trips  " : " No Past Trips "}
+         </Text>
+        
+        </TouchableOpacity> 
+          {isCurrentTripPresent && !allCollapsed && upcomingTrips.map((trip, index) => (
+            
+            <TouchableOpacity key={index} onPress={() => goToTrip(trip)} style={styles.submitButton}>
+            
+              <TripCard
+                onPress={pastTrips}
+                bgColor="#ffffff"
+                imageSource={
+                  "https://images.squarespace-cdn.com/content/v1/5c7f5f60797f746a7d769cab/ed578728-b35e-4336-ba27-8eced4e968f9/golden+gate+bridge+sarowly.jpg"
+                } // Assuming each trip object has an image property
+                tripName={trip.tripName}
+                startDate={trip.startDate}
+                pois={trip.pois}
+              />
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       )}
-      <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
 };
@@ -132,12 +133,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 10,
   },
-  seeAllText: {
-    fontSize: 16,
-    color: "blue",
-    marginLeft: 10,
-    marginTop: 5,
-  },
   logo: {
     width: 100,
     height: 40,
@@ -146,4 +141,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomePage;
+export default PastTrips;

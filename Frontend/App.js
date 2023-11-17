@@ -16,6 +16,8 @@ import CurrentTrip from "./components/POIs/CurrentTrip";
 import ItineraryHome from "./components/POIs/ItineraryHome";
 import PreferenceScreen1 from "./components/UserPreferences/PreferenceScreen1";
 import PreferenceScreen2 from "./components/UserPreferences/PreferenceScreen2";
+import ProfilePage from "./components/Profile/ProfilePage";
+import EditProfile from "./components/Profile/EditProfile";
 import { RecoilRoot } from "recoil";
 
 const App = () => {
@@ -51,9 +53,11 @@ const AppNavigator = createAppContainer(
       PreferenceScreen1: PreferenceScreen1,
       PreferenceScreen2: PreferenceScreen2,
       MapViewPage: MapViewPage,
+      ProfilePage: ProfilePage,
+      EditProfile: EditProfile,
     },
     {
-      initialRouteName: "HomePage", // Starts with the login/signup screens
+      initialRouteName: "Login", // Starts with the login/signup screens
       headerMode: "none", // Hide the navigation header
     }
   )
