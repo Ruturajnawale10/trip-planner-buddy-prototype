@@ -32,6 +32,10 @@ class TripDeletePoi(BaseModel):
 class TripRequestResponse(BaseModel):
     trip_id: str
 
+class TripRatingRequest(BaseModel):
+    trip_id: str
+    username: str
+    user_rating: float
 
 class UsernameRequestBody(BaseModel):
     username: str
@@ -62,6 +66,7 @@ def create_trip_own(trip_data: TripCreation):
         cityName=city_name,
         createdBy=created_by,
         pois=pois,
+        userRatings=[[0, 0]],
     )
 
     new_trip.save()
@@ -334,3 +339,21 @@ def mark_trip_complete(trip: TripRequestResponse):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/api/trip/rate")
+def rate_trip(trip: TripRatingRequest):
+    print("Rate trip api called")
+    try:
+        existing_trip = collection_trip.find_one(
+            {"_id": ObjectId(trip.trip_id)})
+        rating = (existing_trip['rating'] + trip.user_rating) / (len(existing_trip['userRatings']) )
+        existing_trip['rating'] = rating
+        existing_trip['userRatings'].append([trip.user_rating, trip.username])
+        collection_trip.save(existing_trip)
+        return {"message": "Trip rated successfully"}
+    except Trip.DoesNotExist:
+        raise HTTPException(status_code=404, detail=f"Trip object not found")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
