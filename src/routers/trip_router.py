@@ -213,6 +213,27 @@ def get_past_trips_list(username: str):
     
     return trip_list
 
+@router.get("/api/trip/list/toprated/")
+def get_top_rated_trips_list():
+    print("top rated trips list trip api called")
+    try:
+        trips = collection_trip.find(
+            {"isPublic": True}).sort("rating", -1)
+    except Trip.DoesNotExist:
+        raise HTTPException(
+            status_code=404, detail=f"Trip object not found")
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    # Convert MongoDB cursor to a list of dictionaries
+    trip_list = [trip for trip in trips]
+    # Covert ObjectId to string before returning as ObjectId is bson n ot json type
+    for trip in trip_list:
+        trip['_id'] = str(trip["_id"])
+    
+    return trip_list
+
 @router.post("/api/trip/poi_list/")
 def get_pois_of_a_trip(trip: TripRequestResponse):
     print("POIs list for a trip api called")
