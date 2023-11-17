@@ -12,7 +12,8 @@ class Trip(MongoModel):
     isUpcoming = fields.BooleanField(default=True)
     isPublic = fields.BooleanField(default=False)
     selfReview = fields.CharField()
-    rating = fields.FloatField()
+    rating = fields.FloatField(default=0.0)
+    userRatings = fields.ListField(default=[])
     comments = fields.EmbeddedDocumentListField('Comment')
 
     class Comment(EmbeddedMongoModel):
