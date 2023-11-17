@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native";
 import { Image } from "react-native";
@@ -16,6 +16,7 @@ import CurrentTrip from "./components/POIs/CurrentTrip";
 import ItineraryHome from "./components/POIs/ItineraryHome";
 import PreferenceScreen1 from "./components/UserPreferences/PreferenceScreen1";
 import PreferenceScreen2 from "./components/UserPreferences/PreferenceScreen2";
+import { RecoilRoot } from "recoil";
 
 const App = () => {
   const [isLogoLoading, setLogoLoading] = useState(false);
@@ -25,9 +26,13 @@ const App = () => {
   };
 
   return (
-    <NavigationContainer>
-      <AppNavigator />
-    </NavigationContainer>
+    <RecoilRoot>
+      <Suspense fallback={<ActivityIndicator />}>
+        <NavigationContainer>
+          <AppNavigator />
+        </NavigationContainer>
+      </Suspense>
+    </RecoilRoot>
   );
 };
 

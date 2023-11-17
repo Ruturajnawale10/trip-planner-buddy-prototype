@@ -2,11 +2,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TextInput, Image, Button, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRecoilState } from "recoil";
+import { userName } from "../components/RecoilStore/RecoilStore";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const usernameInputRef = useRef(null);
+  const [username, setUsername] = useRecoilState(userName);
 
   useEffect(() => {
     usernameInputRef.current.focus();
@@ -14,7 +17,8 @@ const LoginScreen = ({ navigation }) => {
 
   const storeData = async (key, value) => {
     try {
-      await AsyncStorage.setItem(key, value);
+      // await AsyncStorage.setItem(key, value);
+      setUsername(value);
       console.log("Data stored successfully");
     } catch (error) {
       console.error("Error storing data:", error);
@@ -59,7 +63,7 @@ const LoginScreen = ({ navigation }) => {
       });
   };
 
-  handleUsernameChange = (text) => {
+  const handleUsernameChange = (text) => {
     // Convert the input to lowercase before setting it in the state.
     setEmail(text.toLowerCase());
   };
@@ -77,7 +81,7 @@ const LoginScreen = ({ navigation }) => {
         <TextInput
           placeholder="Username"
           value={email}
-          onChangeText={this.handleUsernameChange}
+          onChangeText={handleUsernameChange}
           ref={usernameInputRef}
           style={[styles.input, { width: "80%" }]} // Increase the width
         />

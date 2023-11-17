@@ -12,6 +12,8 @@ import ListPOIs from "./ListPOIs";
 import POIAddedCard from "./POIAddedCard";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { userName } from "../RecoilStore/RecoilStore";
+import { useRecoilState } from "recoil";
 
 const CurrentTrip = ({ navigation }) => {
   const [data, setData] = useState(new Map());
@@ -20,7 +22,7 @@ const CurrentTrip = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const { location, startDate, endDate, trip_id } = navigation.state.params;
   const [reload, setReload] = useState(false);
-  const [username, setUsername] = useState(null);
+  const [username, setUsername] = useRecoilState(userName);
   const [recommendations, setRecommendations] = useState([]);
   const scrollViewRef = useRef();
   const [scrollX, setScrollX] = useState(0);
@@ -128,12 +130,12 @@ const CurrentTrip = ({ navigation }) => {
   useEffect(() => {
     getCurrentTrip();
     getPOIs(location);
-    fetchDataFromStorage().then(() => {
-      console.log("username", username);
-      getRecommendations(location, "roshan");
-      setFlag(true);
-      setLoading(true);
-    });
+    // fetchDataFromStorage().then(() => {
+    console.log("username", username);
+    getRecommendations(location, username);
+    setFlag(true);
+    setLoading(true);
+    // });
     console.log("Reload");
   }, [reload, data]);
 
