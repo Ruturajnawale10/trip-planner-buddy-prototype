@@ -5,7 +5,7 @@ import googlemaps
 from datetime import datetime
 import string
 
-from utils.poi_util import add_mongo_entries_from_wanderlog
+from utils.poi_util import add_mongo_entries_from_wanderlog, add_city_mongo_entries_from_wanderlog
 
 router = APIRouter(
     tags=['GoogleAPI']
@@ -164,3 +164,13 @@ def run_test(test):
         exec(test)
     else:
         return({"output" : test})
+
+@router.post("/populateCityData/")
+def populate_data(
+    placeId_array: list ,
+):
+    # Calling api to populate data from wanderlog
+    for placeId in placeId_array:
+        add_city_mongo_entries_from_wanderlog( placeId)
+    # add_mongo_entries_from_wanderlog(cname, placeId)
+    return {"respose": f"Data populated successfully for cities {placeId_array}"}

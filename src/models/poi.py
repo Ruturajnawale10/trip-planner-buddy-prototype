@@ -3,7 +3,14 @@ from pymongo import IndexModel
 
 class City(MongoModel):
     city_name = fields.CharField(required = True)
+    city_id = fields.CharField(required = True)
     pois = fields.ListField(field=fields.EmbeddedDocumentField('Poi'), blank=True)
+    geo = fields.DictField()
+    stateName = fields.CharField(required = True)
+    countryName = fields.CharField(required = True)
+    nearby = fields.DictField()
+    categories = fields.DictField()
+
 
     class Meta:
         indexes = [IndexModel([('city_name', 1)], unique=True)]

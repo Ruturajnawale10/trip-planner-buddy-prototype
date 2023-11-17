@@ -3,6 +3,7 @@ import requests
 from pymongo.errors import DuplicateKeyError
 from configs.configs import settings
 from models.poi import Poi, City
+from utils.file_util import write_to_file
 
 def add_mongo_entries_from_wanderlog(cname, placeId):
     url = 'https://wanderlog.com/api/placesList/geo/' + placeId
@@ -113,3 +114,54 @@ def get_poi_by_id(pois, poi_id):
         if poi["poi_id"] == poi_id:
             return poi
     return None
+
+def get_poi_list(placeId, cname):
+    url = 'https://wanderlog.com/api/placesList/geo/' + placeId
+    # Send the request and retrieve the JSON response
+    response = requests.get(url).json()
+    placeMetadata = response["data"]["placeMetadata"]
+    i = 0
+    pois_list = []
+    for obj in placeMetadata:
+        poi = create_poi(obj,cname)
+        print("Fetching poi ", i, "..." )
+        if poi:
+            pois_list.append(poi)
+        i=i+1
+    return pois_list
+
+
+def add_city_mongo_entries_from_wanderlog(placeId):
+    
+    url = 'https://wanderlog.com/api/geo/' + placeId + '/explorePage'
+    # Send the request and retrieve the JSON response
+    print(url)
+    response = requests.get(url).json()
+    print("api called")
+    print(response)
+    cname = response["data"]["geo"]["name"]
+    pois_list = get_poi_list(placeId, cname)
+    
+    stateName = response["data"]["geo"]["stateName"]
+    countryName = response["data"]["geo"]["countryName"]
+    city_id = response["data"]["geo"]["id"]
+
+    new_city = City(
+        city_name=cname,
+        pois=pois_list,
+        geo=response["data"]["geo"],
+        stateName=stateName,
+        countryName=countryName,
+        city_id=city_id,
+        # nearby=response["data"]["nearby"],
+        # categories=response["data"]["categories"]
+        )
+    try:
+        new_city.save()
+        print("Record for new city inserted.")
+        city_address = cname + ", " + stateName + ", " + countryName
+        city_dict = { "city" : city_address, "city_id" : city_id}
+        write_to_file("city_array.jsonl", city_dict)
+
+    except DuplicateKeyError:
+        print("Record with the same city already exists, skipping.")
