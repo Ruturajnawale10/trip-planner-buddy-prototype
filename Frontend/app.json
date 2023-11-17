@@ -11,11 +11,12 @@
       "resizeMode": "native",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs to get your location..."
+      }
     },
     "android": {
       "adaptiveIcon": {

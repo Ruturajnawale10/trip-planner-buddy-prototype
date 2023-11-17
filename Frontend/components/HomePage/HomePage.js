@@ -7,25 +7,9 @@ import TripCard from "./TripCard";
 import NavigationBar from "../NavigationButton/NavigationBar";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const fetchValue = async (key) => {
-  try {
-    let username = await AsyncStorage.getItem(key);
-    if (username !== null) {
-      // Data retrieval was successful
-      console.log(`Retrieved ${key}: ${username}`);
-      return username;
-    } else {
-      // Data does not exist
-      console.log(`${key} does not exist in storage`);
-      return null;
-    }
-  } catch (error) {
-    // Error retrieving data
-    console.error(`Error retrieving ${key}:`, error);
-    return null;
-  }
-};
+import { userName } from "../RecoilStore/RecoilStore";
+import { useRecoilState } from "recoil";
+import GetLocation from "react-native-get-location";
 
 const HomePage = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -33,30 +17,22 @@ const HomePage = ({ navigation }) => {
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isCurrentTripPresent, setIsCurrentTripPresent] = useState(false);
 
-  const [username, setUsername] = useState(null);
-
-  useEffect(() => {
-    // Function to fetch data from AsyncStorage
-    const fetchDataFromStorage = async () => {
-      try {
-        const storedData = await AsyncStorage.getItem("username");
-        if (storedData !== null) {
-          setUsername(storedData);
-        } else {
-          console.log("Data not found in storage");
-        }
-      } catch (error) {
-        console.error("Error fetching data from AsyncStorage:", error);
-      }
-    };
-
-    // Call the function to fetch data when the component is mounted
-    fetchDataFromStorage();
-  }, []);
+  const [username, setUsername] = useRecoilState(userName);
 
   const trip_img_url =
     "https://helios-i.mashable.com/imagery/articles/06zoscMHTZxU5KEFx8SRyDg/hero-image.fill.size_1200x900.v1630023012.jpg";
 
+  GetLocation.getCurrentPosition({
+    enableHighAccuracy: true,
+    timeout: 60000,
+  })
+    .then((location) => {
+      console.log(location);
+    })
+    .catch((error) => {
+      const { code, message } = error;
+      console.warn(code, message);
+    });
   const getUpcomingTrips = () => {
     const requestBody = {
       username: username,
