@@ -27,6 +27,7 @@
     "react-native": "0.70.8",
     "react-native-calendar-picker": "^7.1.4",
     "react-native-calendars": "^1.1301.0",
+    "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "~2.8.0",
     "react-native-get-location": "^4.0.0",
     "react-native-google-places-autocomplete": "^2.5.1",

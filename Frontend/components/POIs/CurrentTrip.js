@@ -15,11 +15,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { userName } from "../RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
 
-const CurrentTrip = ({ navigation }) => {
-  const [data, setData] = useState(new Map());
+const CurrentTrip = ({
+  navigation,
+  data,
+  setData,
+  getCurrentTrip,
+  loading,
+  setLoading,
+}) => {
   const [POIListData, setPOIListData] = useState([]);
   const [flag, setFlag] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { location, startDate, endDate, trip_id } = navigation.state.params;
   const [reload, setReload] = useState(false);
   const [username, setUsername] = useRecoilState(userName);
@@ -33,6 +38,22 @@ const CurrentTrip = ({ navigation }) => {
     // Scroll to the desired position
     scrollViewRef.current.scrollTo({ x: desiredX, animated: true });
     setScrollX(desiredX);
+
+    let newItem;
+
+    POIListData.pois.map((item) => {
+      if (item.poi_id == POIid) {
+        newItem = item;
+      }
+    });
+
+    Array.from(data, ([key, value]) => {
+      if (key == day) {
+        let newData = value.concat([newItem]);
+        setData((data) => data.set(key, newData));
+      }
+    });
+    setReload(!reload);
 
     fetch("http://127.0.0.1:8000/api/trip/add/poi", {
       method: "POST",
@@ -48,45 +69,6 @@ const CurrentTrip = ({ navigation }) => {
       .then((response) => response.json())
       .then((json) => {
         console.log("POI added with poi_id " + POIid);
-        setReload(!reload);
-      })
-      .catch((error) => console.error(error));
-  };
-
-  const fetchDataFromStorage = async () => {
-    try {
-      const storedData = await AsyncStorage.getItem("username");
-      if (storedData !== null) {
-        setUsername(storedData);
-      } else {
-        console.log("Data not found in storage");
-      }
-    } catch (error) {
-      console.error("Error fetching data from AsyncStorage:", error);
-    }
-  };
-
-  const getCurrentTrip = () => {
-    fetch("http://127.0.0.1:8000/api/trip/poi_list/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        trip_id: trip_id,
-      }),
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        for (let i = 0; i < json["pois"].length; i++) {
-          let day = json["pois"][i][0]["pois"];
-          let formattedDay = [];
-          for (let j = 0; j < day.length; j++) {
-            formattedDay.push(day[j]);
-          }
-          setData((data) => data.set(i + 1, formattedDay));
-        }
-        setLoading(true);
       })
       .catch((error) => console.error(error));
   };
@@ -123,6 +105,7 @@ const CurrentTrip = ({ navigation }) => {
       .then((json) => {
         console.log("output", json);
         setRecommendations(json);
+        setFlag(true);
       })
       .catch((error) => console.error(error));
   };
@@ -133,8 +116,6 @@ const CurrentTrip = ({ navigation }) => {
     // fetchDataFromStorage().then(() => {
     console.log("username", username);
     getRecommendations(location, username);
-    setFlag(true);
-    setLoading(true);
     // });
     console.log("Reload");
   }, [reload, data]);
@@ -159,7 +140,6 @@ const CurrentTrip = ({ navigation }) => {
       }
     });
     setReload(!reload);
-    console.log(data);
     fetch("http://127.0.0.1:8000/api/trip/delete/poi", {
       method: "DELETE",
       headers: {
