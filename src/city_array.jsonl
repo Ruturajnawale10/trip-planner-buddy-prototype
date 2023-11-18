@@ -26,3 +26,4 @@
 {'city': 'Oakland, California, United States', 'city_id': 58271}
 {'city': 'San Francisco, California, United States', 'city_id': 58147}
 {'city_info': 'Austin, Texas, United States', 'city_id': 58163, '_id': ObjectId('655918da8177ee84fca67a42')}
+{'city_info': 'Santa Clara, California, United States', 'city_id': 58891, '_id': ObjectId('65594600bc5d20c844b7ea41')}
