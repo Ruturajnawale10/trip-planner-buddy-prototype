@@ -12,6 +12,7 @@ from routers.fine_tune_model import router as fine_tune_model
 from routers.test_apis import router as test_apis
 from routers.preference_question import router as preference_question
 from routers.gpt_recommender import router as gpt_recommender
+from routers.route_optimize import router as route_optimize
 
 # Allow CORS
 from fastapi.middleware.cors import CORSMiddleware
@@ -53,3 +54,4 @@ app.include_router(fine_tune_model)
 app.include_router(test_apis)
 app.include_router(preference_question)
 app.include_router(gpt_recommender)
+app.include_router(route_optimize)
