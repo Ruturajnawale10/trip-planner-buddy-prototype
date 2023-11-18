@@ -3,7 +3,7 @@ from pymongo import IndexModel
 
 class City(MongoModel):
     city_name = fields.CharField(required = True)
-    city_id = fields.CharField(required = True)
+    city_id = fields.IntegerField(blank=True)
     pois = fields.ListField(field=fields.EmbeddedDocumentField('Poi'), blank=True)
     geo = fields.DictField()
     stateName = fields.CharField(required = True)
@@ -16,6 +16,7 @@ class City(MongoModel):
 
 class Poi(MongoModel):
     poi_id = fields.IntegerField(blank=True)
+    placeId = fields.CharField(blank=True)
     name = fields.CharField(blank=True)
     city = fields.CharField(blank=True)
     address = fields.CharField(blank=True)
