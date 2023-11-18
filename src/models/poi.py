@@ -8,12 +8,11 @@ class City(MongoModel):
     geo = fields.DictField()
     stateName = fields.CharField(required = True)
     countryName = fields.CharField(required = True)
-    nearby = fields.DictField()
-    categories = fields.DictField()
-
+    nearby = fields.ListField(fields.DictField())
+    categories = fields.ListField(fields.DictField())
 
     class Meta:
-        indexes = [IndexModel([('city_name', 1)], unique=True)]
+        indexes = [IndexModel([('city_id', 1)], unique=True)]
 
 class Poi(MongoModel):
     poi_id = fields.IntegerField(blank=True)

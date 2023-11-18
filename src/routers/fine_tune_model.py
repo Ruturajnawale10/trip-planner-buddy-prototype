@@ -13,6 +13,7 @@ from configs.db import db
 from models.trip import Trip
 from models.user import User
 import json
+from typing import Optional
 
 openai.api_key = settings.gpt_key
 
@@ -23,14 +24,18 @@ router = APIRouter(
 
 # The function below is used to generate training data for gpt model.
 @router.post("/api/finetune/generate/recommendation")
-def generate_recommendation(city_name: str, preferences: list):
+def generate_recommendation( preferences: list, city_id: Optional[str] = None, city_name: Optional[str] = None):
     print("Generating training data for recommendation of places in city")
+    print("City id: ", city_id)
     print("City name: ", city_name)
     print("Preferences: ", preferences)
-
-    destination = string.capwords(city_name)
     collection_city = db['city']
-    city = collection_city.find_one({'city_name': destination})
+    if city_id != None:
+        city = collection_city.find_one({'city_id': city_id})
+    else:
+        destination = string.capwords(city_name)
+        city = collection_city.find_one({'city_name': destination})
+    destination = city['city_name']
     poi_list = city['pois']
 
     filtered_poi_list = ai_util.get_filtered_poi_list(poi_list, preferences)
