@@ -138,7 +138,7 @@ def add_city_mongo_entries_from_wanderlog(placeId):
     print(url)
     response = requests.get(url).json()
     print("api called")
-    print(response)
+    # print(response)
     cname = response["data"]["geo"]["name"]
     pois_list = get_poi_list(placeId, cname)
     
@@ -153,8 +153,8 @@ def add_city_mongo_entries_from_wanderlog(placeId):
         stateName=stateName,
         countryName=countryName,
         city_id=city_id,
-        # nearby=response["data"]["nearby"],
-        # categories=response["data"]["categories"]
+        nearby=response["data"]["nearby"],
+        categories=response["data"]["categories"]
         )
     try:
         new_city.save()

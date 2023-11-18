@@ -7,6 +7,7 @@ from configs.configs import settings
 from utils import file_util
 from utils import prompt_util
 from utils import poi_util
+from typing import Optional
 
 
 client = OpenAI(api_key=settings.gpt_key)
@@ -16,12 +17,17 @@ router = APIRouter(
 )
 
 @router.post("/api/get/gpt/recommendation")
-def generate_recommendation(city_name: str, user_name: str):
+def generate_recommendation( user_name: str, city_id: Optional[str] = None, city_name: Optional[str] = None):
     print("Generating training data for recommendation of places in city : ", city_name)
+    print("City id: ", city_id)
     
-    destination = string.capwords(city_name)
     collection_city = db['city']
-    city = collection_city.find_one({'city_name': destination})
+    if city_id != None:
+        city = collection_city.find_one({'city_id': city_id})
+    else:
+        destination = string.capwords(city_name)
+        city = collection_city.find_one({'city_name': destination})
+    destination = city['city_name']
     collection = db['user']
     # Check if the username is already taken
     existing_user = collection.find_one({'username': user_name})
@@ -51,10 +57,15 @@ def generate_recommendation(city_name: str, user_name: str):
 
 # This function is used to generate presonalized description for a place using gpt model based on a particular user preferences.
 @router.post("/api/gpt/personalized/description")
-def generate_recommendation(city_name: str, user_name : str, poi_id: int):
-    destination = string.capwords(city_name)
+def generate_recommendation(user_name : str, poi_id: int, city_id: Optional[str] = None, city_name: Optional[str] = None):
+    
     collection_city = db['city']
-    city = collection_city.find_one({'city_name': destination})
+    if city_id != None:
+        city = collection_city.find_one({'city_id': city_id})
+    else:
+        destination = string.capwords(city_name)
+        city = collection_city.find_one({'city_name': destination})
+    destination = city['city_name']
     poi_list = city['pois']
     poi = poi_util.get_poi_by_id(poi_list, poi_id)
     collection = db['user']

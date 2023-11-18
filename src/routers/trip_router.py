@@ -17,6 +17,7 @@ class TripCreation(BaseModel):
     startDate: date
     endDate: date
     cityName: str
+    city_id : str
 
 
 class TripAddPoi(BaseModel):
@@ -53,6 +54,7 @@ def create_trip_own(trip_data: TripCreation):
     end_date = trip_data.endDate
     no_of_days = (end_date - start_date).days + 1
     city_name = trip_data.cityName
+    city_id = trip_data.city_id
     trip_name = "Trip to " + city_name
     created_by = trip_data.createdBy
     pois = [[] for _ in range(no_of_days)]
@@ -64,6 +66,7 @@ def create_trip_own(trip_data: TripCreation):
         endDate=end_date,
         noOfDays=no_of_days,
         cityName=city_name,
+        city_id=city_id,
         createdBy=created_by,
         pois=pois,
         userRatings=[[0, 0]],
@@ -241,11 +244,13 @@ def get_pois_of_a_trip(trip: TripRequestResponse):
         existing_trip = collection_trip.find_one(
             {"_id": ObjectId(trip.trip_id)})
         city_name = existing_trip['cityName']
+        city_id = existing_trip['city_id']
         poi_ids = existing_trip['pois']
         total_pois = len(poi_ids)
         poi_list = [[] for _ in range(total_pois)]
         for i in range(total_pois):
             # Define the aggregation pipeline to match the documents
+            # todo : add city_id to the query
             pipeline = [
                 {
                     "$match": {
