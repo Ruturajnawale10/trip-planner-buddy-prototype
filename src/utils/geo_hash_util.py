@@ -49,7 +49,7 @@ def get_poi_ids(latitude, longitude, radius):
             poi_ids.append(obj.poi_id)
     return poi_ids
 
-def get_nearby_poi_ids(latitude, longitude, radius):
+def get_nearby_poi_ids(latitude : float, longitude : float, radius : int):
     print("get_nearby_poi_ids called")
     collection_geo = db['geo_info']
     # Generate GeoHash for the user's location
