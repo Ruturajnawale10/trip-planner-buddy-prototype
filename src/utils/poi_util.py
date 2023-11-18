@@ -4,6 +4,8 @@ from pymongo.errors import DuplicateKeyError
 from configs.configs import settings
 from models.poi import Poi, City
 from utils.file_util import write_to_file
+from utils.geo_hash_util import pouplate_geohash_entry
+from configs.db import db
 
 def add_mongo_entries_from_wanderlog(cname, placeId):
     url = 'https://wanderlog.com/api/placesList/geo/' + placeId
@@ -73,22 +75,29 @@ def get_coordinates_from_address_google_api(address: str):
 
 
 def create_poi(obj, cname):
+    poi_id = obj.get("id")
+    if poi_already_exists(poi_id):
+        print("poi already exists in the database.")
+        return None
     poi_address = obj.get("address")
+    placeId=obj.get("placeId")
+
     coordinate_info = get_coordinate_info_from_address(poi_address)
+    if coordinate_info == None:
+        coordinate_info = get_coordinate_info_from_placeId(placeId)
+
+    if coordinate_info == None:
+        coordinate_info = get_coordinates_from_address_google_api(poi_address)
 
     if coordinate_info is not None:
         lat, lon = coordinate_info
     else:
-        coordinate_info_google = get_coordinates_from_address_google_api(poi_address)
-
-        if coordinate_info_google is not None:
-            lat, lon = coordinate_info_google
-        else:
-            print("Error: Unable to get coordinates for address:", poi_address)
-            return None
+        print("Error: Unable to get coordinates for address:", poi_address)
+        return None
 
     new_poi = Poi(
             poi_id=obj.get("id"),
+            placeId=obj.get("placeId"),
             name=obj.get("name"),
             city=cname,
             address=poi_address,
@@ -107,6 +116,12 @@ def create_poi(obj, cname):
             }
         )
     
+    try:
+        new_poi.save()
+        pouplate_geohash_entry(lat, lon, obj.get("id"))
+        # print("Record for new city inserted.")
+    except DuplicateKeyError:
+        print("Record with the same poi already exists, skipping.")
     return new_poi
 
 def get_poi_by_id(pois, poi_id):
@@ -116,7 +131,7 @@ def get_poi_by_id(pois, poi_id):
     return None
 
 def get_poi_list(placeId, cname):
-    url = 'https://wanderlog.com/api/placesList/geo/' + placeId
+    url = 'https://wanderlog.com/api/placesList/geo/' + str(placeId)
     # Send the request and retrieve the JSON response
     response = requests.get(url).json()
     placeMetadata = response["data"]["placeMetadata"]
@@ -132,8 +147,11 @@ def get_poi_list(placeId, cname):
 
 
 def add_city_mongo_entries_from_wanderlog(placeId):
-    
-    url = 'https://wanderlog.com/api/geo/' + placeId + '/explorePage'
+
+    if city_already_exists(placeId):
+        print("City already exists in the database.")
+        return
+    url = 'https://wanderlog.com/api/geo/' + str(placeId) + '/explorePage'
     # Send the request and retrieve the JSON response
     print(url)
     response = requests.get(url).json()
@@ -154,14 +172,55 @@ def add_city_mongo_entries_from_wanderlog(placeId):
         countryName=countryName,
         city_id=city_id,
         nearby=response["data"]["nearby"],
-        categories=response["data"]["categories"]
+        # categories=response["data"]["categories"]
         )
     try:
         new_city.save()
         print("Record for new city inserted.")
         city_address = cname + ", " + stateName + ", " + countryName
-        city_dict = { "city" : city_address, "city_id" : city_id}
+        city_dict = { "city_info" : city_address, "city_id" : city_id}
+        add_city_metadata(city_dict)
+        nearby_cities = response["data"]["nearby"]
+        nearby_cities_ids = []
+        for nearby_city in nearby_cities:
+            nearby_cities_ids.append(nearby_city["id"])
+        write_to_file("nearby_cities_ids.jsonl", nearby_cities_ids)
         write_to_file("city_array.jsonl", city_dict)
 
+    except DuplicateKeyError:
+        print("Record with the same city already exists, skipping.")
+
+def get_coordinate_info_from_placeId(placeId):
+    url = 'https://wanderlog.com/api/placesAPI/getPlaceDetails/v2?placeId=' + placeId + '&language=en-GB'
+    # Send the request and retrieve the JSON response
+    response = requests.get(url).json()
+    lat = response["data"]["geometry"]["location"]["lat"]
+    lng = response["data"]["geometry"]["location"]["lng"]
+    print(f"using placeId lat: {lat}, lng: {lng}")
+    if lat == None or lng == None:
+        return None
+    return lat, lng
+
+def city_already_exists(placeId):
+    collection_city = db['city']
+    city = collection_city.find_one({'city_id': placeId})
+    if city != None:
+        return True
+    else:
+        return False
+    
+def poi_already_exists(poi_id):
+    collection_city = db['poi']
+    city = collection_city.find_one({'poi_id': poi_id})
+    if city != None:
+        return True
+    else:
+        return False
+
+def add_city_metadata(city_dict):
+    collection_city = db['city_metadata']
+    try:
+        collection_city.insert_one(city_dict)
+        print("Record for new city inserted.")
     except DuplicateKeyError:
         print("Record with the same city already exists, skipping.")

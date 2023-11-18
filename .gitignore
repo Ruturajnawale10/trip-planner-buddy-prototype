@@ -1,3 +1,4 @@
 src/configs
 src/prompt.josnl
+*.jsonl
 *.py[cod]

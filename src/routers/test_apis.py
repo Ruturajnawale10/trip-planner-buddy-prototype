@@ -3,6 +3,8 @@ import utils.file_util as file_util
 from configs.db import db
 import string
 
+from utils.geo_hash_util import get_nearby_poi_ids
+
 router = APIRouter(
     tags=['Test']
 )
@@ -28,3 +30,10 @@ def create_filter_list(city_list : list):
     filter_list = list(set(filter_list))
     file_util.write_to_file("filter_list.txt", filter_list)
     return filter_list
+
+# this code will call get_nearby_entries api and return the output to frontend.
+@router.get("/api/test/get/nearby/entries")
+def get_nearby_entries(latitude: float, longitude: float, radius: int):
+    print("get nearby entries api called")
+    nearby = get_nearby_poi_ids(latitude, longitude, radius)
+    return nearby
