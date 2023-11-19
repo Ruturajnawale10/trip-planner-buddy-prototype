@@ -95,9 +95,9 @@ def create_poi(obj, cname):
         print("Error: Unable to get coordinates for address:", poi_address)
         return None
     
-    temp_poi = get_poi_object(obj, cname, poi_address, lat, lon)
+    temp_poi = get_poi_object_from_wanderlog_object(obj, cname, poi_address, lat, lon)
 
-    new_poi = get_poi_object(obj, cname, poi_address, lat, lon)
+    new_poi = get_poi_object_from_wanderlog_object(obj, cname, poi_address, lat, lon)
     
     try:
         new_poi.save()
@@ -107,7 +107,7 @@ def create_poi(obj, cname):
         print("Record with the same poi already exists, skipping.")
     return temp_poi
 
-def get_poi_by_id(pois, poi_id):
+def get_poi_by_id_from_poi_list(pois, poi_id):
     for poi in pois:
         if poi["poi_id"] == poi_id:
             return poi
@@ -208,7 +208,7 @@ def add_city_metadata(city_dict):
     except DuplicateKeyError:
         print("Record with the same city already exists, skipping.")
 
-def get_poi_object(obj, cname, poi_address, lat, lon):
+def get_poi_object_from_wanderlog_object(obj, cname, poi_address, lat, lon):
     temp_poi = Poi(
             poi_id=obj.get("id"),
             placeId=obj.get("placeId"),
