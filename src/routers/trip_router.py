@@ -7,6 +7,8 @@ from models.user import User
 from configs.db import db
 from bson.objectid import ObjectId
 
+from utils.poi_util import get_poi_from_poi_id
+
 router = APIRouter(
     tags=['Trip']
 )
@@ -379,3 +381,30 @@ def rate_trip(trip: TripRatingRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
+@router.post("/api/trip/poi_list_1/")
+def get_pois_of_a_trip(trip: TripRequestResponse):
+    print("POIs list for a trip api called")
+    try:
+        existing_trip = collection_trip.find_one(
+            {"_id": ObjectId(trip.trip_id)})
+        city_name = existing_trip['cityName']
+        poi_ids = existing_trip['pois']
+        total_pois = len(poi_ids)
+        poi_list = [[] for _ in range(total_pois)]
+        for i in range(total_pois):
+            pois_in_day = poi_ids[i]
+            temp_poi_list = []
+            for poi_id in pois_in_day:
+                poi = get_poi_from_poi_id(poi_id)
+                temp_poi_list.append(poi)
+            # Execute the aggregation pipeline
+            poi_list[i] = {"pois" : temp_poi_list}
+    except Trip.DoesNotExist:
+        raise HTTPException(status_code=404, detail=f"Trip object not found")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    response_array = []
+    response_array.append(poi_list)
+    existing_trip['_id'] = str(existing_trip["_id"])
+    return {"pois": response_array, "trip_details": existing_trip}
