@@ -27,3 +27,14 @@
 {'city': 'San Francisco, California, United States', 'city_id': 58147}
 {'city_info': 'Austin, Texas, United States', 'city_id': 58163, '_id': ObjectId('655918da8177ee84fca67a42')}
 {'city_info': 'Santa Clara, California, United States', 'city_id': 58891, '_id': ObjectId('65594600bc5d20c844b7ea41')}
+{'city_info': 'San Jose, California, United States', 'city_id': 58230, '_id': ObjectId('655949929d80a57df020535e')}
+{'city_info': 'Sunnyvale, California, United States', 'city_id': 59205, '_id': ObjectId('655949ae9d80a57df0205372')}
+{'city_info': 'Los Gatos, California, United States', 'city_id': 58959, '_id': ObjectId('655949b49d80a57df020537c')}
+{'city_info': 'Palo Alto, California, United States', 'city_id': 58680, '_id': ObjectId('655949ca9d80a57df02053a6')}
+{'city_info': 'Livermore, California, United States', 'city_id': 58451, '_id': ObjectId('655949e09d80a57df02053ce')}
+{'city_info': 'Santa Cruz, California, United States', 'city_id': 58306, '_id': ObjectId('655949fa9d80a57df02053fa')}
+{'city_info': 'Half Moon Bay, California, United States', 'city_id': 58609, '_id': ObjectId('65594a0d9d80a57df020541c')}
+{'city_info': 'San Bruno, California, United States', 'city_id': 58605, '_id': ObjectId('65594a149d80a57df020542a')}
+{'city_info': 'Alameda, California, United States', 'city_id': 58798, '_id': ObjectId('65594a2c9d80a57df0205452')}
+{'city_info': 'Oakland, California, United States', 'city_id': 58271, '_id': ObjectId('65594a529d80a57df020549c')}
+{'city_info': 'San Francisco, California, United States', 'city_id': 58147, '_id': ObjectId('65594ab99d80a57df020555a')}

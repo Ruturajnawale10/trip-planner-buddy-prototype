@@ -78,12 +78,12 @@ def get_nearby(user_address: str, radius: int):
         if poi != None:
             nearby_pois.append(poi)
 
-    dummy_city = create_dummy_city(nearby_pois)
+    dummy_city = create_dummy_city(nearby_pois, latitude, longitude)
     print("dummy city: ", dummy_city)
     return dummy_city
 
 
-def create_dummy_city(pois):
+def create_dummy_city(pois, latitude, longitude):
     dummy_city = {
         "city_id": 0,
         "city_name": "Nearby",
@@ -91,6 +91,10 @@ def create_dummy_city(pois):
         "state": "Nearby",
         "latitude": 0,
         "longitude": 0,
-        "pois": pois
+        "pois": pois,
+        "geo" : {
+            "latitude": latitude,
+            "longitude": longitude
+        }
     }
     return dummy_city

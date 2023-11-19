@@ -230,3 +230,8 @@ def get_poi_object(obj, cname, poi_address, lat, lon):
             }
         )
     return temp_poi
+
+def get_poi_from_poi_id(poi_id):
+    collection_poi = db['poi']
+    poi = collection_poi.find_one({'poi_id': poi_id}, {'_id': 0})
+    return poi
