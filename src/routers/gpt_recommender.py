@@ -4,9 +4,7 @@ from openai import OpenAI
 import string
 from configs.db import db
 from configs.configs import settings
-from utils import file_util
-from utils import prompt_util
-from utils import poi_util
+from utils import poi_util, user_util, prompt_util, file_util
 from typing import Optional
 
 
@@ -28,30 +26,8 @@ def generate_recommendation( user_name: str, city_id: Optional[str] = None, city
         destination = string.capwords(city_name)
         city = collection_city.find_one({'city_name': destination})
     destination = city['city_name']
-    collection = db['user']
-    # Check if the username is already taken
-    existing_user = collection.find_one({'username': user_name})
-    preferences = existing_user['preferences']
-    print("Preferences: ", preferences)
-    poi_list = city['pois']
 
-    gpt_prompt = prompt_util.generate_gpt_prompt(destination, preferences, poi_list)
-    # print(gpt_prompt)
-    response = client.chat.completions.create(
-        model= settings.gpt_model,
-        messages=[
-            {"role": "system", "content": "You are a helpful recommendation engine which returns the array of ids of recommended places based on the given preferences. If possible it will suggest 5 places i.e output will be array of size 5"}, 
-            {"role": "user", "content": "Create recommendations for a user based on preferences : ['Museum'] for the places in city :San Jose from the follwoing array of point_of_intrests : point_of_intrests in [ name : Rosicrucian Egyptian Museum id : 47435 type of place : [Museum,Archaeological museum,History Museums,Specialty Museums,] name : San Pedro Square Market Bar id : 112876 type of place : [Bar,Shopping,Flea & Street Markets,]]"},
-            {"role": "assistant", "content": "[47435]"},
-            {"role": "user", "content": gpt_prompt}
-        ]
-    )
-
-    gpt_output = str(response.choices[0].message.content)
-    print(gpt_output)
-    gpt_prompt += 'gpt_response : ' + gpt_output
-    print(gpt_prompt)
-    file_util.write_string_to_file("prompt.josnl", gpt_prompt)
+    gpt_output = generate_recommnedation_from_city_object(city, user_name)
 
     return gpt_output
 
@@ -67,11 +43,9 @@ def generate_recommendation(user_name : str, poi_id: int, city_id: Optional[str]
         city = collection_city.find_one({'city_name': destination})
     destination = city['city_name']
     poi_list = city['pois']
-    poi = poi_util.get_poi_by_id(poi_list, poi_id)
-    collection = db['user']
-    # Check if the username is already taken
-    existing_user = collection.find_one({'username': user_name})
-    preferences = existing_user['preferences']
+    poi = poi_util.get_poi_by_id_from_poi_list(poi_list, poi_id)
+
+    preferences = user_util.get_user_preferences(user_name)
     print("Preferences: ", preferences)
     gpt_prompt = prompt_util.generate_gpt_prompt_for_personalized_description(destination, preferences, poi)
     print(gpt_prompt)
@@ -84,4 +58,47 @@ def generate_recommendation(user_name : str, poi_id: int, city_id: Optional[str]
     gpt_output = str(response.choices[0].message.content)
     print(gpt_output)
     
+    return gpt_output
+
+# This function is used to generate presonalized description for a place using gpt model based on a particular user preferences.
+@router.post("/api/gpt/personalized/description_1")
+def generate_recommendation_1(user_name : str, poi_id: int):
+    poi = poi_util.get_poi_from_poi_id(poi_id)
+    preferences = user_util.get_user_preferences(user_name)
+    print("Preferences: ", preferences)
+    destination = poi['city']
+    gpt_prompt = prompt_util.generate_gpt_prompt_for_personalized_description(destination, preferences, poi)
+    print(gpt_prompt)
+    response = client.chat.completions.create(
+        model= settings.gpt_model,
+        messages=[
+            {"role": "user", "content": gpt_prompt}
+        ]
+    )
+    gpt_output = str(response.choices[0].message.content)
+    print(gpt_output)
+    return gpt_output
+
+def generate_recommnedation_from_city_object(city, user_name):
+    preferences = user_util.get_user_preferences(user_name)
+    print("Preferences: ", preferences)
+    poi_list = city['pois']
+    destination = poi_list[0]["city"]
+    gpt_prompt = prompt_util.generate_gpt_prompt(destination, preferences, poi_list)
+    # print(gpt_prompt)
+    response = client.chat.completions.create(
+        model= settings.gpt_model,
+        messages=[
+            {"role": "system", "content": "You are a helpful recommendation engine which returns the array of ids of recommended places based on the given preferences. If possible it will suggest 5 places i.e output will be array of size 5"}, 
+            {"role": "user", "content": "Create recommendations for a user based on preferences : ['Museum'] for the places in city :San Jose from the follwoing array of point_of_intrests : point_of_intrests in [ name : Rosicrucian Egyptian Museum id : 47435 type of place : [Museum,Archaeological museum,History Museums,Specialty Museums,] name : San Pedro Square Market Bar id : 112876 type of place : [Bar,Shopping,Flea & Street Markets,]]"},
+            {"role": "assistant", "content": "[47435]"},
+            {"role": "user", "content": gpt_prompt}
+        ]
+    )
+    gpt_output = str(response.choices[0].message.content)
+    print(gpt_output)
+    gpt_prompt += 'gpt_response : ' + gpt_output
+    print(gpt_prompt)
+    file_util.write_string_to_file("prompt.josnl", gpt_prompt)
+
     return gpt_output
