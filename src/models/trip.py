@@ -15,6 +15,8 @@ class Trip(MongoModel):
     rating = fields.FloatField(default=0.0)
     userRatings = fields.ListField(default=[])
     comments = fields.EmbeddedDocumentListField('Comment')
+    address = fields.CharField()
+    radius = fields.IntegerField()
 
     class Comment(EmbeddedMongoModel):
         userId = fields.ObjectIdField()

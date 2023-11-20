@@ -19,6 +19,8 @@ class TripCreation(BaseModel):
     startDate: date
     endDate: date
     cityName: str
+    address: str
+    radius: int
 
 
 class TripAddPoi(BaseModel):
@@ -57,6 +59,8 @@ def create_trip_own(trip_data: TripCreation):
     city_name = trip_data.cityName
     trip_name = "Trip to " + city_name
     created_by = trip_data.createdBy
+    address = trip_data.address
+    radius = trip_data.radius
     pois = [[] for _ in range(no_of_days)]
 
     # Create a new trip
@@ -67,6 +71,8 @@ def create_trip_own(trip_data: TripCreation):
         noOfDays=no_of_days,
         cityName=city_name,
         createdBy=created_by,
+        address=address,
+        radius=radius,
         pois=pois,
         userRatings=[[0, 0]],
     )
