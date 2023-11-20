@@ -1,24 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import EditProfile from "./EditProfile"; // Import your EditProfile component
-import UpcomingTrips from "../POIs/UpcomingTrips";
-import PastTrips from "../POIs/PastTrips";
-import SharedTrips from "../POIs/SharedTrips";
 import NavigationBar from "../NavigationButton/NavigationBar";
-const Tab = createMaterialTopTabNavigator();
 
 const ProfilePage = ({ navigation }) => {
-  const [selectedTab, setSelectedTab] = useState("CurrentTrips"); // Default selected tab
-
-  // Sample user information
-  const userProfile = {
-    photo: ("./Capture.JPG"), // Use your actual image path
-    username: "John Doe",
-    email: "john.doe@example.com",
-    phoneNumber: "123-456-7890",
-  };
-
   const handleEditProfile = () => {
     // Navigate to the "Edit Profile" page
     navigation.navigate("EditProfile");
@@ -30,28 +14,54 @@ const ProfilePage = ({ navigation }) => {
     navigation.navigate("Login");
   };
 
+  const handleNavigate = (route) => {
+    navigation.navigate(route);
+  };
+
   return (
     <View style={styles.container}>
-      {/* Profile Info */}
+     
       <View style={styles.profileContainer}>
-        <Image source={userProfile.photo} style={styles.profilePhoto} />
-        <Text style={styles.username}>{userProfile.username}</Text>
-        <Text>{userProfile.email}</Text>
-        <Text>{userProfile.phoneNumber}</Text>
+      <Image
+        source={require("../../assets/profile.png")} // Update the path to your logo image
+        style={styles.logo}
+      />
+        <Text style={styles.username}>Roshan</Text>
+        <Text>roshan.chokshi@gmail.com</Text>
+        <Text>123-456-7890</Text>
+        <View style={styles.linksContainer}>
+        <TouchableOpacity onPress={() => handleNavigate("EditProfile")}>
+          <Text style={styles.linkText}>Edit Profile</Text>
+        </TouchableOpacity>
+        <View style={styles.line} />
+        <TouchableOpacity onPress={() => handleNavigate("PreferenceScreen1")}>
+          <Text style={styles.linkText}>Set Preferences</Text>
+        </TouchableOpacity>
+        <View style={styles.line} />
+        <TouchableOpacity onPress={() => handleNavigate("UpcomingTrips")}>
+          <Text style={styles.linkText}>Upcoming Trips</Text>
+        </TouchableOpacity>
+        <View style={styles.line} />
+
+        <TouchableOpacity onPress={() => handleNavigate("PastTrips")}>
+          <Text style={styles.linkText}>Past Trips</Text>
+        </TouchableOpacity>
+        <View style={styles.line} />
+
+        <TouchableOpacity onPress={() => handleNavigate("SharedTrips")}>
+          <Text style={styles.linkText}>Shared Trips</Text>
+        </TouchableOpacity>
+        <View style={styles.line} />
+
+        <TouchableOpacity onPress={handleSignOut}>
+          <Text style={styles.linkText}>Sign Out</Text>
+        </TouchableOpacity>
+        <View style={styles.line} />
+      </View>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
-        <Text style={styles.buttonText}>Edit Profile</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={handleSignOut}>
-        <Text style={styles.buttonText}>Sign Out</Text>
-      </TouchableOpacity>
-
-      <UpcomingTrips></UpcomingTrips>
-      <PastTrips></PastTrips>
-      <SharedTrips></SharedTrips>
       
+
       <NavigationBar navigation={navigation} />
     </View>
   );
@@ -59,20 +69,43 @@ const ProfilePage = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#ffffff",
     flex: 1,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 40,
   },
-  text: {
-    fontSize: 20,
-    color: "#412a47",
+  profileContainer: {
+    alignItems: "center",
+  },
+  profilePhoto: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    marginBottom: 10,
+  },
+  username: {
+    fontSize: 24,
     fontWeight: "bold",
-    marginLeft: 10,
+    marginBottom: 5,
   },
-  logo: {
-    width: 100,
-    height: 40,
-    resizeMode: "contain",
-    alignSelf: "center",
+  linksContainer: {
+    width: "80%",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  linkText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#ce7e00",
+    paddingVertical: 10,
+  },
+  line: {
+    borderBottomWidth: 1,
+    borderColor: "#E0E0E0",
+    width: "100%",
+    marginVertical: 5,
   },
 });
+
 export default ProfilePage;
