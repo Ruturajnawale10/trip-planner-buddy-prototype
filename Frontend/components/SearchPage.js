@@ -125,6 +125,8 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
             endDate: endDateString,
             cityName: destination,
             createdBy: username,
+            address: address,
+            radius: radius,
           };
           fetch("http://127.0.0.1:8000/api/trip/create/own", {
             method: "POST",

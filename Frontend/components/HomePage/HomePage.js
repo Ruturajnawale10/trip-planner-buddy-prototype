@@ -17,7 +17,7 @@ const HomePage = ({ navigation }) => {
   const [isCurrentTripPresent, setIsCurrentTripPresent] = useState(false);
 
   const [username, setUsername] = useRecoilState(userName);
-  
+
   const trip_img_url =
     "https://helios-i.mashable.com/imagery/articles/06zoscMHTZxU5KEFx8SRyDg/hero-image.fill.size_1200x900.v1630023012.jpg";
 
@@ -71,6 +71,8 @@ const HomePage = ({ navigation }) => {
   const goToTrip = () => {
     navigation.navigate("ItineraryHome", {
       location: latestTrip.cityName,
+      address: latestTrip.address,
+      radius: latestTrip.radius,
       startDate: latestTrip.startDate,
       endDate: latestTrip.endDate,
       trip_id: latestTrip._id,
@@ -78,7 +80,7 @@ const HomePage = ({ navigation }) => {
   };
 
   const seeAllUpcomingTrips = () => {
-    navigation.navigate("ProfilePage"); 
+    navigation.navigate("ProfilePage");
   };
 
   return (
@@ -92,7 +94,7 @@ const HomePage = ({ navigation }) => {
         <ScrollView>
           {isCurrentTripPresent && (
             <>
-              <Text style={styles.text}> Continue planning trip  </Text>
+              <Text style={styles.text}> Continue planning trip </Text>
               <TouchableOpacity onPress={seeAllUpcomingTrips}>
                 <Text style={styles.seeAllText}>See All</Text>
               </TouchableOpacity>
@@ -108,7 +110,6 @@ const HomePage = ({ navigation }) => {
                   pois={latestTrip.pois}
                 />
               </TouchableOpacity>
-             
             </>
           )}
           <Text style={styles.text}> Top Rated Trips </Text>
