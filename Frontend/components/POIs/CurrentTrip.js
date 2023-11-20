@@ -21,6 +21,7 @@ const CurrentTrip = ({
   POIListData,
   setPOIListData,
   flag,
+  reload,
   setReload,
   recommendations,
   loading,
