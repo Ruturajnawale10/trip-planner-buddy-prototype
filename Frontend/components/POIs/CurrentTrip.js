@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Button,
 } from "react-native";
 import { SafeAreaView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -30,6 +31,8 @@ const CurrentTrip = ({
   const [username, setUsername] = useRecoilState(userName);
   const scrollViewRef = useRef();
   const [scrollX, setScrollX] = useState(0);
+  const [isOptimized, setIsOptimized] = useState(false);
+  const [newData, setNewData] = useState(new Map());
 
   const addPOI = (POIid, day) => {
     const desiredX = scrollX + 300;
@@ -110,6 +113,57 @@ const CurrentTrip = ({
       .catch((error) => console.error(error));
   };
 
+  const getOptimizedPath = () => {
+    console.log("Optimizing path...");
+    console.log("noww", data);
+    let poi_list = [];
+    const no_days = data.size;
+    var i = 0;
+    Array.from(data, ([key, value]) => {
+        if (i < key) {
+          poi_list.push([]);
+          i += 1;
+        }
+        value.map((item) => {
+          poi_list[key - 1].push([item.poi_id, item.location.latitude, item.location.longitude]);
+          // poi_list.push([key, item.poi_id, item.location.latitude, item.location.longitude]);
+        });
+    });
+    console.log("POI list", poi_list);
+
+    const postData = {
+      trip_id: trip_id,
+      pois: poi_list,
+      start_poi_id: "1",
+      end_poi_id: "2",
+      mode: "driving",
+    };
+  
+    // fetch("http://127.0.0.1:8000/api/trip/route/optimize", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     // You may need to include additional headers if required by your API
+    //   },
+    //   body: JSON.stringify(postData),
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     // Handle the response data
+    //     console.log("Optimized path data:", data);
+    //     let optimized_days = new Map();
+    //     for (let i = 0; i < data["optimal_route"].length; i++) {
+    //       let dayRoute = data["optimal_route"][i];
+    //       let formattedDay = [];
+    //       for (let j = 0; j < day.length; j++) {
+    //         formattedDay.push(day[j]);
+    //       }
+    //       optimized_days.set(i + 1, formattedDay);
+    //     }
+    //   })
+    //   .catch((error) => console.error("Error fetching optimized path:", error));
+  };
+  
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
@@ -118,7 +172,12 @@ const CurrentTrip = ({
             {/* Loop days and data in a tabular format  */}
             {Array.from(data, ([key, value]) => (
               <View key={key} style={styles.container}>
+              <View style={styles.toprow}>
                 <Text style={styles.text}>Day {key}</Text>
+                {/* if (!optimized_days.has(key)) { */}
+                  <Button title="Optimize route" onPress={getOptimizedPath}/>
+                {/* } */}
+              </View>
                 {value.map((item) => (
                   <View key={item.name}>
                     <TouchableOpacity
@@ -204,6 +263,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
+  },
+  toprow: {
+    flexDirection: "row", // Arrange children horizontally
+    justifyContent: "space-between", // Space evenly between children
+    paddingHorizontal: 30, // Add padding if needed
   },
 });
 
