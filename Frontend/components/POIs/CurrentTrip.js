@@ -73,7 +73,7 @@ const CurrentTrip = ({
   };
 
   const getPOIs = (location) => {
-    fetch("http://127.0.0.1:8000/api/destination/" + location, {
+    fetch("http://127.0.0.1:8000/api/destination/?destination=" + location, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -81,7 +81,11 @@ const CurrentTrip = ({
     })
       .then((response) => response.json())
       .then((json) => {
+        console.log("POI List", json);
         setPOIListData(json);
+        console.log(POIListData);
+
+        getRecommendations(location, username);
       })
       .catch((error) => console.error(error));
   };
@@ -114,7 +118,7 @@ const CurrentTrip = ({
     getPOIs(location);
     // fetchDataFromStorage().then(() => {
     console.log("username", username);
-    getRecommendations(location, username);
+    // getRecommendations(location, username);
     // });
     console.log("Reload");
   }, [reload, data]);
