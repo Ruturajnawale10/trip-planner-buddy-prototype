@@ -17,7 +17,7 @@ const LoginScreen = ({ navigation }) => {
 
   const storeData = async (key, value) => {
     try {
-      // await AsyncStorage.setItem(key, value);
+      await AsyncStorage.setItem(key, value);
       setUsername(value);
       console.log("Data stored successfully");
     } catch (error) {

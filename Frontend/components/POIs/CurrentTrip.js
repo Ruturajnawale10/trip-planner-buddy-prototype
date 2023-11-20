@@ -11,7 +11,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import ListPOIs from "./ListPOIs";
 import POIAddedCard from "./POIAddedCard";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { userName } from "../RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
 

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Button, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native";
 import { ActivityIndicator } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { userName } from "../RecoilStore/RecoilStore";
+import { useRecoilState } from "recoil";
 
 const PreferenceScreen1 = ({ navigation }) => {
   const [questions, setQuestions] = useState([]);
@@ -10,20 +11,7 @@ const PreferenceScreen1 = ({ navigation }) => {
   const [index, setIndex] = useState(0); // Index of the current question
   const [selectedAnswers, setSelectedAnswers] = useState([]); // Array of the selected answers
   const [loaded, setLoaded] = useState(false);
-  const [username, setUsername] = useState(null);
-
-  const fetchDataFromStorage = async () => {
-    try {
-      const storedData = await AsyncStorage.getItem("username");
-      if (storedData !== null) {
-        setUsername(storedData);
-      } else {
-        console.log("Data not found in storage");
-      }
-    } catch (error) {
-      console.error("Error fetching data from AsyncStorage:", error);
-    }
-  };
+  const [username, setUsername] = useRecoilState(userName);
 
   // Sample data for the question and answer options
   useEffect(() => {
@@ -44,8 +32,6 @@ const PreferenceScreen1 = ({ navigation }) => {
         })
         .catch((error) => console.error(error));
     }
-
-    fetchDataFromStorage();
   }, []);
 
   // State to store the selected answer

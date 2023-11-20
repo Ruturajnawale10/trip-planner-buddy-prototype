@@ -9,12 +9,14 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
-import { Dimensions } from "react-native";
+import { userName } from "../RecoilStore/RecoilStore";
+import { useRecoilState } from "recoil";
 
 export default function POIs({ navigation }) {
   // Extract the POI data from the route params
   const { item, addPOI, day, recommended } = navigation.state.params;
   const [recommendedDescription, setRecommendedDescription] = useState(null);
+  const [username, setUsername] = useRecoilState(userName);
   if (addPOI == null) {
     console.log("addPOI is null");
     showAdded = false;
@@ -68,7 +70,7 @@ export default function POIs({ navigation }) {
   useEffect(() => {
     console.log("********", recommended);
     if (recommended) {
-      fetchRecommendedDescription(item.city, "roshan", item.poi_id);
+      fetchRecommendedDescription(item.city, username, item.poi_id);
     }
   }, []);
   return (
