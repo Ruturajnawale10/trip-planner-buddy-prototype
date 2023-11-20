@@ -21,10 +21,15 @@ const CurrentTrip = ({
   getCurrentTrip,
   loading,
   setLoading,
+  location,
+  address,
+  radius,
+  startDate,
+  endDate,
+  trip_id,
 }) => {
   const [POIListData, setPOIListData] = useState([]);
   const [flag, setFlag] = useState(false);
-  const { location, startDate, endDate, trip_id } = navigation.state.params;
   const [reload, setReload] = useState(false);
   const [username, setUsername] = useRecoilState(userName);
   const [recommendations, setRecommendations] = useState([]);
@@ -72,20 +77,29 @@ const CurrentTrip = ({
       .catch((error) => console.error(error));
   };
 
-  const getPOIs = (location) => {
-    fetch("http://127.0.0.1:8000/api/destination/?destination=" + location, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+  const getPOIs = (location, address, radius, username) => {
+    fetch(
+      "http://127.0.0.1:8000/api/getnearby/?user_address=" +
+        address +
+        "&radius=" +
+        radius +
+        "&user_name=" +
+        username,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then((response) => response.json())
       .then((json) => {
         console.log("POI List", json);
         setPOIListData(json);
-        console.log(POIListData);
+        console.log(POIListData.gpt_recommendations);
 
-        getRecommendations(location, username);
+        setRecommendations(json.gpt_recommendations);
+        setFlag(true);
       })
       .catch((error) => console.error(error));
   };
@@ -115,10 +129,9 @@ const CurrentTrip = ({
 
   useEffect(() => {
     getCurrentTrip();
-    getPOIs(location);
+    getPOIs(location, address, radius, username);
     // fetchDataFromStorage().then(() => {
     console.log("username", username);
-    // getRecommendations(location, username);
     // });
     console.log("Reload");
   }, [reload, data]);

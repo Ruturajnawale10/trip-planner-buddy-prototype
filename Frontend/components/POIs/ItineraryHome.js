@@ -7,13 +7,17 @@ import NavigationBar from "../NavigationButton/NavigationBar";
 import { SafeAreaView } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import MapViewPage from "./MapViewPage";
+import { useRecoilState } from "recoil";
+import { userName } from "../RecoilStore/RecoilStore";
 
 const Tab = createMaterialTopTabNavigator();
 
 function ItineraryTabs({ navigation }) {
   const [data, setData] = useState(new Map());
   const [loading, setLoading] = useState(false);
-  const { location, startDate, endDate, trip_id } = navigation.state.params;
+  const [username, setUsername] = useRecoilState(userName);
+  const { location, address, radius, startDate, endDate, trip_id } =
+    navigation.state.params;
 
   const getCurrentTrip = () => {
     fetch("http://127.0.0.1:8000/api/trip/poi_list/", {
@@ -70,6 +74,12 @@ function ItineraryTabs({ navigation }) {
             getCurrentTrip={getCurrentTrip}
             loading={loading}
             setLoading={setLoading}
+            location={location}
+            address={address}
+            radius={radius}
+            startDate={startDate}
+            endDate={endDate}
+            trip_id={trip_id}
           />
         )}
       />
