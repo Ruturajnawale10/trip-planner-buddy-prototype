@@ -70,7 +70,7 @@ def generate_recommendation_1(user_name : str, poi_id: int):
     gpt_prompt = prompt_util.generate_gpt_prompt_for_personalized_description(destination, preferences, poi)
     print(gpt_prompt)
     response = client.chat.completions.create(
-        model= settings.gpt_model,
+        model= settings.gpt_generic_model,
         messages=[
             {"role": "user", "content": gpt_prompt}
         ]
