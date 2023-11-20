@@ -123,6 +123,7 @@ function ItineraryTabs({ navigation }) {
             POIListData={POIListData}
             loading={loading}
             recommendations={recommendations}
+            radius={radius}
           />
         )}
       />

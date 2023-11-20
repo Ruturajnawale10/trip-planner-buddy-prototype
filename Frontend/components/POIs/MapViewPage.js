@@ -11,7 +11,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { userName } from "../RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
 import { Dimensions } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Circle, Marker } from "react-native-maps";
 import DropDownPicker from "react-native-dropdown-picker";
 import MapViewCard from "./MapViewCard";
 import CustomMarker from "./CustomMarker";
@@ -25,7 +25,15 @@ const MapViewPage = ({
   POIListData,
   loading,
   recommendations,
+  radius,
 }) => {
+  function degreesToRadians(angle) {
+    return angle * (Math.PI / 180);
+  }
+
+  function kMToLongitudes(km, atLatitude) {
+    return (km * 0.0089831) / Math.cos(degreesToRadians(atLatitude));
+  }
   const [initialRegion, setInitialRegion] = useState({
     latitude: 37.333504500000004,
     longitude: -121.92289944954837,
@@ -36,7 +44,7 @@ const MapViewPage = ({
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([{ label: "All Locations", value: 0 }]);
   const [currentItem, setCurrentItem] = useState(null);
-  const [reload, setReload] = useState(false);
+  const [load, setLoad] = useState(false);
 
   const showPOI = () => {
     if (currentItem) {
@@ -110,7 +118,22 @@ const MapViewPage = ({
       {loading ? (
         <View>
           <View style={styles.container}>
-            <MapView style={styles.map} region={initialRegion}>
+            <MapView
+              style={styles.map}
+              initialRegion={
+                POIListData
+                  ? {
+                      latitude: POIListData.geo.latitude,
+                      longitude: POIListData.geo.longitude,
+                      latitudeDelta: 0.00001,
+                      longitudeDelta: kMToLongitudes(
+                        radius / 800,
+                        POIListData.geo.latitude
+                      ),
+                    }
+                  : initialRegion
+              }
+            >
               <DropDownPicker
                 placeholder="All Locations"
                 open={open}
@@ -127,11 +150,25 @@ const MapViewPage = ({
                   width: 150,
                 }}
               />
+              <Circle
+                center={{
+                  latitude: POIListData.geo.latitude,
+                  longitude: POIListData.geo.longitude,
+                }}
+                radius={radius}
+                fillColor="rgba(255, 0, 0, 0.2)"
+                strokeColor="rgba(0,0,0,0.5)"
+                zIndex={2}
+              />
               {showMarkers()}
               <Marker
                 coordinate={{
                   latitude: POIListData.geo.latitude,
                   longitude: POIListData.geo.longitude,
+                }}
+                title="You are here"
+                onPress={() => {
+                  setCurrentItem(null);
                 }}
               />
               <View style={styles.poi}>{showPOI()}</View>
