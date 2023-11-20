@@ -25,7 +25,7 @@ const NavigationBar = ({ navigation }) => {
         bgColor="#9b87a1"
         iconName="person"
         title="Profile"
-        page="PreferenceScreen1"
+        page="ProfilePage"
         navigation={navigation}
       />
     </SafeAreaView>
