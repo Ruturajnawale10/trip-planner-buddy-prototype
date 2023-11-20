@@ -8,6 +8,7 @@ import NavigationBar from "../NavigationButton/NavigationBar";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { userName } from "../RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
+import TopRatedCard from "./TopRatedCard";
 // import GetLocation from "react-native-get-location";
 
 const HomePage = ({ navigation }) => {
@@ -15,6 +16,9 @@ const HomePage = ({ navigation }) => {
   const [latestTrip, setLatestTrip] = useState(null);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isCurrentTripPresent, setIsCurrentTripPresent] = useState(false);
+  const [topRatedTrips, setTopRatedTrips] = useState([]);
+  const [isTopRatedTripsPresent, setIsTopRatedTripsPresent] = useState(false);
+  const [isLoadingData1, setIsLoadingData1] = useState(true);
 
   const [username, setUsername] = useRecoilState(userName);
 
@@ -56,8 +60,31 @@ const HomePage = ({ navigation }) => {
       .catch((error) => console.error(error));
   };
 
+  const getTopRatedTrips = () => {
+
+
+    fetch("http://127.0.0.1:8000/api/trip/list/toprated/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        setData(json);
+        setTopRatedTrips(json);
+        console.log(json);
+        if (json.length > 0) {
+          setIsTopRatedTripsPresent(true);
+        }
+        setIsLoadingData1(false);
+      })
+      .catch((error) => console.error(error));
+  };
+
   useEffect(() => {
     getUpcomingTrips();
+    getTopRatedTrips();
   }, [username]);
 
   const pastTrips = () => {
@@ -80,7 +107,7 @@ const HomePage = ({ navigation }) => {
   };
 
   const seeAllUpcomingTrips = () => {
-    navigation.navigate("ProfilePage");
+    navigation.navigate("UpcomingTrips");
   };
 
   return (
@@ -113,7 +140,22 @@ const HomePage = ({ navigation }) => {
             </>
           )}
           <Text style={styles.text}> Top Rated Trips </Text>
-          {/* ... Your other trip cards ... */}
+          
+          {isTopRatedTripsPresent && topRatedTrips.map((trip, index) => (
+            
+            <TouchableOpacity key={index} onPress={() => goToTrip(trip)} style={styles.submitButton}>
+            
+              <TopRatedCard
+                onPress={pastTrips}
+                bgColor="#ffffff"
+                imageSource={
+                  "https://images.squarespace-cdn.com/content/v1/5c7f5f60797f746a7d769cab/ed578728-b35e-4336-ba27-8eced4e968f9/golden+gate+bridge+sarowly.jpg"
+                } // Assuming each trip object has an image property
+                tripName={trip.tripName}
+                pois={trip.pois}
+              />
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       )}
       <NavigationBar navigation={navigation} />

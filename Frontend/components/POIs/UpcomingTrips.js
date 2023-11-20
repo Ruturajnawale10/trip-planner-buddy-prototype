@@ -18,7 +18,7 @@ const UpcomingTrips = ({ navigation }) => {
 
   const [username, setUsername] = useRecoilState(userName);
 
-  const [allCollapsed, setAllCollapsed] = useState(true);
+  const [allCollapsed, setAllCollapsed] = useState(false);
 
 // Function to toggle collapse/expand for all trips
 const toggleAllTrips = () => {
@@ -90,7 +90,10 @@ const toggleAllTrips = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-   
+      <Image
+        source={require("../../assets/logo.png")} // Update the path to your logo image
+        style={styles.logo}
+      />
       {!isLoadingData && (
         <ScrollView>
             

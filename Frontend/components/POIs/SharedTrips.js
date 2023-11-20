@@ -18,7 +18,7 @@ const SharedTrips = ({ navigation }) => {
 
   const [username, setUsername] = useRecoilState(userName);
 
-  const [allCollapsed, setAllCollapsed] = useState(true);
+  const [allCollapsed, setAllCollapsed] = useState(false);
 
 // Function to toggle collapse/expand for all trips
 const toggleAllTrips = () => {
@@ -44,12 +44,11 @@ const toggleAllTrips = () => {
       username: username,
     };
 
-    fetch("http://127.0.0.1:8000/api/trip/list/shared", {
-      method: "POST",
+    fetch("http://127.0.0.1:8000/api/trip/list/shared/" + username, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestBody),
     })
       .then((response) => response.json())
       .then((json) => {
@@ -90,7 +89,10 @@ const toggleAllTrips = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-   
+    <Image
+        source={require("../../assets/logo.png")} // Update the path to your logo image
+        style={styles.logo}
+      />
       {!isLoadingData && (
         <ScrollView>
             
