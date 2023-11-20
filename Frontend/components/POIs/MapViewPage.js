@@ -18,22 +18,82 @@ import CustomMarker from "./CustomMarker";
 
 // import Dropdown from "./Dropdown";
 
-const MapViewPage = ({ navigation, data, setData, loading }) => {
+const MapViewPage = ({
+  navigation,
+  data,
+  setData,
+  POIListData,
+  loading,
+  recommendations,
+}) => {
   const [initialRegion, setInitialRegion] = useState({
     latitude: 37.333504500000004,
     longitude: -121.92289944954837,
     latitudeDelta: 0.022,
     longitudeDelta: 0.421,
   });
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(0);
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState([{ label: "All Locations", value: 0 }]);
   const [currentItem, setCurrentItem] = useState(null);
   const [reload, setReload] = useState(false);
 
   const showPOI = () => {
     if (currentItem) {
       return <MapViewCard item={currentItem} />;
+    }
+  };
+
+  const showMarkers = () => {
+    console.log("pois", POIListData);
+    if (value != 0) {
+      return (
+        <>
+          {data.get(value).map((item) => (
+            <Marker
+              pinColor={
+                recommendations.includes(item.poi_id) ? "#FFA500" : "#9b87a1"
+              }
+              key={item.name}
+              coordinate={{
+                latitude: item.location.latitude,
+                longitude: item.location.longitude,
+              }}
+              title={item.name}
+              onPress={() => {
+                console.log(item);
+                setCurrentItem(item);
+              }}
+            >
+              {/* <CustomMarker /> */}
+            </Marker>
+          ))}
+        </>
+      );
+    } else {
+      return (
+        <>
+          {POIListData.pois.map((item) => (
+            <Marker
+              pinColor={
+                recommendations.includes(item.poi_id) ? "#FFA500" : "#9b87a1"
+              }
+              key={item.name}
+              coordinate={{
+                latitude: item.location.latitude,
+                longitude: item.location.longitude,
+              }}
+              title={item.name}
+              onPress={() => {
+                console.log(item);
+                setCurrentItem(item);
+              }}
+            >
+              {/* <CustomMarker /> */}
+            </Marker>
+          ))}
+        </>
+      );
     }
   };
 
@@ -47,45 +107,40 @@ const MapViewPage = ({ navigation, data, setData, loading }) => {
 
   return (
     <SafeAreaView>
-      <View>
-        <View style={styles.container}>
-          <MapView style={styles.map} region={initialRegion}>
-            <DropDownPicker
-              placeholder="Select a day"
-              open={open}
-              value={value}
-              items={items}
-              setOpen={setOpen}
-              setValue={setValue}
-              setItems={setItems}
-              style={{ zIndex: 100, position: "absolute", top: 10, width: 150 }}
-            />
-            {value && (
-              <>
-                {data.get(value).map((item) => (
-                  <Marker
-                    pinColor="#9b87a1"
-                    key={item.name}
-                    coordinate={{
-                      latitude: item.location.latitude,
-                      longitude: item.location.longitude,
-                    }}
-                    title={item.name}
-                    onPress={() => {
-                      console.log(item);
-                      setCurrentItem(item);
-                    }}
-                  >
-                    {/* <CustomMarker /> */}
-                  </Marker>
-                ))}
-              </>
-            )}
-            <Marker coordinate={initialRegion} />
-            <View style={styles.poi}>{showPOI()}</View>
-          </MapView>
+      {loading ? (
+        <View>
+          <View style={styles.container}>
+            <MapView style={styles.map} region={initialRegion}>
+              <DropDownPicker
+                placeholder="All Locations"
+                open={open}
+                value={value}
+                items={items}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setItems}
+                zoomControlEnabled={true}
+                style={{
+                  zIndex: 100,
+                  position: "absolute",
+                  top: 10,
+                  width: 150,
+                }}
+              />
+              {showMarkers()}
+              <Marker
+                coordinate={{
+                  latitude: POIListData.geo.latitude,
+                  longitude: POIListData.geo.longitude,
+                }}
+              />
+              <View style={styles.poi}>{showPOI()}</View>
+            </MapView>
+          </View>
         </View>
-      </View>
+      ) : (
+        <ActivityIndicator size="large" color="#0000ff" />
+      )}
     </SafeAreaView>
   );
 };

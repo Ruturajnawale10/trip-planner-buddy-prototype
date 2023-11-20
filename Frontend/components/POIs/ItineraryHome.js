@@ -16,11 +16,15 @@ function ItineraryTabs({ navigation }) {
   const [data, setData] = useState(new Map());
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useRecoilState(userName);
+  const [POIListData, setPOIListData] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
+  const [flag, setFlag] = useState(false);
+  const [reload, setReload] = useState(false);
   const { location, address, radius, startDate, endDate, trip_id } =
     navigation.state.params;
 
   const getCurrentTrip = () => {
-    fetch("http://127.0.0.1:8000/api/trip/poi_list/", {
+    fetch("http://127.0.0.1:8000/api/trip/poi_list_1/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,13 +43,40 @@ function ItineraryTabs({ navigation }) {
           }
           setData((data) => data.set(i + 1, formattedDay));
         }
+      })
+      .catch((error) => console.error(error));
+  };
+  const getPOIs = () => {
+    fetch(
+      "http://127.0.0.1:8000/api/getnearby/?user_address=" +
+        address +
+        "&radius=" +
+        radius +
+        "&user_name=" +
+        username,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((json) => {
+        // console.log("POI List", json);
+        setPOIListData(json);
+        console.log(POIListData.gpt_recommendations);
+
+        setRecommendations(json.gpt_recommendations);
+        setFlag(true);
         setLoading(true);
       })
       .catch((error) => console.error(error));
   };
   useEffect(() => {
     getCurrentTrip();
-  }, []);
+    getPOIs();
+  }, [reload]);
 
   useEffect(() => {
     console.log("**************data", data.size);
@@ -71,14 +102,13 @@ function ItineraryTabs({ navigation }) {
             navigation={navigation}
             data={data}
             setData={setData}
-            getCurrentTrip={getCurrentTrip}
+            POIListData={POIListData}
+            setPOIListData={setPOIListData}
+            flag={flag}
+            reload={reload}
+            setReload={setReload}
+            recommendations={recommendations}
             loading={loading}
-            setLoading={setLoading}
-            location={location}
-            address={address}
-            radius={radius}
-            startDate={startDate}
-            endDate={endDate}
             trip_id={trip_id}
           />
         )}
@@ -90,7 +120,9 @@ function ItineraryTabs({ navigation }) {
             navigation={navigation}
             data={data}
             setData={setData}
+            POIListData={POIListData}
             loading={loading}
+            recommendations={recommendations}
           />
         )}
       />

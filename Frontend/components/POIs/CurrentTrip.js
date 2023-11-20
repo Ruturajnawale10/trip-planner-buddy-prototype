@@ -18,21 +18,15 @@ const CurrentTrip = ({
   navigation,
   data,
   setData,
-  getCurrentTrip,
+  POIListData,
+  setPOIListData,
+  flag,
+  setReload,
+  recommendations,
   loading,
-  setLoading,
-  location,
-  address,
-  radius,
-  startDate,
-  endDate,
   trip_id,
 }) => {
-  const [POIListData, setPOIListData] = useState([]);
-  const [flag, setFlag] = useState(false);
-  const [reload, setReload] = useState(false);
   const [username, setUsername] = useRecoilState(userName);
-  const [recommendations, setRecommendations] = useState([]);
   const scrollViewRef = useRef();
   const [scrollX, setScrollX] = useState(0);
 
@@ -76,65 +70,6 @@ const CurrentTrip = ({
       })
       .catch((error) => console.error(error));
   };
-
-  const getPOIs = (location, address, radius, username) => {
-    fetch(
-      "http://127.0.0.1:8000/api/getnearby/?user_address=" +
-        address +
-        "&radius=" +
-        radius +
-        "&user_name=" +
-        username,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((json) => {
-        console.log("POI List", json);
-        setPOIListData(json);
-        console.log(POIListData.gpt_recommendations);
-
-        setRecommendations(json.gpt_recommendations);
-        setFlag(true);
-      })
-      .catch((error) => console.error(error));
-  };
-
-  const getRecommendations = (cityName, username) => {
-    console.log("getRecommendations", cityName, username);
-    fetch(
-      "http://127.0.0.1:8000/api/get/gpt/recommendation?city_name=" +
-        cityName +
-        "&user_name=" +
-        username,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((json) => {
-        console.log("output", json);
-        setRecommendations(json);
-        setFlag(true);
-      })
-      .catch((error) => console.error(error));
-  };
-
-  useEffect(() => {
-    getCurrentTrip();
-    getPOIs(location, address, radius, username);
-    // fetchDataFromStorage().then(() => {
-    console.log("username", username);
-    // });
-    console.log("Reload");
-  }, [reload, data]);
 
   const handleDetailsPress = (item, key) => {
     const t = true;
