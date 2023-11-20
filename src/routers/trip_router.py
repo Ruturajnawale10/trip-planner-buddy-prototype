@@ -404,7 +404,9 @@ def get_pois_of_a_trip(trip: TripRequestResponse):
                 poi = get_poi_from_poi_id(poi_id)
                 temp_poi_list.append(poi)
             # Execute the aggregation pipeline
-            poi_list[i] = {"pois" : temp_poi_list}
+            t1 = []
+            t1.append({"pois" : temp_poi_list})
+            poi_list[i] = t1
     except Trip.DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Trip object not found")
 
@@ -413,4 +415,4 @@ def get_pois_of_a_trip(trip: TripRequestResponse):
     response_array = []
     response_array.append(poi_list)
     existing_trip['_id'] = str(existing_trip["_id"])
-    return {"pois": response_array, "trip_details": existing_trip}
+    return {"pois": poi_list, "trip_details": existing_trip}
