@@ -9,7 +9,11 @@ const POIAddedCard = ({ item, day, removePOI }) => {
       <View style={styles.card}>
         <View style={styles.textContainer}>
           <Text style={styles.tripName}>{item.name}</Text>
-          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.description}>
+            {item.description.length < 90
+              ? `${item.description}`
+              : `${item.description.substring(0, 90)}...`}
+          </Text>
         </View>
         <Image
           source={{
@@ -52,11 +56,14 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "bold",
     marginBottom: 8,
+    width: Dimensions.get("window").width - 150,
   },
   description: {
+    flex: 1,
     fontSize: 16,
     color: "#767282",
     width: Dimensions.get("window").width - 150,
+    numberOfLines: 2,
   },
   separator: {
     height: 1,
