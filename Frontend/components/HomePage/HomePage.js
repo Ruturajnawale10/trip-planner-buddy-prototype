@@ -6,10 +6,9 @@ import SearchBar from "../SearchBar";
 import TripCard from "./TripCard";
 import NavigationBar from "../NavigationButton/NavigationBar";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { userName } from "../RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
-import GetLocation from "react-native-get-location";
+// import GetLocation from "react-native-get-location";
 
 const HomePage = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -22,17 +21,17 @@ const HomePage = ({ navigation }) => {
   const trip_img_url =
     "https://helios-i.mashable.com/imagery/articles/06zoscMHTZxU5KEFx8SRyDg/hero-image.fill.size_1200x900.v1630023012.jpg";
 
-  GetLocation.getCurrentPosition({
-    enableHighAccuracy: true,
-    timeout: 60000,
-  })
-    .then((location) => {
-      console.log(location);
-    })
-    .catch((error) => {
-      const { code, message } = error;
-      console.warn(code, message);
-    });
+  // GetLocation.getCurrentPosition({
+  //   enableHighAccuracy: true,
+  //   timeout: 60000,
+  // })
+  //   .then((location) => {
+  //     console.log(location);
+  //   })
+  //   .catch((error) => {
+  //     const { code, message } = error;
+  //     console.warn(code, message);
+  //   });
   const getUpcomingTrips = () => {
     const requestBody = {
       username: username,

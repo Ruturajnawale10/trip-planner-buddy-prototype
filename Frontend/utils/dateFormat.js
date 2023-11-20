@@ -14,5 +14,5 @@ export class DateFormat {
 
 // Example usage:
 const currentDate = new Date();
-console.log(DateFormat.format1(currentDate)); // Outputs: "19 October 2023"
-console.log(DateFormat.format2(currentDate)); // Outputs: "2023-10-19"
+// console.log(DateFormat.format1(currentDate)); // Outputs: "19 October 2023"
+// console.log(DateFormat.format2(currentDate)); // Outputs: "2023-10-19"

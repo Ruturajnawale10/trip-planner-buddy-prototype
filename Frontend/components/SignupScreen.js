@@ -1,7 +1,6 @@
 // SignupScreen.js
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity,Image, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -11,15 +10,6 @@ const SignupScreen = ({ navigation }) => {
   useEffect(() => {
     usernameInputRef.current.focus();
   }, []);
-
-  const storeData = async (key, value) => {
-    try {
-      await AsyncStorage.setItem(key, value);
-      console.log('Data stored successfully');
-    } catch (error) {
-      console.error('Error storing data:', error);
-    }
-  };
 
   const handleSignup = () => {
     // Prepare the request body
@@ -49,10 +39,6 @@ const SignupScreen = ({ navigation }) => {
         }
       })
       .then((data) => {
-        // Assuming the response contains the username
-        const { username } = data;
-        storeData('username', username);
-        // Navigate to the "HomePage" with the username
         navigation.navigate('PreferenceScreen1', { userIsLoggedIn: true });
       })
       .catch((error) => {

@@ -49,7 +49,7 @@ function ItineraryTabs({ navigation }) {
 
   return (
     <Tab.Navigator
-      tabBarOptions={{
+      screenOptions={{
         labelStyle: {
           fontSize: 16,
           fontWeight: "bold",
@@ -84,10 +84,10 @@ function ItineraryTabs({ navigation }) {
           />
         )}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Weather"
         children={() => <Weather navigation={navigation} />}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }

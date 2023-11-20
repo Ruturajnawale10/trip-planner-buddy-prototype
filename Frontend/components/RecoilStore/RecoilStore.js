@@ -1,9 +1,9 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DefaultValue, atom } from "recoil";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const userName = atom({
   key: "username",
-  default: "roshan",
+  default: AsyncStorage.getItem("username"),
 });
 
 const userPreferences = atom({

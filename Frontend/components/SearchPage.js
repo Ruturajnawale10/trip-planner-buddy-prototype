@@ -11,8 +11,9 @@ import { SafeAreaView } from "react-native";
 import NavigationBar from "./NavigationButton/NavigationBar";
 import { Dimensions } from "react-native";
 import CalendarPicker from "react-native-calendar-picker"; // Import the calendar picker
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
+import { userName } from "./RecoilStore/RecoilStore";
+import { useRecoilState } from "recoil";
 
 const SearchPage = ({ navigation, getUpcomingTrips }) => {
   const [selectedStartDate, setSelectedStartDate] = useState("");
@@ -23,6 +24,7 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
   const [isEndDatePickerVisible, setEndDatePickerVisible] = useState(false);
   const [validationError, setValidationError] = useState("");
   const destinationInputRef = useRef(null);
+  const [value, setValue] = useRecoilState(userName);
 
   const toggleStartDatePicker = () => {
     setStartDatePickerVisible(!isStartDatePickerVisible);
@@ -34,7 +36,6 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
 
   const retrieveData = async (key) => {
     try {
-      const value = await AsyncStorage.getItem(key);
       if (value !== null) {
         // Data retrieval was successful
         console.log(`Retrieved ${key}: ${value}`);
@@ -138,8 +139,7 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
               console.error("Failed to create trip:", error);
             });
         } else {
-          // Handle the case where the username is not found in AsyncStorage
-          console.error("Username not found in AsyncStorage");
+          console.error("Username not found in recoil");
         }
       })
       .catch((error) => {
