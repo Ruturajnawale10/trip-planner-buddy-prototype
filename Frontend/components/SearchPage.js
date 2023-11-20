@@ -19,11 +19,16 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
   const [selectedStartDate, setSelectedStartDate] = useState("");
   const [selectedEndDate, setSelectedEndDate] = useState("");
   const [destination, setDestination] = useState("");
+  const [address, setAddress] = useState("");
+  const [radius, setRadius] = useState(0);
   const [createdBy, setCreatedBy] = useState("");
   const [isStartDatePickerVisible, setStartDatePickerVisible] = useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisible] = useState(false);
   const [validationError, setValidationError] = useState("");
   const destinationInputRef = useRef(null);
+  const addressInputRef = useRef(null);
+  const radiusInputRef = useRef(null);
+
   const [value, setValue] = useRecoilState(userName);
 
   const toggleStartDatePicker = () => {
@@ -81,6 +86,16 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
       return;
     }
 
+    if (!address) {
+      setValidationError("Please enter an address.");
+      return;
+    }
+
+    if (!radius) {
+      setValidationError("Please enter a radius.");
+      return;
+    }
+
     const startMoment = moment(selectedStartDate);
     const endMoment = moment(selectedEndDate);
     const now = new Date();
@@ -130,6 +145,8 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
               const { trip_id } = data;
               navigation.navigate("ItineraryHome", {
                 location: destination,
+                address: address,
+                radius: radius,
                 startDate: startDateString,
                 endDate: endDateString,
                 trip_id: trip_id,
@@ -162,6 +179,22 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
         style={styles.input}
         placeholderTextColor={"#381b42"}
         ref={destinationInputRef}
+      />
+      <TextInput
+        placeholder="Enter address. Eg. 123 Main Street"
+        value={address}
+        onChangeText={(text) => setAddress(text)}
+        style={styles.input}
+        placeholderTextColor={"#381b42"}
+        ref={addressInputRef}
+      />
+      <TextInput
+        placeholder="Enter radius. Eg. 10"
+        value={radius}
+        onChangeText={(text) => setRadius(text)}
+        style={styles.input}
+        placeholderTextColor={"#381b42"}
+        ref={radiusInputRef}
       />
       <View style={styles.dateContainer}>
         <View style={styles.startDateContainer}>
