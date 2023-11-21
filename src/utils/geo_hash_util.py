@@ -17,7 +17,6 @@ def generate_geohash(latitude, longitude, precision=7):
 def pouplate_geohash_entry(latitude, longitude, poi_id):
     geohash = generate_geohash(latitude, longitude)
     print("-------------------------------------------")
-    print("geohash: ", geohash)
     print("type of geohash: ", type(geohash))
     loc = {'type': 'Point', 'coordinates': [longitude, latitude]}
     new_geohash = GeoInfo(
@@ -70,11 +69,8 @@ def get_nearby_poi_ids(latitude : float, longitude : float, radius : int):
     print("nearby_entries: ", nearby_entries)
     nearby_entries_list = []
     for entry in nearby_entries:
-        print(entry)
         nearby_entries_list.append(entry['poi_id'])
 
     # nearby_entries_list = list(nearby_entries)
-    print("nearby_entries_list: ", nearby_entries_list)
-
 
     return nearby_entries_list

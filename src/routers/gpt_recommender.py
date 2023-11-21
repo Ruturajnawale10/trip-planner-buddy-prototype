@@ -46,9 +46,7 @@ def generate_recommendation(user_name : str, poi_id: int, city_id: Optional[str]
     poi = poi_util.get_poi_by_id_from_poi_list(poi_list, poi_id)
 
     preferences = user_util.get_user_preferences(user_name)
-    print("Preferences: ", preferences)
     gpt_prompt = prompt_util.generate_gpt_prompt_for_personalized_description(destination, preferences, poi)
-    print(gpt_prompt)
     response = client.chat.completions.create(
         model= settings.gpt_model,
         messages=[
@@ -56,7 +54,6 @@ def generate_recommendation(user_name : str, poi_id: int, city_id: Optional[str]
         ]
     )
     gpt_output = str(response.choices[0].message.content)
-    print(gpt_output)
     
     return gpt_output
 
@@ -65,10 +62,8 @@ def generate_recommendation(user_name : str, poi_id: int, city_id: Optional[str]
 def generate_recommendation_1(user_name : str, poi_id: int):
     poi = poi_util.get_poi_from_poi_id(poi_id)
     preferences = user_util.get_user_preferences(user_name)
-    print("Preferences: ", preferences)
     destination = poi['city']
     gpt_prompt = prompt_util.generate_gpt_prompt_for_personalized_description(destination, preferences, poi)
-    print(gpt_prompt)
     response = client.chat.completions.create(
         model= settings.gpt_generic_model,
         messages=[
@@ -76,12 +71,10 @@ def generate_recommendation_1(user_name : str, poi_id: int):
         ]
     )
     gpt_output = str(response.choices[0].message.content)
-    print(gpt_output)
     return gpt_output
 
 def generate_recommnedation_from_city_object(city, user_name):
     preferences = user_util.get_user_preferences(user_name)
-    print("Preferences: ", preferences)
     poi_list = city['pois']
     destination = poi_list[0]["city"]
     gpt_prompt = prompt_util.generate_gpt_prompt(destination, preferences, poi_list)
@@ -96,9 +89,7 @@ def generate_recommnedation_from_city_object(city, user_name):
         ]
     )
     gpt_output = str(response.choices[0].message.content)
-    print(gpt_output)
     gpt_prompt += 'gpt_response : ' + gpt_output
-    print(gpt_prompt)
     file_util.write_string_to_file("prompt.josnl", gpt_prompt)
 
     return gpt_output

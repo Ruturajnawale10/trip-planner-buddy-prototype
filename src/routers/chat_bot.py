@@ -23,11 +23,9 @@ def generate_answer( input: str, previous_chat: list = []):
         msg_list.append({"role": "user", "content": msg["user_input"]})
         msg_list.append({"role": "assistant", "content": msg["system"]})
     msg_list.append({"role": "user", "content": input})
-    print(msg_list)
     response = client.chat.completions.create(
         model= settings.gpt_generic_model,
         messages=msg_list
     )
     gpt_output = str(response.choices[0].message.content)
-    print(gpt_output)
     return gpt_output
