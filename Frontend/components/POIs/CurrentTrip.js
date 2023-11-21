@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Button,
 } from "react-native";
 import { SafeAreaView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -30,6 +31,7 @@ const CurrentTrip = ({
   const [username, setUsername] = useRecoilState(userName);
   const scrollViewRef = useRef();
   const [scrollX, setScrollX] = useState(0);
+  const [isOptimized, setIsOptimized] = useState(false);
 
   const addPOI = (POIid, day) => {
     const desiredX = scrollX + 300;
@@ -110,6 +112,75 @@ const CurrentTrip = ({
       .catch((error) => console.error(error));
   };
 
+  const getOptimizedPath = () => {
+    console.log("Optimizing path...");
+    let poi_list = [];
+    const dayNo = 1;
+    Array.from(data, ([key, value]) => {
+      if (key == dayNo) {
+        value.map((item) => {
+          poi_list.push([
+            item.poi_id,
+            item.location.latitude,
+            item.location.longitude,
+          ]);
+        });
+      }
+    });
+
+    const postData = {
+      trip_id: trip_id,
+      pois: poi_list,
+      start_poi_id: "1",
+      end_poi_id: "2",
+      mode: "driving",
+    };
+
+    fetch("http://127.0.0.1:8000/api/trip/route/optimize", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(postData),
+    })
+      .then((response) => response.json())
+      .then((data2) => {
+        var optimized_days = [];
+        var n = data2["optimal_route"].length;
+        for (let i = 0; i < n; i++) {
+          var curr_poi_id = data2["optimal_route"][i]["start_poi_id"];
+          data.forEach((value, key) => {
+            if (key == dayNo) {
+              for (let j = 0; j < value.length; j++) {
+                if (key == dayNo && value[j].poi_id == curr_poi_id) {
+                  obj = value[j];
+                  obj["nextStep"] = data2["optimal_route"][i];
+                  optimized_days.push(obj);
+                }
+              }
+            }
+          });
+        }
+        var last_poi_id = data2["optimal_route"][n - 1]["end_poi_id"];
+        data.forEach((value, key) => {
+          if (key == dayNo) {
+            for (let j = 0; j < value.length; j++) {
+              if (value[j].poi_id == last_poi_id) {
+                obj = value[j];
+                optimized_days.push(obj);
+                break;
+              }
+            }
+          }
+        });
+
+        setData((data) => data.set(dayNo, optimized_days));
+        setReload(!reload);
+        setIsOptimized(true);
+      })
+      .catch((error) => console.error("Error fetching optimized path:", error));
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
@@ -118,7 +189,12 @@ const CurrentTrip = ({
             {/* Loop days and data in a tabular format  */}
             {Array.from(data, ([key, value]) => (
               <View key={key} style={styles.container}>
-                <Text style={styles.text}>Day {key}</Text>
+                <View style={styles.toprow}>
+                  <Text style={styles.text}>Day {key}</Text>
+                  {/* if (!optimized_days.has(key)) { */}
+                  <Button title="Optimize route" onPress={getOptimizedPath} />
+                  {/* } */}
+                </View>
                 {value.map((item) => (
                   <View key={item.name}>
                     <TouchableOpacity
@@ -128,6 +204,7 @@ const CurrentTrip = ({
                         item={item}
                         day={key}
                         removePOI={removePOI}
+                        isOptimized={isOptimized}
                       />
                     </TouchableOpacity>
                   </View>
@@ -204,6 +281,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
+  },
+  toprow: {
+    flexDirection: "row", // Arrange children horizontally
+    justifyContent: "space-between", // Space evenly between children
+    paddingHorizontal: 30, // Add padding if needed
   },
 });
 
