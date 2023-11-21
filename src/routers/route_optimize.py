@@ -92,6 +92,7 @@ def optimize_routes(poi_list: TripPOI):
                         optimized_poi_order[i]["end_poi_id"] = poi[0]
                         endFound = True                
         
+        print(optimized_poi_order)
         return {"optimal_route": optimized_poi_order}
 
     except googlemaps.exceptions.ApiError as e:

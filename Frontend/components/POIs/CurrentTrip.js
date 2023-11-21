@@ -32,7 +32,6 @@ const CurrentTrip = ({
   const scrollViewRef = useRef();
   const [scrollX, setScrollX] = useState(0);
   const [isOptimized, setIsOptimized] = useState(false);
-  const [newData, setNewData] = useState(new Map());
 
   const addPOI = (POIid, day) => {
     const desiredX = scrollX + 300;
@@ -115,21 +114,19 @@ const CurrentTrip = ({
 
   const getOptimizedPath = () => {
     console.log("Optimizing path...");
-    console.log("noww", data);
     let poi_list = [];
-    const no_days = data.size;
-    var i = 0;
+    const dayNo = 1;
     Array.from(data, ([key, value]) => {
-        if (i < key) {
-          poi_list.push([]);
-          i += 1;
-        }
+      if (key == dayNo) {
         value.map((item) => {
-          poi_list[key - 1].push([item.poi_id, item.location.latitude, item.location.longitude]);
-          // poi_list.push([key, item.poi_id, item.location.latitude, item.location.longitude]);
+          poi_list.push([
+            item.poi_id,
+            item.location.latitude,
+            item.location.longitude,
+          ]);
         });
+      }
     });
-    console.log("POI list", poi_list);
 
     const postData = {
       trip_id: trip_id,
@@ -138,32 +135,52 @@ const CurrentTrip = ({
       end_poi_id: "2",
       mode: "driving",
     };
-  
-    // fetch("http://127.0.0.1:8000/api/trip/route/optimize", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     // You may need to include additional headers if required by your API
-    //   },
-    //   body: JSON.stringify(postData),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     // Handle the response data
-    //     console.log("Optimized path data:", data);
-    //     let optimized_days = new Map();
-    //     for (let i = 0; i < data["optimal_route"].length; i++) {
-    //       let dayRoute = data["optimal_route"][i];
-    //       let formattedDay = [];
-    //       for (let j = 0; j < day.length; j++) {
-    //         formattedDay.push(day[j]);
-    //       }
-    //       optimized_days.set(i + 1, formattedDay);
-    //     }
-    //   })
-    //   .catch((error) => console.error("Error fetching optimized path:", error));
+
+    fetch("http://127.0.0.1:8000/api/trip/route/optimize", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(postData),
+    })
+      .then((response) => response.json())
+      .then((data2) => {
+        var optimized_days = [];
+        var n = data2["optimal_route"].length;
+        for (let i = 0; i < n; i++) {
+          var curr_poi_id = data2["optimal_route"][i]["start_poi_id"];
+          data.forEach((value, key) => {
+            if (key == dayNo) {
+              for (let j = 0; j < value.length; j++) {
+                if (key == dayNo && value[j].poi_id == curr_poi_id) {
+                  obj = value[j];
+                  obj["nextStep"] = data2["optimal_route"][i];
+                  optimized_days.push(obj);
+                }
+              }
+            }
+          });
+        }
+        var last_poi_id = data2["optimal_route"][n - 1]["end_poi_id"];
+        data.forEach((value, key) => {
+          if (key == dayNo) {
+            for (let j = 0; j < value.length; j++) {
+              if (value[j].poi_id == last_poi_id) {
+                obj = value[j];
+                optimized_days.push(obj);
+                break;
+              }
+            }
+          }
+        });
+
+        setData((data) => data.set(dayNo, optimized_days));
+        setReload(!reload);
+        setIsOptimized(true);
+      })
+      .catch((error) => console.error("Error fetching optimized path:", error));
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
@@ -172,12 +189,12 @@ const CurrentTrip = ({
             {/* Loop days and data in a tabular format  */}
             {Array.from(data, ([key, value]) => (
               <View key={key} style={styles.container}>
-              <View style={styles.toprow}>
-                <Text style={styles.text}>Day {key}</Text>
-                {/* if (!optimized_days.has(key)) { */}
-                  <Button title="Optimize route" onPress={getOptimizedPath}/>
-                {/* } */}
-              </View>
+                <View style={styles.toprow}>
+                  <Text style={styles.text}>Day {key}</Text>
+                  {/* if (!optimized_days.has(key)) { */}
+                  <Button title="Optimize route" onPress={getOptimizedPath} />
+                  {/* } */}
+                </View>
                 {value.map((item) => (
                   <View key={item.name}>
                     <TouchableOpacity
@@ -187,6 +204,7 @@ const CurrentTrip = ({
                         item={item}
                         day={key}
                         removePOI={removePOI}
+                        isOptimized={isOptimized}
                       />
                     </TouchableOpacity>
                   </View>

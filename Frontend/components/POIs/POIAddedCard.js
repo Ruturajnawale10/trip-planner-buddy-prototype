@@ -3,16 +3,18 @@ import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const POIAddedCard = ({ item, day, removePOI }) => {
+const POIAddedCard = ({ item, day, removePOI, isOptimized }) => {
   return (
     <View>
       <View style={styles.card}>
         <View style={styles.textContainer}>
           <Text style={styles.tripName}>{item.name}</Text>
           <Text style={styles.description}>
-            {item.description.length < 90
+            {item.description != null && item.description.length < 90
               ? `${item.description}`
-              : `${item.description.substring(0, 90)}...`}
+              : item.description != null
+              ? `${item.description.substring(0, 90)}...`
+              : ""}
           </Text>
         </View>
         <Image
@@ -30,7 +32,17 @@ const POIAddedCard = ({ item, day, removePOI }) => {
         </View>
       </View>
       {/* Add a horizontal line below the card */}
-      <View style={styles.separator} />
+      {isOptimized && item.nextStep ? (
+        <View style={styles.container}>
+          <View style={styles.separator} />
+          <Text style={styles.text}>Driving</Text>
+          <View style={styles.separator} />
+          <Text style={styles.text}>Distance {item.nextStep ? item.nextStep.distance: ""}</Text>
+          <View style={styles.separator} />
+          <Text style={styles.text}>Time {item.nextStep ? item.nextStep.duration: ""}</Text>
+          <View style={styles.separator} />
+        </View>
+      ) : <View style={styles.separator_full} />}
     </View>
   );
 };
@@ -65,10 +77,35 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width - 150,
     numberOfLines: 2,
   },
+  separator_full: {
+    height: 1,
+    backgroundColor: "#D3D3D3",
+    borderRadius: 1,
+    marginHorizontal: 5,
+    marginBottom: 10,
+  },
+  toprow: {
+    flexDirection: "row", // Arrange children horizontally
+    justifyContent: "space-between", // Space evenly between children
+    paddingHorizontal: 30, // Add padding if needed
+  },
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 30,
+  },
+  text: {
+    fontSize: 16,
+    marginRight: 5, // Adjust the spacing between texts
+    color: "#767282",
+  },
   separator: {
     height: 1,
-    backgroundColor: "#D3D3D3", // Color of the separator line
-    marginVertical: 16, // Adjust the margin as needed
+    width: "10%",
+    backgroundColor: "#D3D3D3",
+    borderRadius: 1,
+    marginHorizontal: 5,
   },
 });
 
