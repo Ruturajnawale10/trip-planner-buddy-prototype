@@ -112,10 +112,9 @@ const CurrentTrip = ({
       .catch((error) => console.error(error));
   };
 
-  const getOptimizedPath = () => {
-    console.log("Optimizing path...");
+  const getOptimizedPath = (dayNo) => {
+    console.log("Optimizing path...", dayNo);
     let poi_list = [];
-    const dayNo = 1;
     Array.from(data, ([key, value]) => {
       if (key == dayNo) {
         value.map((item) => {
@@ -175,7 +174,6 @@ const CurrentTrip = ({
         });
 
         setData((data) => data.set(dayNo, optimized_days));
-        setReload(!reload);
         setIsOptimized(true);
       })
       .catch((error) => console.error("Error fetching optimized path:", error));
@@ -187,16 +185,19 @@ const CurrentTrip = ({
         <ScrollView>
           <View style={styles.container}>
             {/* Loop days and data in a tabular format  */}
+            {/*using data object below to reflect change in data without reloading entire page*/}
+            <Text style={{ height: 0, width: 0 }}>{data.length}</Text>
             {Array.from(data, ([key, value]) => (
               <View key={key} style={styles.container}>
                 <View style={styles.toprow}>
                   <Text style={styles.text}>Day {key}</Text>
-                  {/* if (!optimized_days.has(key)) { */}
-                  <Button title="Optimize route" onPress={getOptimizedPath} />
-                  {/* } */}
+                  <Button
+                    title="Optimize route"
+                    onPress={() => getOptimizedPath(key)}
+                  />
                 </View>
                 {value.map((item, index) => (
-                  <View key={item.name}>
+                  <View key={item.name + index}>
                     <TouchableOpacity
                       onPress={() => handleDetailsPress(item, key)}
                     >

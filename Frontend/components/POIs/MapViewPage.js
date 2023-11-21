@@ -53,7 +53,6 @@ const MapViewPage = ({
   };
 
   const showMarkers = () => {
-    console.log("pois", POIListData);
     if (value != 0) {
       return (
         <>

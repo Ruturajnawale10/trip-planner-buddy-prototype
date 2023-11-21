@@ -65,7 +65,6 @@ function ItineraryTabs({ navigation }) {
       .then((json) => {
         // console.log("POI List", json);
         setPOIListData(json);
-        console.log(POIListData.gpt_recommendations);
 
         setRecommendations(json.gpt_recommendations);
         setFlag(true);

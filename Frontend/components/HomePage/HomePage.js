@@ -73,7 +73,6 @@ const HomePage = ({ navigation }) => {
       .then((json) => {
         setData(json);
         setTopRatedTrips(json);
-        console.log(json);
         if (json.length > 0) {
           setIsTopRatedTripsPresent(true);
         }
