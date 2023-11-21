@@ -195,13 +195,14 @@ const CurrentTrip = ({
                   <Button title="Optimize route" onPress={getOptimizedPath} />
                   {/* } */}
                 </View>
-                {value.map((item) => (
+                {value.map((item, index) => (
                   <View key={item.name}>
                     <TouchableOpacity
                       onPress={() => handleDetailsPress(item, key)}
                     >
                       <POIAddedCard
                         item={item}
+                        index={index}
                         day={key}
                         removePOI={removePOI}
                         isOptimized={isOptimized}

@@ -2,12 +2,14 @@ import React from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
+import IconWithNumber from "../IconWithNumber";
 
-const POIAddedCard = ({ item, day, removePOI, isOptimized }) => {
+const POIAddedCard = ({ item, index, day, removePOI, isOptimized }) => {
   return (
     <View>
       <View style={styles.card}>
         <View style={styles.textContainer}>
+          <IconWithNumber iconName="map-marker" number={index + 1} />
           <Text style={styles.tripName}>{item.name}</Text>
           <Text style={styles.description}>
             {item.description != null && item.description.length < 90
@@ -16,6 +18,11 @@ const POIAddedCard = ({ item, day, removePOI, isOptimized }) => {
               ? `${item.description.substring(0, 90)}...`
               : ""}
           </Text>
+          <View style={{marginLeft: 50}}>
+            <TouchableOpacity onPress={() => removePOI(item.poi_id, day)}>
+              <Icon name="remove" size={25} color="#900" />
+            </TouchableOpacity>
+          </View>
         </View>
         <Image
           source={{
@@ -25,11 +32,6 @@ const POIAddedCard = ({ item, day, removePOI, isOptimized }) => {
           }}
           style={styles.image}
         />
-        <View>
-          <TouchableOpacity onPress={() => removePOI(item.poi_id, day)}>
-            <Icon name="remove" size={30} color="#900" />
-          </TouchableOpacity>
-        </View>
       </View>
       {/* Add a horizontal line below the card */}
       {isOptimized && item.nextStep ? (
@@ -37,12 +39,18 @@ const POIAddedCard = ({ item, day, removePOI, isOptimized }) => {
           <View style={styles.separator} />
           <Text style={styles.text}>Driving</Text>
           <View style={styles.separator} />
-          <Text style={styles.text}>Distance {item.nextStep ? item.nextStep.distance: ""}</Text>
+          <Text style={styles.text}>
+            Distance {item.nextStep ? item.nextStep.distance : ""}
+          </Text>
           <View style={styles.separator} />
-          <Text style={styles.text}>Time {item.nextStep ? item.nextStep.duration: ""}</Text>
+          <Text style={styles.text}>
+            Time {item.nextStep ? item.nextStep.duration : ""}
+          </Text>
           <View style={styles.separator} />
         </View>
-      ) : <View style={styles.separator_full} />}
+      ) : (
+        <View style={styles.separator_full} />
+      )}
     </View>
   );
 };
@@ -68,6 +76,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "bold",
     marginBottom: 8,
+    marginLeft: 28,
     width: Dimensions.get("window").width - 150,
   },
   description: {
