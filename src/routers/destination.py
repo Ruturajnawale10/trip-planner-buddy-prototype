@@ -22,7 +22,6 @@ collection_poi = db['poi']
 def places_list(destination: str, user_name: Optional[str] = None):
     destination = destination.replace("%", " ")
     destination = string.capwords(destination)
-    print(destination)
 
     try:
         # Find the city by city_name
@@ -88,7 +87,6 @@ def get_nearby(user_address: str, radius: int, user_name: Optional[str] = None):
     if user_name != None:
         gpt_recommendations = generate_recommnedation_from_city_object(dummy_city, user_name)
     dummy_city.update({'gpt_recommendations': gpt_recommendations})
-    print("dummy city: ", dummy_city)
     return dummy_city
 
 

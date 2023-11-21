@@ -25,7 +25,6 @@ const Weather = ({ navigation }) => {
     )
       .then((response) => response.json())
       .then((json) => {
-        console.log("HEre", json);
         setWeatherData(json.weatherData);
         setIsForecastAvailable(json.isForecastAvailable);
       })

@@ -127,10 +127,10 @@ function ItineraryTabs({ navigation }) {
           />
         )}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="Weather"
         children={() => <Weather navigation={navigation} />}
-      /> */}
+      />
     </Tab.Navigator>
   );
 }

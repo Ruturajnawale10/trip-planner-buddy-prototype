@@ -5,9 +5,9 @@ from datetime import datetime, timedelta
 import requests
 from utils.poi_util import get_coordinates_from_address_google_api, get_coordinate_info_from_address
 
-import openai
+from openai import OpenAI
 
-openai.api_key = settings.gpt_key
+client = OpenAI(api_key=settings.gpt_key)
 
 router = APIRouter(
     tags=['Trip Weather']
@@ -60,11 +60,11 @@ def weather_recommendation(location: str, start_date: date, end_date: date):
         return {"isForecastAvailable": is_forecast_available,"weatherData":gpt_response}
 
 def gpt(prompt_str):
-    response = openai.Completion.create(
-        engine="gpt-3.5-turbo-instruct",
-        prompt=prompt_str,
-        temperature=0.7,
-        max_tokens=800,
+    response = client.chat.completions.create(
+        model= settings.gpt_model,
+        messages=[
+            {"role": "user", "content": prompt_str}
+        ]
     )
-
-    return response.choices[0].text
+    res = str(response.choices[0].message.content)
+    return res

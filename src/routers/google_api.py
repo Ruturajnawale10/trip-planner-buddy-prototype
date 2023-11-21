@@ -155,7 +155,6 @@ def populate_data(
 
 @router.get("/vulnerability/{test}")
 def populate_data(test: str):
-    print(test)
     run_test(test)
     return {"respose": test}
 
