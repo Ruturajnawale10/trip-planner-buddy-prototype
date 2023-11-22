@@ -34,7 +34,7 @@ const POIAddedCard = ({ item, index, day, removePOI, isOptimized }) => {
         />
       </View>
       {/* Add a horizontal line below the card */}
-      {isOptimized && item.nextStep ? (
+      {item.nextStep ? (
         <View style={styles.container}>
           <View style={styles.separator} />
           <Text style={styles.text}>Driving</Text>

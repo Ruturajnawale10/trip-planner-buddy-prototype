@@ -8,6 +8,7 @@ from configs.db import db
 from bson.objectid import ObjectId
 
 from utils.poi_util import get_poi_from_poi_id
+from routers.route_optimizer import get_route
 
 router = APIRouter(
     tags=['Trip']
@@ -44,6 +45,11 @@ class TripRatingRequest(BaseModel):
 class UsernameRequestBody(BaseModel):
     username: str
 
+class TripPOI(BaseModel):
+    trip_id: str
+    pois: list
+    mode: str
+    optimize_waypoints: bool
 
 collection_trip = db['trip']
 collection_user = db['user']
@@ -407,10 +413,25 @@ def get_pois_of_a_trip(trip: TripRequestResponse):
             t1 = []
             t1.append({"pois" : temp_poi_list})
             poi_list[i] = t1
+        
+        poi_id_coordinates = []
+        for i in range(total_pois):
+            pois_in_day = poi_list[i][0]["pois"]
+            temp_poi_list = []
+            for poi in pois_in_day:
+                temp_poi_list.append([poi["poi_id"], poi["location"]["latitude"], poi["location"]["longitude"]])
+            poi_id_coordinates.append(temp_poi_list)
+
+        for i in range(len(poi_list)):
+            obj = TripPOI(trip_id=trip.trip_id, pois=poi_id_coordinates[i], mode="driving", optimize_waypoints=False)
+            route = get_route(obj)
+            for j in range(len(poi_list[i][0]["pois"]) - 1): 
+                poi_list[i][0]["pois"][j]["nextStep"] = route[j]
     except Trip.DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Trip object not found")
 
     except Exception as e:
+        print("error", e)
         raise HTTPException(status_code=500, detail=str(e))
     response_array = []
     response_array.append(poi_list)

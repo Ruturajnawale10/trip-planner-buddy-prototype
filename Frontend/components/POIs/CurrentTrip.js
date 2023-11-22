@@ -133,6 +133,7 @@ const CurrentTrip = ({
       start_poi_id: "1",
       end_poi_id: "2",
       mode: "driving",
+      optimize_waypoints: true,
     };
 
     fetch("http://127.0.0.1:8000/api/trip/route/optimize", {
