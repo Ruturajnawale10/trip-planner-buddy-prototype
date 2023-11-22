@@ -22,6 +22,8 @@ function ItineraryTabs({ navigation }) {
   const [reload, setReload] = useState(false);
   const { location, address, radius, startDate, endDate, trip_id } =
     navigation.state.params;
+  const [route_transport, setRouteTransport] = useState("driving");
+  const [route_loading, setRouteLoading] = useState(false);
 
   const getCurrentTrip = () => {
     fetch("http://127.0.0.1:8000/api/trip/poi_list_1/", {
@@ -31,6 +33,7 @@ function ItineraryTabs({ navigation }) {
       },
       body: JSON.stringify({
         trip_id: trip_id,
+        mode: route_transport,
       }),
     })
       .then((response) => response.json())
@@ -42,6 +45,7 @@ function ItineraryTabs({ navigation }) {
             formattedDay.push(day[j]);
           }
           setData((data) => data.set(i + 1, formattedDay));
+          setRouteLoading(false);
         }
       })
       .catch((error) => console.error(error));
@@ -109,6 +113,10 @@ function ItineraryTabs({ navigation }) {
             recommendations={recommendations}
             loading={loading}
             trip_id={trip_id}
+            setRouteTransport={setRouteTransport}
+            route_transport={route_transport}
+            setRouteLoading={setRouteLoading}
+            route_loading={route_loading}
           />
         )}
       />

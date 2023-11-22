@@ -36,6 +36,7 @@ class TripDeletePoi(BaseModel):
 
 class TripRequestResponse(BaseModel):
     trip_id: str
+    mode: str
 
 class TripRatingRequest(BaseModel):
     trip_id: str
@@ -423,7 +424,7 @@ def get_pois_of_a_trip(trip: TripRequestResponse):
             poi_id_coordinates.append(temp_poi_list)
 
         for i in range(len(poi_list)):
-            obj = TripPOI(trip_id=trip.trip_id, pois=poi_id_coordinates[i], mode="driving", optimize_waypoints=False)
+            obj = TripPOI(trip_id=trip.trip_id, pois=poi_id_coordinates[i], mode=trip.mode, optimize_waypoints=False)
             route = get_route(obj)
             for j in range(len(poi_list[i][0]["pois"]) - 1): 
                 poi_list[i][0]["pois"][j]["nextStep"] = route[j]

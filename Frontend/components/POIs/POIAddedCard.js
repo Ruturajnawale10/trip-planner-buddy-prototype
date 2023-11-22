@@ -1,10 +1,51 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
 import IconWithNumber from "../IconWithNumber";
+import CarIcon from "react-native-vector-icons/AntDesign";
+import WalkIcon from "react-native-vector-icons/FontAwesome5";
+import BicycleIcon from "react-native-vector-icons/FontAwesome";
 
-const POIAddedCard = ({ item, index, day, removePOI }) => {
+const POIAddedCard = ({
+  item,
+  index,
+  day,
+  removePOI,
+  route_transport,
+  route_loading,
+}) => {
+  var icon;
+  if (route_transport == "driving") {
+    icon = (
+      <CarIcon name="car" size={25} color="grey" style={{ marginRight: 2 }} />
+    );
+  } else if (route_transport == "walking") {
+    icon = (
+      <WalkIcon
+        name="walking"
+        size={25}
+        color="grey"
+        style={{ marginRight: 2 }}
+      />
+    );
+  } else {
+    icon = (
+      <BicycleIcon
+        name="bicycle"
+        size={25}
+        color="grey"
+        style={{ marginRight: 2 }}
+      />
+    );
+  }
   return (
     <View>
       <View style={styles.card}>
@@ -18,7 +59,7 @@ const POIAddedCard = ({ item, index, day, removePOI }) => {
               ? `${item.description.substring(0, 90)}...`
               : ""}
           </Text>
-          <View style={{marginLeft: 50}}>
+          <View style={{ marginLeft: 50 }}>
             <TouchableOpacity onPress={() => removePOI(item.poi_id, day)}>
               <Icon name="remove" size={25} color="#900" />
             </TouchableOpacity>
@@ -34,22 +75,27 @@ const POIAddedCard = ({ item, index, day, removePOI }) => {
         />
       </View>
       {/* Add a horizontal line below the card */}
-      {item.nextStep ? (
-        <View style={styles.container}>
-          <View style={styles.separator} />
-          <Text style={styles.text}>Driving</Text>
-          <View style={styles.separator} />
-          <Text style={styles.text}>
-            Distance {item.nextStep ? item.nextStep.distance : ""}
-          </Text>
-          <View style={styles.separator} />
-          <Text style={styles.text}>
-            Time {item.nextStep ? item.nextStep.duration : ""}
-          </Text>
-          <View style={styles.separator} />
-        </View>
+      {!route_loading ? (
+        item.nextStep ? (
+          <View style={styles.container}>
+            <View style={styles.separator} />
+            {icon}
+            {/* <Text style={styles.text}></Text> */}
+            <View style={styles.separator} />
+            <Text style={styles.text}>
+              Distance {item.nextStep ? item.nextStep.distance : ""}
+            </Text>
+            <View style={styles.separator} />
+            <Text style={styles.text}>
+              Time {item.nextStep ? item.nextStep.duration : ""}
+            </Text>
+            <View style={styles.separator} />
+          </View>
+        ) : (
+          <View style={styles.separator_full} />
+        )
       ) : (
-        <View style={styles.separator_full} />
+        <ActivityIndicator size="small" color="#0000ff" />
       )}
     </View>
   );

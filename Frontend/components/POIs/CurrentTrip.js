@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -11,9 +11,9 @@ import { SafeAreaView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ListPOIs from "./ListPOIs";
 import POIAddedCard from "./POIAddedCard";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { userName } from "../RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
+import DropDownPicker from "react-native-dropdown-picker";
 
 const CurrentTrip = ({
   navigation,
@@ -27,10 +27,21 @@ const CurrentTrip = ({
   recommendations,
   loading,
   trip_id,
+  setRouteTransport,
+  route_transport,
+  setRouteLoading,
+  route_loading,
 }) => {
   const [username, setUsername] = useRecoilState(userName);
   const scrollViewRef = useRef();
   const [scrollX, setScrollX] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    { label: "driving", value: "driving" },
+    { label: "walking", value: "walking" },
+    { label: "bicycling", value: "bicycling" },
+  ]);
 
   const addPOI = (POIid, day) => {
     const desiredX = scrollX + 300;
@@ -151,14 +162,34 @@ const CurrentTrip = ({
       .catch((error) => console.error("Error fetching optimized path:", error));
   };
 
+  const handleTransportChange = (item) => {
+    setRouteTransport(item);
+    setRouteLoading(true);
+    setReload(!reload);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
         <ScrollView>
           <View style={styles.container}>
-            {/* Loop days and data in a tabular format  */}
             {/*using data object below to reflect change in data without reloading entire page*/}
-            <Text style={{ height: 0, width: 0 }}>{data.length}</Text>
+            <Text style={{ height: 0, width: 0 }}>
+              {data.length} {route_transport}
+            </Text>
+            <DropDownPicker
+              placeholder={route_transport}
+              defaultValue={route_transport}
+              style={styles.dropDownPicker}
+              open={open}
+              value={value}
+              items={items}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={setItems}
+              listMode="SCROLLVIEW"
+              onChangeValue={handleTransportChange}
+            />
             {Array.from(data, ([key, value]) => (
               <View key={key} style={styles.container}>
                 <View style={styles.toprow}>
@@ -178,6 +209,8 @@ const CurrentTrip = ({
                         index={index}
                         day={key}
                         removePOI={removePOI}
+                        route_transport={route_transport}
+                        route_loading={route_loading}
                       />
                     </TouchableOpacity>
                   </View>
@@ -209,7 +242,6 @@ const CurrentTrip = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 10,
     paddingBottom: 30,
     paddingLeft: 6,
     backgroundColor: "#ffffff",
@@ -218,8 +250,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 10,
+    paddingBottom: 5,
   },
   location: {
     fontSize: 15,
@@ -240,10 +272,8 @@ const styles = StyleSheet.create({
   locations: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // alignItems: "center",
   },
   removeButton: {
-    // flex: 1,
     width: "80%",
     height: 40,
     borderRadius: 10,
@@ -256,9 +286,14 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   toprow: {
-    flexDirection: "row", // Arrange children horizontally
-    justifyContent: "space-between", // Space evenly between children
-    paddingHorizontal: 30, // Add padding if needed
+    flexDirection: "col",
+    paddingHorizontal: 50,
+  },
+  dropDownPicker: {
+    zIndex: 100,
+    top: 5,
+    width: 120,
+    height: 5,
   },
 });
 
