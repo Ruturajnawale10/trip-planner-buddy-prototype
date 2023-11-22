@@ -4,6 +4,7 @@ import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { StyleSheet, Text, View, Image } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { color } from "../../custom_colors/colors";
 
 const POIsCard = ({
   imageID,
@@ -38,6 +39,19 @@ const POIsCard = ({
         />
         <View style={styles.textContainer}>
           <Text style={styles.poiName}>{poi_name}</Text>
+          {item.rating != null ? (
+            <Text>
+              Rating: <Text style={{ color: color.purple }}>{item.rating}</Text>
+            </Text>
+          ) : null}
+          {item.maxMinutesSpent != null ? (
+            <Text>
+              Avg time spent{" "}
+              <Text style={{ color: color.purple }}>
+                {(item.maxMinutesSpent + item.minMinutesSpent) / 2} min
+              </Text>
+            </Text>
+          ) : null}
         </View>
         <TouchableOpacity onPress={() => handleAddPress(poi_id, day)}>
           <AntDesign style={styles.add} name="pluscircle" size={38} />
@@ -59,6 +73,16 @@ const POIsCard = ({
         />
         <View style={styles.textContainer}>
           <Text style={styles.poiName}>{poi_name}</Text>
+          {item.rating != null ? <Text>Rating {item.rating}</Text> : null}
+          {item.maxMinutesSpent != null ? (
+            <Text>
+              Avg time spent{" "}
+              <Text style={{ color: color.purple }}>
+                {(item.maxMinutesSpent + item.minMinutesSpent) / 2} min
+              </Text>
+            </Text>
+          ) : null}
+          <Text style={{ color: "green" }}>Recommended</Text>
         </View>
         <TouchableOpacity onPress={() => handleAddPress(poi_id, day)}>
           <AntDesign style={styles.add} name="pluscircle" size={38} />
@@ -84,16 +108,14 @@ const styles = StyleSheet.create({
   recommendedCard: {
     flexDirection: "row",
     borderWidth: 1,
-    borderColor: "orange",
     borderRadius: 8,
     marginBottom: 16,
     alignItems: "center",
     marginLeft: 10,
-    backgroundColor: "#f9a03f",
   },
   image: {
-    width: 80,
-    height: 80,
+    width: 110,
+    height: 110,
     borderRadius: 8,
     marginRight: 16,
   },
