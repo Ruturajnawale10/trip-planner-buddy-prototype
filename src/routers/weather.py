@@ -54,8 +54,8 @@ def weather_recommendation(location: str, start_date: date, end_date: date):
             if start_date <= forecast_date <= end_date:
                 filtered_data.append(forecast)
         
-        prompt_str = f"Given weather forecast data for the dates in {location} city, write weather summary, clothing recommendations for the trip, and any other suggestions for the trip.\n The weather forecast data is as follows: {filtered_data}"
-        gpt_response = gpt(prompt_str)       
+        prompt_str = f"Given weather forecast data for the dates in {location} city, return weather summary, clothing recommendations for the trip, and any other suggestions for the trip.\n The weather forecast data is as follows: {filtered_data}. Return temperature in Fahrenheit.\n"
+        gpt_response = gpt(prompt_str)
 
         return {"isForecastAvailable": is_forecast_available,"weatherData":gpt_response}
 

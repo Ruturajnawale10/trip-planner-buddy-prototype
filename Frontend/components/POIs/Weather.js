@@ -25,7 +25,29 @@ const Weather = ({ navigation }) => {
     )
       .then((response) => response.json())
       .then((json) => {
-        setWeatherData(json.weatherData);
+        const patterns = [
+          "Weather Summary",
+          "Weather summary",
+          "weather Summary",
+          "weather summary",
+        ];
+
+        // Create a regular expression pattern by joining the phrases with the OR operator (|) and using the 'i' flag for case-insensitivity
+        const pattern = new RegExp(
+          patterns
+            .map((p) => "(" + p.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&") + ")")
+            .join("|"),
+          "i"
+        );
+
+        // Find the index of the first match
+        const match = json.weatherData.match(pattern);
+
+        if (match) {
+          setWeatherData(json.weatherData.slice(match.index));
+        } else {
+          setWeatherData(json.weatherData);
+        }
         setIsForecastAvailable(json.isForecastAvailable);
       })
       .catch((error) => console.error(error))
