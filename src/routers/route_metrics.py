@@ -12,6 +12,7 @@ class TripPOI(BaseModel):
     optimize_waypoints: bool
     
 def get_route(poi_list: TripPOI):
+    print("Inside get_route", poi_list.mode)
     # Initialize the Google Maps API client
     gmaps = googlemaps.Client(key=settings.google_api_key)
     pois = poi_list.pois
