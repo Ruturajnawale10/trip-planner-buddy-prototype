@@ -13,6 +13,7 @@ import Swiper from "react-native-swiper";
 import NavigationBar from "../NavigationButton/NavigationBar";
 import { userName } from "../RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
+import { color } from "../../custom_colors/colors";
 
 export default function POIs({ navigation }) {
   // Extract the POI data from the route params
@@ -96,7 +97,7 @@ export default function POIs({ navigation }) {
           <SafeAreaView style={styles.container}>
             <Swiper showsButtons={true} style={{ height: 400 }}>
               {images.map((image) => (
-                <View style={{ alignItems: "center" }}>
+                <View key={image} style={{ alignItems: "center" }}>
                   <Image style={styles.image} source={{ uri: image }} />
                 </View>
               ))}
@@ -123,7 +124,7 @@ export default function POIs({ navigation }) {
             <Text style={styles.details}>Rating: {item.rating} / 5</Text>
             {showAdded && (
               <TouchableOpacity
-                style={[styles.favouriteButton, { backgroundColor: "blue" }]}
+                style={[styles.favouriteButton, { backgroundColor: color.purple }]}
                 onPress={() => {
                   try {
                     addPOI(item.poi_id);
@@ -199,10 +200,10 @@ const styles = StyleSheet.create({
     margin: 8,
     fontWeight: "bold",
     borderWidth: 1,
-    borderColor: "orange",
+    borderColor: color.purple,
     borderRadius: 8,
     alignItems: "center",
-    backgroundColor: "#f9a03f",
+    backgroundColor: color.purpleLight,
   },
   recommendedDescriptionText: {
     fontSize: 16,
@@ -217,9 +218,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   details: {
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 8,
     margin: 8,
+    paddingHorizontal: 8,
   },
   favouriteButton: {
     backgroundColor: "blue",
