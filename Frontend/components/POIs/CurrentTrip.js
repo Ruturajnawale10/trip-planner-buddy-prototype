@@ -31,7 +31,6 @@ const CurrentTrip = ({
   const [username, setUsername] = useRecoilState(userName);
   const scrollViewRef = useRef();
   const [scrollX, setScrollX] = useState(0);
-  const [isOptimized, setIsOptimized] = useState(false);
 
   const addPOI = (POIid, day) => {
     const desiredX = scrollX + 300;
@@ -134,6 +133,7 @@ const CurrentTrip = ({
       end_poi_id: "2",
       mode: "driving",
       optimize_waypoints: true,
+      day: dayNo,
     };
 
     fetch("http://127.0.0.1:8000/api/trip/route/optimize", {
@@ -145,37 +145,8 @@ const CurrentTrip = ({
     })
       .then((response) => response.json())
       .then((data2) => {
-        var optimized_days = [];
-        var n = data2["optimal_route"].length;
-        for (let i = 0; i < n; i++) {
-          var curr_poi_id = data2["optimal_route"][i]["start_poi_id"];
-          data.forEach((value, key) => {
-            if (key == dayNo) {
-              for (let j = 0; j < value.length; j++) {
-                if (key == dayNo && value[j].poi_id == curr_poi_id) {
-                  obj = value[j];
-                  obj["nextStep"] = data2["optimal_route"][i];
-                  optimized_days.push(obj);
-                }
-              }
-            }
-          });
-        }
-        var last_poi_id = data2["optimal_route"][n - 1]["end_poi_id"];
-        data.forEach((value, key) => {
-          if (key == dayNo) {
-            for (let j = 0; j < value.length; j++) {
-              if (value[j].poi_id == last_poi_id) {
-                obj = value[j];
-                optimized_days.push(obj);
-                break;
-              }
-            }
-          }
-        });
-
-        setData((data) => data.set(dayNo, optimized_days));
-        setIsOptimized(true);
+        console.log("Path optimized");
+        setReload(!reload);
       })
       .catch((error) => console.error("Error fetching optimized path:", error));
   };
@@ -207,7 +178,6 @@ const CurrentTrip = ({
                         index={index}
                         day={key}
                         removePOI={removePOI}
-                        isOptimized={isOptimized}
                       />
                     </TouchableOpacity>
                   </View>

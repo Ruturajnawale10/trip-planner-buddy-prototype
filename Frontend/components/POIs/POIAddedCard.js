@@ -4,7 +4,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
 import IconWithNumber from "../IconWithNumber";
 
-const POIAddedCard = ({ item, index, day, removePOI, isOptimized }) => {
+const POIAddedCard = ({ item, index, day, removePOI }) => {
   return (
     <View>
       <View style={styles.card}>
