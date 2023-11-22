@@ -8,7 +8,7 @@ from configs.db import db
 from bson.objectid import ObjectId
 
 from utils.poi_util import get_poi_from_poi_id
-from routers.route_optimizer import get_route
+from routers.route_metrics import get_route
 
 router = APIRouter(
     tags=['Trip']
