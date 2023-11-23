@@ -36,6 +36,9 @@ class TripDeletePoi(BaseModel):
 
 class TripRequestResponse(BaseModel):
     trip_id: str
+    
+class TripRequestResponseWaypoint(BaseModel):
+    trip_id: str
     mode: str
 
 class TripRatingRequest(BaseModel):
@@ -250,7 +253,7 @@ def get_top_rated_trips_list():
     return trip_list
 
 @router.post("/api/trip/poi_list/")
-def get_pois_of_a_trip(trip: TripRequestResponse):
+def get_pois_of_a_trip(trip: TripRequestResponseWaypoint):
     print("POIs list for a trip api called")
     try:
         existing_trip = collection_trip.find_one(
@@ -395,7 +398,7 @@ def rate_trip(trip: TripRatingRequest):
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.post("/api/trip/poi_list_1/")
-def get_pois_of_a_trip(trip: TripRequestResponse):
+def get_pois_of_a_trip(trip: TripRequestResponseWaypoint):
     print("POIs list for a trip api called")
     try:
         existing_trip = collection_trip.find_one(
@@ -425,9 +428,10 @@ def get_pois_of_a_trip(trip: TripRequestResponse):
 
         for i in range(len(poi_list)):
             obj = TripPOI(trip_id=trip.trip_id, pois=poi_id_coordinates[i], mode=trip.mode, optimize_waypoints=False)
-            route = get_route(obj)
-            for j in range(len(poi_list[i][0]["pois"]) - 1): 
-                poi_list[i][0]["pois"][j]["nextStep"] = route[j]
+            if len(poi_id_coordinates[i]) >= 2:
+                route = get_route(obj)
+                for j in range(len(poi_list[i][0]["pois"]) - 1): 
+                    poi_list[i][0]["pois"][j]["nextStep"] = route[j]
     except Trip.DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Trip object not found")
 
