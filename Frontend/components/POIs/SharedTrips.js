@@ -120,6 +120,7 @@ const toggleAllTrips = () => {
           ))}
         </ScrollView>
       )}
+      <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
 };

@@ -18,13 +18,6 @@ const UpcomingTrips = ({ navigation }) => {
 
   const [username, setUsername] = useRecoilState(userName);
 
-  const [allCollapsed, setAllCollapsed] = useState(false);
-
-// Function to toggle collapse/expand for all trips
-const toggleAllTrips = () => {
-  setAllCollapsed(!allCollapsed);
-};
-
   const trip_img_url =
     "https://helios-i.mashable.com/imagery/articles/06zoscMHTZxU5KEFx8SRyDg/hero-image.fill.size_1200x900.v1630023012.jpg";
 
@@ -77,11 +70,10 @@ const toggleAllTrips = () => {
   };
 
   const goToTrip = (trip) => {
-    if (!allCollapsed) {
-      return; // Prevent navigation when expanding/collapsing all trips
-    }
     navigation.navigate("ItineraryHome", {
       location: trip.cityName,
+      address: trip.address,
+      radius: trip.radius,
       startDate: trip.startDate,
       endDate: trip.endDate,
       trip_id: trip._id,
@@ -97,15 +89,13 @@ const toggleAllTrips = () => {
       {!isLoadingData && (
         <ScrollView>
             
-        <TouchableOpacity onPress={toggleAllTrips}>
         <Text style={styles.text}>
           {upcomingTrips.length > 0 ? " Upcoming Trips  " : " No upcoming trips "}
          </Text>
         
-        </TouchableOpacity> 
-          {isCurrentTripPresent && !allCollapsed && upcomingTrips.map((trip, index) => (
+           {isCurrentTripPresent  && upcomingTrips.map((trip, index) => (
             
-            <TouchableOpacity key={index} onPress={() => goToTrip(trip)} style={styles.submitButton}>
+            <TouchableOpacity key={index} onPress={() => goToTrip(trip)}  style={styles.submitButton}>
             
               <TripCard
                 onPress={pastTrips}
@@ -121,6 +111,7 @@ const toggleAllTrips = () => {
           ))}
         </ScrollView>
       )}
+     <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
 };

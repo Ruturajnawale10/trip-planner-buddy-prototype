@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, Alert } from "react-native";
 import CurrentTrip from "./CurrentTrip";
 import Weather from "./Weather";
 import NavigationBar from "../NavigationButton/NavigationBar";
@@ -26,7 +26,7 @@ function ItineraryTabs({ navigation }) {
   const [route_loading, setRouteLoading] = useState(false);
 
   const getCurrentTrip = () => {
-    fetch("http://127.0.0.1:8000/api/trip/poi_list_1/", {
+    fetch("http://192.168.56.1:8000/api/trip/poi_list_1/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -84,6 +84,79 @@ function ItineraryTabs({ navigation }) {
   useEffect(() => {
     console.log("**************data", data.size);
   }, [loading]);
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const tripEndDate = new Date(endDate);
+  
+    if (tripEndDate < currentDate) {
+      // Trip has ended
+      Alert.alert(
+        "Your trip seems to have ended.",
+        "Do you wish to move it to past trips?",
+        [
+          {
+            text: "Yes",
+            onPress: () => moveToPastTrips(),
+          },
+          {
+            text: "No",
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  }, []);
+
+  const moveToPastTrips = () => {
+    // Make API call to move trip to past trips
+    // Show another confirmation alert
+    Alert.alert(
+      "Help other users of Trip Planner by sharing this trip.",
+      "Do you wish to share this trip?",
+      [
+        {
+          text: "Yes",
+          onPress: () => shareTrip(),
+        },
+        {
+          text: "No",
+          onPress: () => onlyMoveToPastTrips(),
+          style: "cancel",
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+  
+  const shareTrip = () => {
+    fetch("http://192.168.56.1:8000/api/trip/mark/complete/share", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        trip_id: trip_id,
+      }),
+    })
+      .then((response) => navigation.navigate("HomePage"))
+      .catch((error) => console.error(error));
+  };
+
+  const onlyMoveToPastTrips = () => {
+    fetch("http://192.168.56.1:8000/api/trip/mark/complete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        trip_id: trip_id,
+      }),
+    })
+      .then((response) => navigation.navigate("HomePage"))
+      .catch((error) => console.error(error));
+  };
 
   return (
     <Tab.Navigator
