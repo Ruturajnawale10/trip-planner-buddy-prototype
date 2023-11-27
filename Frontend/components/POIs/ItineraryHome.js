@@ -26,7 +26,7 @@ function ItineraryTabs({ navigation }) {
   const [route_loading, setRouteLoading] = useState(false);
 
   const getCurrentTrip = () => {
-    fetch("http://192.168.56.1:8000/api/trip/poi_list_1/", {
+    fetch("http://127.0.0.1:8000/api/trip/poi_list_1/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -131,7 +131,7 @@ function ItineraryTabs({ navigation }) {
   };
   
   const shareTrip = () => {
-    fetch("http://192.168.56.1:8000/api/trip/mark/complete/share", {
+    fetch("http://127.0.0.1:8000/api/trip/mark/complete/share", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -145,7 +145,7 @@ function ItineraryTabs({ navigation }) {
   };
 
   const onlyMoveToPastTrips = () => {
-    fetch("http://192.168.56.1:8000/api/trip/mark/complete", {
+    fetch("http://127.0.0.1:8000/api/trip/mark/complete", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
