@@ -73,11 +73,10 @@ const toggleAllTrips = () => {
   };
 
   const goToTrip = (trip) => {
-    if (!allCollapsed) {
-      return; // Prevent navigation when expanding/collapsing all trips
-    }
-    navigation.navigate("ItineraryHome", {
+    navigation.navigate("PastItineraryHome", {
       location: trip.cityName,
+      address: trip.address,
+      radius: trip.radius,
       startDate: trip.startDate,
       endDate: trip.endDate,
       trip_id: trip._id,
@@ -99,7 +98,7 @@ const toggleAllTrips = () => {
          </Text>
         
         </TouchableOpacity> 
-          {isCurrentTripPresent && !allCollapsed && upcomingTrips.map((trip, index) => (
+          {isCurrentTripPresent && upcomingTrips.map((trip, index) => (
             
             <TouchableOpacity key={index} onPress={() => goToTrip(trip)} style={styles.submitButton}>
             

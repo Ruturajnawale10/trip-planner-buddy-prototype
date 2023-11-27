@@ -21,6 +21,7 @@ import EditProfile from "./components/Profile/EditProfile";
 import UpcomingTrips from "./components/POIs/UpcomingTrips";
 import PastTrips from "./components/POIs/PastTrips";
 import SharedTrips from "./components/POIs/SharedTrips";
+import PastItineraryHome from "./components/POIs/PastItineraryHome";
 import { RecoilRoot } from "recoil";
 
 const App = () => {
@@ -61,6 +62,7 @@ const AppNavigator = createAppContainer(
       UpcomingTrips: UpcomingTrips,
       PastTrips: PastTrips,
       SharedTrips: SharedTrips,
+      PastItineraryHome: PastItineraryHome,
     },
     {
       initialRouteName: "Login", // Starts with the login/signup screens

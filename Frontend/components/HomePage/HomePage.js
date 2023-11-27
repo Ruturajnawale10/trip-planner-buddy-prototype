@@ -72,7 +72,7 @@ const HomePage = ({ navigation }) => {
       .then((response) => response.json())
       .then((json) => {
         setData(json);
-        setTopRatedTrips(json);
+                setTopRatedTrips(json);
         if (json.length > 0) {
           setIsTopRatedTripsPresent(true);
         }
@@ -102,6 +102,20 @@ const HomePage = ({ navigation }) => {
       startDate: latestTrip.startDate,
       endDate: latestTrip.endDate,
       trip_id: latestTrip._id,
+    });
+  };
+
+  const goToSharedTrip = (trip) => {
+    console.log(trip);
+    navigation.navigate("PastItineraryHome", {
+      location: trip.cityName,
+      address: trip.address,
+      radius: trip.radius,
+      startDate: trip.startDate,
+      endDate: trip.endDate,
+      trip_id: trip._id,
+      isPublic: trip.isPublic,
+      rating: trip.rating,
     });
   };
 
@@ -142,7 +156,7 @@ const HomePage = ({ navigation }) => {
           
           {isTopRatedTripsPresent && topRatedTrips.map((trip, index) => (
             
-            <TouchableOpacity key={index} onPress={() => goToTrip(trip)} style={styles.submitButton}>
+            <TouchableOpacity key={index} onPress={() => goToSharedTrip(trip)} style={styles.submitButton}>
             
               <TopRatedCard
                 onPress={pastTrips}
@@ -152,7 +166,7 @@ const HomePage = ({ navigation }) => {
                 } // Assuming each trip object has an image property
                 tripName={trip.tripName}
                 pois={trip.pois}
-                userRatings={trip.userRatings}
+                rating={trip.rating}
               />
             </TouchableOpacity>
           ))}
