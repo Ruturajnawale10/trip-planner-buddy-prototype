@@ -152,6 +152,7 @@ const HomePage = ({ navigation }) => {
                 } // Assuming each trip object has an image property
                 tripName={trip.tripName}
                 pois={trip.pois}
+                userRatings={trip.userRatings}
               />
             </TouchableOpacity>
           ))}

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 
-const TopRatedCard = ({ imageSource, tripName, startDate, pois }) => {
+const TopRatedCard = ({ imageSource, tripName, startDate, pois, userRatings }) => {
   let startDateString = "";
   if (startDate == null || startDate == undefined || startDate == "") {
     startDateString = "";
@@ -36,6 +36,71 @@ const TopRatedCard = ({ imageSource, tripName, startDate, pois }) => {
     }
   }
 
+  const calculateAverageRating = () => {
+    if (!userRatings || userRatings.length === 0) return 0;
+  
+    const validRatings = userRatings.filter(rating => !isNaN(rating));
+    const numberOfValidRatings = validRatings.length;
+    
+    if (numberOfValidRatings === 0) return 0;
+  
+    const totalValidRatings = validRatings.reduce((acc, rating) => acc + Number(rating), 0);
+    const averageRating = totalValidRatings / numberOfValidRatings;
+
+    return averageRating;
+  };
+  
+  
+
+  const renderStars = (averageRating) => {
+    const totalStars = 5;
+    const fullStars = Math.floor(averageRating);
+    const halfStars = Math.ceil(averageRating - fullStars);
+    const stars = [];
+    const starSize = 20; // Set the desired size for your stars
+  
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(
+        <Image
+          key={i}
+          source={require('../../assets/SingleStar.png')}
+          style={[styles.starIcon, { width: starSize, height: starSize }]}
+        />
+      );
+    }
+  
+    if (halfStars === 1) {
+      stars.push(
+        <Image
+          key="half"
+          source={require('../../assets/HalfStar.png')}
+          style={[styles.starIcon, { width: starSize, height: starSize }]}
+        />
+      );
+    }
+  
+    const emptyStars = totalStars - fullStars - halfStars;
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(
+        <Image
+          key={`empty${i}`}
+          source={require('../../assets/EmptyStar.png')}
+          style={[styles.starIcon, { width: starSize, height: starSize }]}
+        />
+      );
+    }
+  
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        {stars}
+      </View>
+    );
+  };
+  
+  
+  const averageRating = calculateAverageRating();
+  const stars = renderStars(averageRating);
+
   return (
     <View>
       <View style={styles.card}>
@@ -48,8 +113,11 @@ const TopRatedCard = ({ imageSource, tripName, startDate, pois }) => {
         <View style={styles.textContainer}>
           <Text style={styles.tripName}>{tripName}</Text>
           <Text style={styles.startDate}>
-            {totalPlaces} {place}
+             {" "}{totalPlaces} {place}
           </Text>
+          <View style={styles.ratingContainer}>
+            <View style={styles.starsContainer}>{stars}</View>
+          </View>
         </View>
       </View>
       <View style={styles.separator} />
