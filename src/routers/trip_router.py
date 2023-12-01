@@ -65,7 +65,7 @@ collection_user = db['user']
 collection_city = db['city']
 
 
-@router.post("/api/trip/create/own", response_model=TripRequestResponse)
+@router.post("/api/trip/create/own")
 def create_trip_own(trip_data: TripCreation):
     print("create trip api called")
     start_date = trip_data.startDate
@@ -99,9 +99,7 @@ def create_trip_own(trip_data: TripCreation):
             user_document['upcoming_trips'].append(new_trip._id)
             collection_user.update_one({'_id': user_document['_id']}, {
                                        '$set': {'upcoming_trips': user_document['upcoming_trips']}})
-        return TripRequestResponse(
-            trip_id=str(new_trip._id),
-        )
+        return  {"trip_id": str(new_trip._id), "tripName": trip_name}
     except User.DoesNotExist:
         raise HTTPException(
             status_code=404, detail=f"User with username {created_by} not found")

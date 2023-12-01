@@ -216,10 +216,10 @@ function ItineraryTabs({ navigation }) {
 }
 
 function ItineraryHome({ navigation }) {
-  const { location, startDate, endDate, trip_id, trip } = navigation.state.params;
+  const { location, startDate, endDate, trip_id, tripName } = navigation.state.params;
   const [editMode, setEditMode] = useState(false);
-  const [newTitle, setNewTitle] = useState(trip.tripName);
-  
+  const [newTitle, setNewTitle] = useState(tripName);
+
   let formatted_start_date = DateFormat.format3(startDate);
   let formatted_end_date = DateFormat.format3(endDate);
   let splitByComma1 = formatted_start_date.split(' ');
