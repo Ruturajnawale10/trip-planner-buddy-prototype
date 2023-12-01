@@ -9,7 +9,9 @@ export class DateFormat {
     return moment(date).format("YYYY-MM-DD");
   }
 
-  // Add more format methods as needed
+  static format3(date) {
+    return moment(date).format("MMMM DD");
+  }  
 }
 
 // Example usage:
