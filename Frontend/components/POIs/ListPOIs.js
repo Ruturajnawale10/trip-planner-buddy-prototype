@@ -20,7 +20,7 @@ const ListPOIs = ({
   const { location, startDate, endDate, trip_id } = navigation.state.params;
   const [load, setLoad] = useState(false);
   const [tags, setTags] = useState(new Set());
-  const [currentTag, setCurrentTag] = useState("");
+  const [currentTag, setCurrentTag] = useState("All");
   const onPress = () => {
     console.log("pressed");
   };
@@ -73,7 +73,13 @@ const ListPOIs = ({
           style={currentTag === "All" ? styles.tagSelected : styles.tag}
           onPress={onTagPress("All")}
         >
-          <Text>{"All"}</Text>
+          <Text
+            style={
+              currentTag === "All" ? { color: "white" } : { color: "#412a47" }
+            }
+          >
+            {"All"}
+          </Text>
         </TouchableOpacity>
         {Array.from(tags).map((tag) => (
           <TouchableOpacity
