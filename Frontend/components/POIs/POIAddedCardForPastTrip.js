@@ -18,7 +18,6 @@ const POIAddedCardForPastTrip = ({
   item,
   index,
   day,
-  removePOI,
   route_transport,
   route_loading,
 }) => {
@@ -60,9 +59,6 @@ const POIAddedCardForPastTrip = ({
               : ""}
           </Text>
           <View style={{ marginLeft: 50 }}>
-            {/* <TouchableOpacity onPress={() => removePOI(item.poi_id, day)}>
-              <Icon name="remove" size={25} color="#900" />
-            </TouchableOpacity> */}
           </View>
         </View>
         <Image
@@ -74,7 +70,6 @@ const POIAddedCardForPastTrip = ({
           style={styles.image}
         />
       </View>
-      {/* Add a horizontal line below the card */}
       {!route_loading ? (
         item.nextStep ? (
           <View style={styles.container}>
