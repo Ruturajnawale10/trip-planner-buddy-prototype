@@ -9,6 +9,7 @@ from bson.objectid import ObjectId
 
 from utils.poi_util import get_poi_from_poi_id
 from routers.route_metrics import get_route
+from fastapi import Path
 
 router = APIRouter(
     tags=['Trip']
@@ -268,6 +269,28 @@ def get_top_rated_trips_list():
     try:
         trips = collection_trip.find(
             {"isPublic": True}).sort("rating", -1)
+    except Trip.DoesNotExist:
+        raise HTTPException(
+            status_code=404, detail=f"Trip object not found")
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    # Convert MongoDB cursor to a list of dictionaries
+    trip_list = [trip for trip in trips]
+    # Covert ObjectId to string before returning as ObjectId is bson n ot json type
+    for trip in trip_list:
+        trip['_id'] = str(trip["_id"])
+    
+    return trip_list
+
+@router.get("/api/trip/list/toprated/{city_name}")
+def get_top_rated_trips_list(city_name: str):
+    print("search by city top rated trips list trip api called", city_name)
+    
+    try:
+        trips = collection_trip.find(
+            {"isPublic": True, "cityName": city_name}).sort("rating", -1)
     except Trip.DoesNotExist:
         raise HTTPException(
             status_code=404, detail=f"Trip object not found")
