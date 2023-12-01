@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
     color: "#412a47",
     fontWeight: "bold",
     marginLeft: 10,
+    paddingTop: 20,
   },
   logo: {
     width: 100,

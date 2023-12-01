@@ -1,16 +1,14 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
 
 const ProfilePage = ({ navigation }) => {
   const handleEditProfile = () => {
-    // Navigate to the "Edit Profile" page
     navigation.navigate("EditProfile");
   };
 
   const handleSignOut = () => {
-    // Perform sign-out logic here (e.g., clear user session, navigate to login screen)
-    // For demonstration purposes, let's just navigate to the login screen
     navigation.navigate("Login");
   };
 
@@ -19,51 +17,39 @@ const ProfilePage = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-     
+    <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
-      <Image
-        source={require("../../assets/profile.png")} // Update the path to your logo image
-        style={styles.logo}
-      />
+        <Image
+          source={require("../../assets/profile.jpg")}
+          style={styles.logo}
+        />
         <Text style={styles.username}>Roshan</Text>
-        <Text>roshan.chokshi@gmail.com</Text>
-        <Text>123-456-7890</Text>
+        <Text style={styles.contactInfo}>roshan.chokshi@gmail.com</Text>
+        <Text style={styles.contactInfo}>669-987-8233</Text>
+        </View>
         <View style={styles.linksContainer}>
-        <TouchableOpacity onPress={() => handleNavigate("EditProfile")}>
-          <Text style={styles.linkText}>Edit Profile</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
-        <TouchableOpacity onPress={() => handleNavigate("PreferenceScreen1")}>
-          <Text style={styles.linkText}>Set Preferences</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
-        <TouchableOpacity onPress={() => handleNavigate("UpcomingTrips")}>
-          <Text style={styles.linkText}>Upcoming Trips</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
-
-        <TouchableOpacity onPress={() => handleNavigate("PastTrips")}>
-          <Text style={styles.linkText}>Past Trips</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
-
-        <TouchableOpacity onPress={() => handleNavigate("SharedTrips")}>
-          <Text style={styles.linkText}>Shared Trips</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
-
-        <TouchableOpacity onPress={handleSignOut}>
-          <Text style={styles.linkText}>Sign Out</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
+          <TouchableOpacity onPress={() => handleNavigate("EditProfile")}>
+            <Text style={[styles.linkText,styles.editProfile]}>Edit Profile </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNavigate("PreferenceScreen1")}>
+            <Text style={styles.linkText}>Set Preferences</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNavigate("UpcomingTrips")}>
+            <Text style={styles.linkText}>Upcoming Trips</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNavigate("PastTrips")}>
+            <Text style={styles.linkText}>Past Trips</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNavigate("SharedTrips")}>
+            <Text style={styles.linkText}>Shared Trips</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSignOut}>
+            <Text style={styles.linkText}>Sign Out</Text>
+          </TouchableOpacity>
       </View>
-      </View>
-
-      
-
       <NavigationBar navigation={navigation} />
-    </View>
+    </SafeAreaView>
+   
   );
 };
 
@@ -71,40 +57,52 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 40,
   },
   profileContainer: {
     alignItems: "center",
   },
-  profilePhoto: {
-    width: 120,
-    height: 120,
+  logo: {
+    width: 150,
+    height: 150,
     borderRadius: 60,
-    marginBottom: 10,
+    marginBottom: 30,
   },
   username: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 5,
   },
   linksContainer: {
-    width: "80%",
-    alignItems: "center",
-    marginTop: 20,
+    width: "100%",
+    marginTop: 15,
   },
   linkText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#ce7e00",
+    fontSize: 22,
+    color: "#232b2b",
     paddingVertical: 10,
-  },
-  line: {
     borderBottomWidth: 1,
-    borderColor: "#E0E0E0",
+    borderColor: "#8a8583",
     width: "100%",
-    marginVertical: 5,
+    textAlign: "left",
+    paddingLeft: 15,
+  },
+  
+  editProfile: {
+    borderTopWidth: 1, // Add border at the top
+    paddingTop: 5, // Adjust padding for better spacing
+  },
+  contactInfo: {
+    fontSize: 18, // Adjust the font size as needed
+    marginBottom: 5, // Add some space between email and phone number
+  },
+  logo1: {
+    width: 100,
+    height: 40,
+    resizeMode: "contain",
+    alignSelf: "center",
+    paddingBottom: 50,
   },
 });
 

@@ -129,14 +129,15 @@ const PreferenceScreen1 = ({ navigation }) => {
             </TouchableOpacity>
           ))}
 
-          <Button
-            title="Next"
-            style={styles.button}
-            disabled={selectedAnswers.length === 0} // Disable the button if no answer is selected
-            onPress={() => {
-              handleNext(index, selectedAnswers);
-            }}
-          />
+      <TouchableOpacity
+        style={[styles.button, { width: 200 }]} // Adjust the width as needed
+        disabled={selectedAnswers.length === 0}
+        onPress={() => {
+          handleNext(index, selectedAnswers);
+        }}
+      >
+        <Text style={styles.buttonText}>Next</Text>
+      </TouchableOpacity>
         </View>
       ) : (
         <ActivityIndicator size="large" color="#0000ff" />
@@ -159,12 +160,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   question: {
-    fontSize: 20,
+    fontSize: 22,
     marginBottom: 20,
     alignSelf: "center", 
   },
   answerOption: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#ce7e00",
     padding: 10,
@@ -180,6 +181,7 @@ const styles = StyleSheet.create({
   },
   answerText: {
     color: "#000",
+    fontSize: 17,
   },
   logo: {
     width: 100,
@@ -188,15 +190,16 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   button: {
+    color: "#000",
     marginTop: 20, // Add some space above the button
-    width: 200, // Set the width of the button
+    width: 300, // Set the width of the button
     borderRadius: 5, // Add border radius
     backgroundColor: "#ce7e00", // Change button background color
     alignItems: "center",
     paddingVertical: 12,
   },
   buttonText: {
-    color: "#fff",
+    color: "#000",
     fontWeight: "bold",
   },
 
