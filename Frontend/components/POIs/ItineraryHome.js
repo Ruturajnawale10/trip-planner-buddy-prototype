@@ -9,6 +9,7 @@ import MapViewPage from "./MapViewPage";
 import { useRecoilState } from "recoil";
 import { userName } from "../RecoilStore/RecoilStore";
 import EditIcon from "react-native-vector-icons/AntDesign";
+import { DateFormat } from "../../utils/dateFormat.js";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -218,6 +219,22 @@ function ItineraryHome({ navigation }) {
   const { location, startDate, endDate, trip_id, trip } = navigation.state.params;
   const [editMode, setEditMode] = useState(false);
   const [newTitle, setNewTitle] = useState(trip.tripName);
+  
+  let formatted_start_date = DateFormat.format3(startDate);
+  let formatted_end_date = DateFormat.format3(endDate);
+  let splitByComma1 = formatted_start_date.split(' ');
+  let splitByComma2 = formatted_end_date.split(' ');
+
+  if (splitByComma1[1][0] == "0") {
+    splitByComma1[1] = splitByComma1[1].substring(1);
+  }
+  if (splitByComma2[1][0] == "0") {
+    splitByComma2[1] = splitByComma2[1].substring(1);
+  }
+  formatted_start_date = splitByComma1[0].substring(0, 3) + " " + splitByComma1[1]
+  formatted_end_date = splitByComma2[0].substring(0, 3) + " " + splitByComma2[1]
+  
+  const year = startDate.substring(0, 4);
 
   const handleEditPress = () => {
     setEditMode(true);
@@ -265,6 +282,9 @@ function ItineraryHome({ navigation }) {
           onPress={editMode ? handleSavePress : handleEditPress}
         />
       </View>
+      <Text style={styles.date}>
+        {formatted_start_date} - {formatted_end_date} {year}
+      </Text>
       <ItineraryTabs navigation={navigation} />
       <NavigationBar navigation={navigation} />
     </SafeAreaView>
@@ -290,6 +310,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+  date: {
+    fontSize: 18,
+    textAlign: "center",
+    color: "#412a47",
   },
 });
 
