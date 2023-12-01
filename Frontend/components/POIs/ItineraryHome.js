@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { Text, StyleSheet, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, StyleSheet, Alert, View, TextInput } from "react-native";
 import CurrentTrip from "./CurrentTrip";
 import Weather from "./Weather";
 import NavigationBar from "../NavigationButton/NavigationBar";
@@ -9,6 +8,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import MapViewPage from "./MapViewPage";
 import { useRecoilState } from "recoil";
 import { userName } from "../RecoilStore/RecoilStore";
+import EditIcon from "react-native-vector-icons/AntDesign";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -67,7 +67,6 @@ function ItineraryTabs({ navigation }) {
     )
       .then((response) => response.json())
       .then((json) => {
-        // console.log("POI List", json);
         setPOIListData(json);
 
         setRecommendations(json.gpt_recommendations);
@@ -88,7 +87,7 @@ function ItineraryTabs({ navigation }) {
   useEffect(() => {
     const currentDate = new Date();
     const tripEndDate = new Date(endDate);
-  
+
     if (tripEndDate < currentDate) {
       // Trip has ended
       Alert.alert(
@@ -129,7 +128,7 @@ function ItineraryTabs({ navigation }) {
       { cancelable: false }
     );
   };
-  
+
   const shareTrip = () => {
     fetch("http://127.0.0.1:8000/api/trip/mark/complete/share", {
       method: "POST",
@@ -216,11 +215,56 @@ function ItineraryTabs({ navigation }) {
 }
 
 function ItineraryHome({ navigation }) {
-  const { location, startDate, endDate, trip_id } = navigation.state.params;
+  const { location, startDate, endDate, trip_id, trip } = navigation.state.params;
+  const [editMode, setEditMode] = useState(false);
+  const [newTitle, setNewTitle] = useState(trip.tripName);
+
+  const handleEditPress = () => {
+    setEditMode(true);
+  };
+
+  const handleSavePress = () => {
+    console.log("Saving new title...");
+    fetch("http://127.0.0.1:8000/api/trip/update/title", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        trip_id: trip_id,
+        new_title: newTitle,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          setEditMode(false);
+        } else {
+          Alert.alert("Error", "Failed to update the title.");
+        }
+      })
+      .catch((error) => console.error(error));
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Trip to {location}</Text>
+      <View style={styles.titlebar}>
+        {editMode ? (
+          <TextInput
+            style={styles.titleInput}
+            value={newTitle}
+            onChangeText={(text) => setNewTitle(text)}
+          />
+        ) : (
+          <Text style={styles.title}>{newTitle}</Text>
+        )}
+        <EditIcon
+          name={editMode ? "save" : "edit"}
+          size={25}
+          color="grey"
+          style={{ marginRight: 2 }}
+          onPress={editMode ? handleSavePress : handleEditPress}
+        />
+      </View>
       <ItineraryTabs navigation={navigation} />
       <NavigationBar navigation={navigation} />
     </SafeAreaView>
@@ -241,6 +285,11 @@ const styles = StyleSheet.create({
     color: "#412a47",
     fontWeight: "bold",
     margin: 10,
+  },
+  titlebar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

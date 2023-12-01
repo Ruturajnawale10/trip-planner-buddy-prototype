@@ -109,6 +109,7 @@ const HomePage = ({ navigation }) => {
       startDate: latestTrip.startDate,
       endDate: latestTrip.endDate,
       trip_id: latestTrip._id,
+      trip: latestTrip,
     });
   };
 
