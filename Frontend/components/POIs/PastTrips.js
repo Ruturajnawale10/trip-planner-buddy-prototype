@@ -20,6 +20,13 @@ const PastTrips = ({ navigation }) => {
 
   const [allCollapsed, setAllCollapsed] = useState(false);
 
+
+  const cityImages = {
+    "New York": "https://media.istockphoto.com/id/1365467747/photo/the-statue-of-liberty-seen-from-new-york-harbor.jpg?s=1024x1024&w=is&k=20&c=uHUCaT-rOQsGUJ7qOpv4BLjnduNs9k20RX_SDEd3-BU=",
+    "San Jose": "https://media.istockphoto.com/id/1489924466/photo/beautiful-aerial-view-of-the-national-theater-of-costa-rica-and-plaza-de-la-cultura.jpg?s=1024x1024&w=is&k=20&c=HzAMDX1cGyJO1FTWv5cEzXc2EDJ6DTVjXDHL0Bw2HG4=",
+    "San Francisco": "https://images.squarespace-cdn.com/content/v1/5c7f5f60797f746a7d769cab/ed578728-b35e-4336-ba27-8eced4e968f9/golden+gate+bridge+sarowly.jpg",
+    "Vegas": "https://media.istockphoto.com/id/954500850/photo/las-vegas.jpg?s=1024x1024&w=is&k=20&c=0wrHqkorBeV4IiQjQQioIAjrc191xQYBsqq5FMWx0xw=",
+  };
 // Function to toggle collapse/expand for all trips
 const toggleAllTrips = () => {
   setAllCollapsed(!allCollapsed);
@@ -73,11 +80,10 @@ const toggleAllTrips = () => {
   };
 
   const goToTrip = (trip) => {
-    if (!allCollapsed) {
-      return; // Prevent navigation when expanding/collapsing all trips
-    }
-    navigation.navigate("ItineraryHome", {
+    navigation.navigate("PastItineraryHome", {
       location: trip.cityName,
+      address: trip.address,
+      radius: trip.radius,
       startDate: trip.startDate,
       endDate: trip.endDate,
       trip_id: trip._id,
@@ -99,7 +105,7 @@ const toggleAllTrips = () => {
          </Text>
         
         </TouchableOpacity> 
-          {isCurrentTripPresent && !allCollapsed && upcomingTrips.map((trip, index) => (
+          {isCurrentTripPresent && upcomingTrips.map((trip, index) => (
             
             <TouchableOpacity key={index} onPress={() => goToTrip(trip)} style={styles.submitButton}>
             
@@ -107,8 +113,10 @@ const toggleAllTrips = () => {
                 onPress={pastTrips}
                 bgColor="#ffffff"
                 imageSource={
-                  "https://images.squarespace-cdn.com/content/v1/5c7f5f60797f746a7d769cab/ed578728-b35e-4336-ba27-8eced4e968f9/golden+gate+bridge+sarowly.jpg"
-                } // Assuming each trip object has an image property
+                  cityImages[trip.cityName]
+                    ? cityImages[trip.cityName].toString()
+                    : "https://media.istockphoto.com/id/1394456695/photo/a-woman-at-the-airport-holding-a-passport-with-a-boarding-pass.jpg?s=1024x1024&w=is&k=20&c=pqyPtKCv5geYEwuBB1-4ZQ68SRq-j53e--2xa82bkEA="
+                } // Assuming each trip object has an image property// Assuming each trip object has an image property
                 tripName={trip.tripName}
                 startDate={trip.startDate}
                 pois={trip.pois}
@@ -117,6 +125,7 @@ const toggleAllTrips = () => {
           ))}
         </ScrollView>
       )}
+       <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
 };
@@ -131,6 +140,7 @@ const styles = StyleSheet.create({
     color: "#412a47",
     fontWeight: "bold",
     marginLeft: 10,
+    paddingTop: 20,
   },
   logo: {
     width: 100,

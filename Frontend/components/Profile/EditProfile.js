@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native";
+import NavigationBar from "../NavigationButton/NavigationBar";
 
 const EditProfile = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -15,7 +17,7 @@ const EditProfile = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.heading}>Edit Profile</Text>
 
       <TextInput
@@ -42,7 +44,9 @@ const EditProfile = ({ navigation }) => {
       <Button title="Save Changes" onPress={handleSaveChanges} />
 
       {/* Add a cancel or go back button if needed */}
-    </View>
+      <NavigationBar navigation={navigation} />
+    </SafeAreaView>
+   
   );
 };
 
