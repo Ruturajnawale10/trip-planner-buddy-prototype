@@ -54,6 +54,10 @@ class TripPOI(BaseModel):
     pois: list
     mode: str
     optimize_waypoints: bool
+    
+class TripUpdateTitle(BaseModel):
+    trip_id: str
+    new_title: str
 
 collection_trip = db['trip']
 collection_user = db['user']
@@ -104,6 +108,33 @@ def create_trip_own(trip_data: TripCreation):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/api/trip/update/title/", response_model=TripRequestResponse)
+def update_trip_title(trip: TripUpdateTitle):
+    trip_id = trip.trip_id
+    new_title = trip.new_title
+    print("update trip title api called")
+    try:
+        # Ensure the user has the right to update this trip
+        trip = collection_trip.find_one({"_id": ObjectId(trip_id)})
+        print("wow", trip)
+        if not trip:
+            raise HTTPException(status_code=403, detail="Permission denied")
+
+        new_title = new_title.strip()
+        print(new_title)
+
+        # Update the trip title
+        collection_trip.update_one(
+            {"_id": ObjectId(trip_id)},
+            {"$set": {"tripName": new_title}},
+        )
+        
+        print("updated trip title")
+
+        return TripRequestResponse(trip_id=trip_id)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/api/trip/add/poi")
 def add_poi_to_trip(poi_data: TripAddPoi):
