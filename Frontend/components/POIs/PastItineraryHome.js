@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Text, StyleSheet, Image, View } from "react-native";
+import { Text, StyleSheet, Image, View, TouchableOpacity } from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
 import { SafeAreaView } from "react-native";
 import PastTrip from "./PastTrip";
+import { userName } from "../../components/RecoilStore/RecoilStore";
+import { useRecoilState } from "recoil";
 
 function PastItineraryHome({ navigation }) {
   const { location, startDate, endDate, trip_id, isPublic, rating } =
@@ -16,6 +18,7 @@ function PastItineraryHome({ navigation }) {
   const [route_transport, setRouteTransport] = useState("driving");
   const [route_loading, setRouteLoading] = useState(false);
   const [trip_details, setTripDetails] = useState({});
+  const [username, setUsername] = useRecoilState(userName);
 
   const getCurrentTrip = () => {
     fetch("http://127.0.0.1:8000/api/trip/poi_list_1/", {
@@ -49,6 +52,24 @@ function PastItineraryHome({ navigation }) {
     return rating;
   };
 
+  const handleRatingSelect = (rating) => {
+    fetch("http://127.0.0.1:8000/api/trip/rate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        trip_id: trip_id,
+        username: username,
+        user_rating: rating,
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+      })
+      .catch((error) => console.error(error));
+  };
+
   const renderStars = (averageRating) => {
     const totalStars = 5;
     const fullStars = Math.floor(averageRating);
@@ -79,11 +100,13 @@ function PastItineraryHome({ navigation }) {
     const emptyStars = totalStars - fullStars - halfStars;
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
-        <Image
-          key={`empty${i}`}
-          source={require("../../assets/EmptyStar.png")}
-          style={[styles.starIcon, { width: starSize, height: starSize }]}
-        />
+        <TouchableOpacity onPress={() => handleRatingSelect(i + 1)}>
+          <Image
+            key={`empty${i}`}
+            source={require("../../assets/EmptyStar.png")}
+            style={[styles.starIcon, { width: starSize, height: starSize }]}
+          />
+        </TouchableOpacity>
       );
     }
 

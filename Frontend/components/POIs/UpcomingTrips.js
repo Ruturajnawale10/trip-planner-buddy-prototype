@@ -42,7 +42,6 @@ const UpcomingTrips = ({ navigation }) => {
     })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
         setData(json);
         setUpcomingTrips(json);
         if (json.length > 0) {
