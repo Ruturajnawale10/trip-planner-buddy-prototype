@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+} from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
 
 const ProfilePage = ({ navigation }) => {
@@ -19,51 +26,48 @@ const ProfilePage = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-     
+    <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
-      <Image
-        source={require("../../assets/profile.png")} // Update the path to your logo image
-        style={styles.logo}
-      />
+        <Image
+          source={require("../../assets/profile.png")} // Update the path to your logo image
+          style={styles.logo}
+        />
         <Text style={styles.username}>Roshan</Text>
         <Text>roshan.chokshi@gmail.com</Text>
         <Text>123-456-7890</Text>
         <View style={styles.linksContainer}>
-        <TouchableOpacity onPress={() => handleNavigate("EditProfile")}>
-          <Text style={styles.linkText}>Edit Profile</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
-        <TouchableOpacity onPress={() => handleNavigate("PreferenceScreen1")}>
-          <Text style={styles.linkText}>Set Preferences</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
-        <TouchableOpacity onPress={() => handleNavigate("UpcomingTrips")}>
-          <Text style={styles.linkText}>Upcoming Trips</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
+          <TouchableOpacity onPress={() => handleNavigate("EditProfile")}>
+            <Text style={styles.linkText}>Edit Profile</Text>
+          </TouchableOpacity>
+          <View style={styles.line} />
+          <TouchableOpacity onPress={() => handleNavigate("PreferenceScreen1")}>
+            <Text style={styles.linkText}>Set Preferences</Text>
+          </TouchableOpacity>
+          <View style={styles.line} />
+          <TouchableOpacity onPress={() => handleNavigate("UpcomingTrips")}>
+            <Text style={styles.linkText}>Upcoming Trips</Text>
+          </TouchableOpacity>
+          <View style={styles.line} />
 
-        <TouchableOpacity onPress={() => handleNavigate("PastTrips")}>
-          <Text style={styles.linkText}>Past Trips</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
+          <TouchableOpacity onPress={() => handleNavigate("PastTrips")}>
+            <Text style={styles.linkText}>Past Trips</Text>
+          </TouchableOpacity>
+          <View style={styles.line} />
 
-        <TouchableOpacity onPress={() => handleNavigate("SharedTrips")}>
-          <Text style={styles.linkText}>Shared Trips</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
+          <TouchableOpacity onPress={() => handleNavigate("SharedTrips")}>
+            <Text style={styles.linkText}>Shared Trips</Text>
+          </TouchableOpacity>
+          <View style={styles.line} />
 
-        <TouchableOpacity onPress={handleSignOut}>
-          <Text style={styles.linkText}>Sign Out</Text>
-        </TouchableOpacity>
-        <View style={styles.line} />
+          <TouchableOpacity onPress={handleSignOut}>
+            <Text style={styles.linkText}>Sign Out</Text>
+          </TouchableOpacity>
+          <View style={styles.line} />
+        </View>
       </View>
-      </View>
-
-      
 
       <NavigationBar navigation={navigation} />
-    </View>
+    </SafeAreaView>
   );
 };
 
