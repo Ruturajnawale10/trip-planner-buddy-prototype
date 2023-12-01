@@ -9,6 +9,7 @@ from bson.objectid import ObjectId
 
 from utils.poi_util import get_poi_from_poi_id
 from routers.route_metrics import get_route
+from fastapi import Path
 
 router = APIRouter(
     tags=['Trip']
@@ -54,6 +55,10 @@ class TripPOI(BaseModel):
     pois: list
     mode: str
     optimize_waypoints: bool
+    
+class TripUpdateTitle(BaseModel):
+    trip_id: str
+    new_title: str
 
 collection_trip = db['trip']
 collection_user = db['user']
@@ -104,6 +109,33 @@ def create_trip_own(trip_data: TripCreation):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/api/trip/update/title/", response_model=TripRequestResponse)
+def update_trip_title(trip: TripUpdateTitle):
+    trip_id = trip.trip_id
+    new_title = trip.new_title
+    print("update trip title api called")
+    try:
+        # Ensure the user has the right to update this trip
+        trip = collection_trip.find_one({"_id": ObjectId(trip_id)})
+        print("wow", trip)
+        if not trip:
+            raise HTTPException(status_code=403, detail="Permission denied")
+
+        new_title = new_title.strip()
+        print(new_title)
+
+        # Update the trip title
+        collection_trip.update_one(
+            {"_id": ObjectId(trip_id)},
+            {"$set": {"tripName": new_title}},
+        )
+        
+        print("updated trip title")
+
+        return TripRequestResponse(trip_id=trip_id)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/api/trip/add/poi")
 def add_poi_to_trip(poi_data: TripAddPoi):
@@ -237,6 +269,28 @@ def get_top_rated_trips_list():
     try:
         trips = collection_trip.find(
             {"isPublic": True}).sort("rating", -1)
+    except Trip.DoesNotExist:
+        raise HTTPException(
+            status_code=404, detail=f"Trip object not found")
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    # Convert MongoDB cursor to a list of dictionaries
+    trip_list = [trip for trip in trips]
+    # Covert ObjectId to string before returning as ObjectId is bson n ot json type
+    for trip in trip_list:
+        trip['_id'] = str(trip["_id"])
+    
+    return trip_list
+
+@router.get("/api/trip/list/toprated/{city_name}")
+def get_top_rated_trips_list(city_name: str):
+    print("search by city top rated trips list trip api called", city_name)
+    
+    try:
+        trips = collection_trip.find(
+            {"isPublic": True, "cityName": city_name}).sort("rating", -1)
     except Trip.DoesNotExist:
         raise HTTPException(
             status_code=404, detail=f"Trip object not found")

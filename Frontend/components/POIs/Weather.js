@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, Image } from "react-native";
 import { DateFormat } from "../../utils/dateFormat.js";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -13,6 +13,7 @@ const Weather = ({ navigation }) => {
   const formatted_end_date = DateFormat.format2(endDate);
   const start_date = new Date(formatted_start_date);
   const [isForecastAvailable, setIsForecastAvailable] = useState(false);
+  const [weatherIconURL, setWeatherIconURL] = useState(null);
   useEffect(() => {
     fetch(
       `http://localhost:8000/api/trip/weather?location=${location}&start_date=${formatted_start_date}&end_date=${formatted_end_date}`,
@@ -25,6 +26,16 @@ const Weather = ({ navigation }) => {
     )
       .then((response) => response.json())
       .then((json) => {
+        let main_weather_icon = json.main_weather_icon;
+        let main_weather_icon_url =
+          "https://openweathermap.org/img/wn/" + main_weather_icon + "@4x.png";
+        setWeatherIconURL(main_weather_icon_url);
+        console.log(
+          "HEreeee",
+          json.weatherData.main_weather_icon,
+          main_weather_icon_url,
+          weatherIconURL
+        );
         const patterns = [
           "Weather Summary",
           "Weather summary",
@@ -59,10 +70,11 @@ const Weather = ({ navigation }) => {
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   } else {
-    // Render weather data as needed
     return (
       <View style={styles.container}>
         <ScrollView>
+          <Text style={{ height: 0, width: 0 }}>{weatherIconURL}</Text>
+          <Image source={{ uri: weatherIconURL }} style={styles.image} />
           {!isForecastAvailable && (
             <Text style={styles.forecast_msg_txt}>
               {" "}
@@ -82,13 +94,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#87CEEB",
   },
   text: {
-    fontSize: 15,
+    fontSize: 20,
   },
   forecast_msg_txt: {
     color: "gray",
+  },
+  image: {
+    width: 130,
+    height: 130,
+    alignSelf: "center",
   },
 });
 

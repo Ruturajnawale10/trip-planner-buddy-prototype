@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 
-const TopRatedCard = ({ imageSource, tripName, startDate, pois, userRatings }) => {
+const TopRatedCard = ({ imageSource, tripName, startDate, pois, rating }) => {
   let startDateString = "";
   if (startDate == null || startDate == undefined || startDate == "") {
     startDateString = "";
@@ -37,17 +37,7 @@ const TopRatedCard = ({ imageSource, tripName, startDate, pois, userRatings }) =
   }
 
   const calculateAverageRating = () => {
-    if (!userRatings || userRatings.length === 0) return 0;
-  
-    const validRatings = userRatings.filter(rating => !isNaN(rating));
-    const numberOfValidRatings = validRatings.length;
-    
-    if (numberOfValidRatings === 0) return 0;
-  
-    const totalValidRatings = validRatings.reduce((acc, rating) => acc + Number(rating), 0);
-    const averageRating = totalValidRatings / numberOfValidRatings;
-
-    return averageRating;
+    return rating;
   };
   
   

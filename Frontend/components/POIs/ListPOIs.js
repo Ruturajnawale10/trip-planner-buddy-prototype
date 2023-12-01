@@ -108,7 +108,7 @@ const ListPOIs = ({
           scrollEventThrottle={16}
         >
           {data.pois.map(
-            (item) =>
+            (item, index) =>
               item.show && (
                 <View key={item.poi_id} style={styles.poiCard}>
                   <POIsCard

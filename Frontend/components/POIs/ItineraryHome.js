@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { Text, StyleSheet, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, StyleSheet, Alert, View, TextInput } from "react-native";
 import CurrentTrip from "./CurrentTrip";
 import Weather from "./Weather";
 import NavigationBar from "../NavigationButton/NavigationBar";
@@ -9,6 +8,8 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import MapViewPage from "./MapViewPage";
 import { useRecoilState } from "recoil";
 import { userName } from "../RecoilStore/RecoilStore";
+import EditIcon from "react-native-vector-icons/AntDesign";
+import { DateFormat } from "../../utils/dateFormat.js";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -67,7 +68,6 @@ function ItineraryTabs({ navigation }) {
     )
       .then((response) => response.json())
       .then((json) => {
-        // console.log("POI List", json);
         setPOIListData(json);
 
         setRecommendations(json.gpt_recommendations);
@@ -88,7 +88,7 @@ function ItineraryTabs({ navigation }) {
   useEffect(() => {
     const currentDate = new Date();
     const tripEndDate = new Date(endDate);
-  
+
     if (tripEndDate < currentDate) {
       // Trip has ended
       Alert.alert(
@@ -129,7 +129,7 @@ function ItineraryTabs({ navigation }) {
       { cancelable: false }
     );
   };
-  
+
   const shareTrip = () => {
     fetch("http://127.0.0.1:8000/api/trip/mark/complete/share", {
       method: "POST",
@@ -216,11 +216,75 @@ function ItineraryTabs({ navigation }) {
 }
 
 function ItineraryHome({ navigation }) {
-  const { location, startDate, endDate, trip_id } = navigation.state.params;
+  const { location, startDate, endDate, trip_id, trip } = navigation.state.params;
+  const [editMode, setEditMode] = useState(false);
+  const [newTitle, setNewTitle] = useState(trip.tripName);
+  
+  let formatted_start_date = DateFormat.format3(startDate);
+  let formatted_end_date = DateFormat.format3(endDate);
+  let splitByComma1 = formatted_start_date.split(' ');
+  let splitByComma2 = formatted_end_date.split(' ');
+
+  if (splitByComma1[1][0] == "0") {
+    splitByComma1[1] = splitByComma1[1].substring(1);
+  }
+  if (splitByComma2[1][0] == "0") {
+    splitByComma2[1] = splitByComma2[1].substring(1);
+  }
+  formatted_start_date = splitByComma1[0].substring(0, 3) + " " + splitByComma1[1]
+  formatted_end_date = splitByComma2[0].substring(0, 3) + " " + splitByComma2[1]
+  
+  const year = startDate.substring(0, 4);
+
+  const handleEditPress = () => {
+    setEditMode(true);
+  };
+
+  const handleSavePress = () => {
+    console.log("Saving new title...");
+    fetch("http://127.0.0.1:8000/api/trip/update/title", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        trip_id: trip_id,
+        new_title: newTitle,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          setEditMode(false);
+        } else {
+          Alert.alert("Error", "Failed to update the title.");
+        }
+      })
+      .catch((error) => console.error(error));
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Trip to {location}</Text>
+      <View style={styles.titlebar}>
+        {editMode ? (
+          <TextInput
+            style={styles.titleInput}
+            value={newTitle}
+            onChangeText={(text) => setNewTitle(text)}
+          />
+        ) : (
+          <Text style={styles.title}>{newTitle}</Text>
+        )}
+        <EditIcon
+          name={editMode ? "save" : "edit"}
+          size={25}
+          color="grey"
+          style={{ marginRight: 2 }}
+          onPress={editMode ? handleSavePress : handleEditPress}
+        />
+      </View>
+      <Text style={styles.date}>
+        {formatted_start_date} - {formatted_end_date} {year}
+      </Text>
       <ItineraryTabs navigation={navigation} />
       <NavigationBar navigation={navigation} />
     </SafeAreaView>
@@ -241,6 +305,16 @@ const styles = StyleSheet.create({
     color: "#412a47",
     fontWeight: "bold",
     margin: 10,
+  },
+  titlebar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  date: {
+    fontSize: 18,
+    textAlign: "center",
+    color: "#412a47",
   },
 });
 

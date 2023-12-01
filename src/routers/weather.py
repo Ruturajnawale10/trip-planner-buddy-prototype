@@ -47,6 +47,8 @@ def weather_recommendation(location: str, start_date: date, end_date: date):
         payload = {"lat": lat, "lon": lon, "appid": settings.openweather_api_key}
 
         weather_data = requests.request("GET", url, params=payload).json()
+        main_weather_icon = weather_data['current']['weather'][0]['icon']
+        print("Weather data fetched successfully.", main_weather_icon)
         filtered_data = [weather_data['current']]
 
         for forecast in weather_data['daily']:
@@ -57,7 +59,7 @@ def weather_recommendation(location: str, start_date: date, end_date: date):
         prompt_str = f"Given weather forecast data for the dates in {location} city, return weather summary, clothing recommendations for the trip, and any other suggestions for the trip.\n The weather forecast data is as follows: {filtered_data}. Return temperature in Fahrenheit.\n"
         gpt_response = gpt(prompt_str)
 
-        return {"isForecastAvailable": is_forecast_available,"weatherData":gpt_response}
+        return {"isForecastAvailable": is_forecast_available,"weatherData":gpt_response, "main_weather_icon": main_weather_icon}
 
 def gpt(prompt_str):
     response = client.chat.completions.create(
