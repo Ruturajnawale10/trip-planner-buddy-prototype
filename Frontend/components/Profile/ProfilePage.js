@@ -2,13 +2,20 @@ import React from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfilePage = ({ navigation }) => {
   const handleEditProfile = () => {
     navigation.navigate("EditProfile");
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log("AsyncStorage cleared successfully");
+    } catch (error) {
+      console.error("Error clearing AsyncStorage:", error);
+    }
     navigation.navigate("Login");
   };
 
@@ -26,30 +33,31 @@ const ProfilePage = ({ navigation }) => {
         <Text style={styles.username}>Roshan</Text>
         <Text style={styles.contactInfo}>roshan.chokshi@gmail.com</Text>
         <Text style={styles.contactInfo}>669-987-8233</Text>
-        </View>
-        <View style={styles.linksContainer}>
-          <TouchableOpacity onPress={() => handleNavigate("EditProfile")}>
-            <Text style={[styles.linkText,styles.editProfile]}>Edit Profile </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleNavigate("PreferenceScreen1")}>
-            <Text style={styles.linkText}>Set Preferences</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleNavigate("UpcomingTrips")}>
-            <Text style={styles.linkText}>Upcoming Trips</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleNavigate("PastTrips")}>
-            <Text style={styles.linkText}>Past Trips</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleNavigate("SharedTrips")}>
-            <Text style={styles.linkText}>Shared Trips</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleSignOut}>
-            <Text style={styles.linkText}>Sign Out</Text>
-          </TouchableOpacity>
+      </View>
+      <View style={styles.linksContainer}>
+        <TouchableOpacity onPress={() => handleNavigate("EditProfile")}>
+          <Text style={[styles.linkText, styles.editProfile]}>
+            Edit Profile{" "}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate("PreferenceScreen1")}>
+          <Text style={styles.linkText}>Set Preferences</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate("UpcomingTrips")}>
+          <Text style={styles.linkText}>Upcoming Trips</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate("PastTrips")}>
+          <Text style={styles.linkText}>Past Trips</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate("SharedTrips")}>
+          <Text style={styles.linkText}>Shared Trips</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleSignOut}>
+          <Text style={styles.linkText}>Sign Out</Text>
+        </TouchableOpacity>
       </View>
       <NavigationBar navigation={navigation} />
     </SafeAreaView>
-   
   );
 };
 
@@ -88,7 +96,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     paddingLeft: 15,
   },
-  
+
   editProfile: {
     borderTopWidth: 1, // Add border at the top
     paddingTop: 5, // Adjust padding for better spacing

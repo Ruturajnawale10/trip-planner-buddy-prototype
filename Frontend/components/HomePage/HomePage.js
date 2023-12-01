@@ -140,7 +140,7 @@ const HomePage = ({ navigation }) => {
       <SearchBar onSearch={onSearch} />
       {!isLoadingData && (
         <ScrollView>
-          {isCurrentTripPresent && (
+          {isCurrentTripPresent && latestTrip !== undefined && (
             <>
               <Text style={styles.text}> Continue planning trip </Text>
               <TouchableOpacity onPress={seeAllUpcomingTrips}>
