@@ -35,17 +35,6 @@ const toggleAllTrips = () => {
   const trip_img_url =
     "https://helios-i.mashable.com/imagery/articles/06zoscMHTZxU5KEFx8SRyDg/hero-image.fill.size_1200x900.v1630023012.jpg";
 
-  GetLocation.getCurrentPosition({
-    enableHighAccuracy: true,
-    timeout: 60000,
-  })
-    .then((location) => {
-      console.log(location);
-    })
-    .catch((error) => {
-      const { code, message } = error;
-      console.warn(code, message);
-    });
   const getUpcomingTrips = () => {
   
     fetch("http://127.0.0.1:8000/api/trip/list/past/" + username, {

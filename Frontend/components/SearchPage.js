@@ -144,7 +144,8 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
             })
             .then((data) => {
               // Assuming the response contains the username
-              const { trip_id } = data;
+              const trip_id = data.trip_id;
+              const tripName = data.tripName;
               navigation.navigate("ItineraryHome", {
                 location: destination,
                 address: address,
@@ -152,6 +153,7 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
                 startDate: startDateString,
                 endDate: endDateString,
                 trip_id: trip_id,
+                tripName: tripName,
               });
             })
             .catch((error) => {
