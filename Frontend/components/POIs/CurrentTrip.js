@@ -86,11 +86,12 @@ const CurrentTrip = ({
 
   const handleDetailsPress = (item, key) => {
     const t = true;
+
     if (recommendations.includes(item.poi_id)) {
-      navigation.navigate("POIs", { item, addPOI: t, key, recommended: t });
+      navigation.navigate("POIs", { item, addPOI: null, key, recommended: t });
     } else {
       const f = false;
-      navigation.navigate("POIs", { item, addPOI: t, key, recommended: f });
+      navigation.navigate("POIs", { item, addPOI: null, key, recommended: f });
     }
   };
 

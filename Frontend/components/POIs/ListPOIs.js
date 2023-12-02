@@ -4,7 +4,8 @@ import { View, StyleSheet, ScrollView, Text, Dimensions } from "react-native";
 
 import { SafeAreaView } from "react-native";
 import POIsCard from "./POIsCard";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { Icon } from "@rneui/themed";
 
 const ListPOIs = ({
   navigation,
@@ -21,6 +22,7 @@ const ListPOIs = ({
   const [load, setLoad] = useState(false);
   const [tags, setTags] = useState(new Set());
   const [currentTag, setCurrentTag] = useState("All");
+  const [tagSearchText, setTagSearchText] = useState("");
   const onPress = () => {
     console.log("pressed");
   };
@@ -61,6 +63,30 @@ const ListPOIs = ({
     });
   };
 
+  const tagSearch = (text) => {
+    text = text.toLowerCase();
+    console.log(text);
+
+    if (text == "") {
+      onTagPress("All")();
+      return;
+    }
+
+    if (text.includes("mexican")) {
+      onTagPress("Mexican restaurant")();
+    }
+    if (text.includes("hamburger")) {
+      onTagPress("Hamburger restaurant")();
+    }
+    if (text.includes("pray") || text.includes("church")) {
+      onTagPress("Churches & Cathedrals")();
+    }
+  };
+
+  const onChangeTagSearch = (e) => {
+    setTagSearchText(e.nativeEvent.text);
+  };
+
   useEffect(() => {
     integrateRecommendations();
   }, [data]);
@@ -97,7 +123,19 @@ const ListPOIs = ({
           </TouchableOpacity>
         ))}
       </ScrollView>
-
+      <View style={{ flexDirection: "row" }}>
+        <TextInput
+          style={styles.taginput}
+          placeholder="Type what you want"
+          onChange={(e) => onChangeTagSearch(e)}
+        />
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => tagSearch(tagSearchText)}
+        >
+          <Icon name="search" size={20} color="white" />
+        </TouchableOpacity>
+      </View>
       {load ? (
         <ScrollView
           horizontal={true}
@@ -147,6 +185,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     margin: 10,
+    display: "flex",
+  },
+  taginput: {
+    height: Dimensions.get("window").height * 0.05,
+    width: Dimensions.get("window").width * 0.75,
+    borderColor: "#DBD9D9",
+    borderWidth: 2,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    margin: 10,
+    marginRight: 0,
     display: "flex",
   },
   tag: {

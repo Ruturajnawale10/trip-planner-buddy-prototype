@@ -39,6 +39,7 @@ function ItineraryTabs({ navigation }) {
     })
       .then((response) => response.json())
       .then((json) => {
+        console.log("json", json);
         for (let i = 0; i < json["pois"].length; i++) {
           let day = json["pois"][i][0]["pois"];
           let formattedDay = [];
@@ -216,14 +217,15 @@ function ItineraryTabs({ navigation }) {
 }
 
 function ItineraryHome({ navigation }) {
-  const { location, startDate, endDate, trip_id, tripName } = navigation.state.params;
+  const { location, startDate, endDate, trip_id, tripName } =
+    navigation.state.params;
   const [editMode, setEditMode] = useState(false);
   const [newTitle, setNewTitle] = useState(tripName);
 
   let formatted_start_date = DateFormat.format3(startDate);
   let formatted_end_date = DateFormat.format3(endDate);
-  let splitByComma1 = formatted_start_date.split(' ');
-  let splitByComma2 = formatted_end_date.split(' ');
+  let splitByComma1 = formatted_start_date.split(" ");
+  let splitByComma2 = formatted_end_date.split(" ");
 
   if (splitByComma1[1][0] == "0") {
     splitByComma1[1] = splitByComma1[1].substring(1);
@@ -231,9 +233,11 @@ function ItineraryHome({ navigation }) {
   if (splitByComma2[1][0] == "0") {
     splitByComma2[1] = splitByComma2[1].substring(1);
   }
-  formatted_start_date = splitByComma1[0].substring(0, 3) + " " + splitByComma1[1]
-  formatted_end_date = splitByComma2[0].substring(0, 3) + " " + splitByComma2[1]
-  
+  formatted_start_date =
+    splitByComma1[0].substring(0, 3) + " " + splitByComma1[1];
+  formatted_end_date =
+    splitByComma2[0].substring(0, 3) + " " + splitByComma2[1];
+
   const year = startDate.substring(0, 4);
 
   const handleEditPress = () => {

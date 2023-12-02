@@ -114,6 +114,7 @@ export default function POIs({ navigation }) {
   };
 
   useEffect(() => {
+    console.log("item", item);
     getPlaceDetails(item.placeId);
   }, []);
   return (
@@ -138,13 +139,15 @@ export default function POIs({ navigation }) {
                   </Text>
                 </TouchableOpacity>
               )}
-              <ScrollView horizontal={true}>
-                {placeDetails.data.types.map((type) => (
-                  <TouchableOpacity style={styles.links} key={type}>
-                    <Text>{type.replace("_", " ")}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
+              {placeDetails.data.types && (
+                <ScrollView horizontal={true}>
+                  {placeDetails.data.types.map((type) => (
+                    <TouchableOpacity style={styles.links} key={type}>
+                      <Text>{type.replace("_", " ")}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              )}
             </View>
             <Text style={styles.description}>{item.description}</Text>
             {recommended && (
