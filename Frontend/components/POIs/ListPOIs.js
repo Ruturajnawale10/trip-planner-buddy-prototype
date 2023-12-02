@@ -81,6 +81,9 @@ const ListPOIs = ({
     if (text.includes("pray") || text.includes("church")) {
       onTagPress("Churches & Cathedrals")();
     }
+    if (text.includes("museum")) {
+      onTagPress("Museum")();
+    }
   };
 
   const onChangeTagSearch = (e) => {

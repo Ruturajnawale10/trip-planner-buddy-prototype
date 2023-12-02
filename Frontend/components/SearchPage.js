@@ -126,7 +126,7 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
             cityName: destination,
             createdBy: username,
             address: address,
-            radius: radius,
+            radius: radius * 1000,
           };
           fetch("http://127.0.0.1:8000/api/trip/create/own", {
             method: "POST",
@@ -149,7 +149,7 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
               navigation.navigate("ItineraryHome", {
                 location: destination,
                 address: address,
-                radius: radius,
+                radius: radius * 1000,
                 startDate: startDateString,
                 endDate: endDateString,
                 trip_id: trip_id,
@@ -193,7 +193,7 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
         ref={addressInputRef}
       />
       <TextInput
-        placeholder="Enter radius. Eg. 10"
+        placeholder="Enter radius. Eg. 10KM"
         value={radius}
         onChangeText={(text) => setRadius(text)}
         style={styles.input}
