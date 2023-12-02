@@ -126,6 +126,7 @@ const HomePage = ({ navigation }) => {
       trip_id: trip._id,
       isPublic: trip.isPublic,
       rating: trip.rating,
+      totalRatings: trip.userRatings.length - 1,
     });
   };
 
@@ -193,6 +194,7 @@ const HomePage = ({ navigation }) => {
                   tripName={trip.tripName}
                   pois={trip.pois}
                   rating={trip.rating}
+                  totalRatings={trip.userRatings.length - 1}
                 />
               </TouchableOpacity>
             )) : (
