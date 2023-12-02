@@ -8,8 +8,15 @@ import { userName } from "../../components/RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
 
 function PastItineraryHome({ navigation }) {
-  const { location, startDate, endDate, trip_id, isPublic, rating } =
-    navigation.state.params;
+  const {
+    location,
+    startDate,
+    endDate,
+    trip_id,
+    isPublic,
+    rating,
+    totalRatings,
+  } = navigation.state.params;
 
   const [data, setData] = useState(new Map());
   const [loading, setLoading] = useState(true);
@@ -19,6 +26,7 @@ function PastItineraryHome({ navigation }) {
   const [route_loading, setRouteLoading] = useState(false);
   const [trip_details, setTripDetails] = useState({});
   const [username, setUsername] = useRecoilState(userName);
+  const [hasRated, setHasRated] = useState(true);
 
   const getCurrentTrip = () => {
     fetch("http://127.0.0.1:8000/api/trip/poi_list_1/", {
@@ -34,6 +42,15 @@ function PastItineraryHome({ navigation }) {
       .then((response) => response.json())
       .then((json) => {
         setTripDetails(json.trip_details);
+        let user_ratings = json.trip_details.userRatings;
+        console.log(user_ratings);
+        for (let i = 0; i < user_ratings.length; i++) {
+          if (user_ratings[i][1] == username) {
+            setHasRated(true);
+          } else {
+            setHasRated(false);
+          }
+        }
         for (let i = 0; i < json["pois"].length; i++) {
           let day = json["pois"][i][0]["pois"];
           let formattedDay = [];
@@ -66,6 +83,7 @@ function PastItineraryHome({ navigation }) {
     })
       .then((response) => response.json())
       .then((json) => {
+        setHasRated(true);
       })
       .catch((error) => console.error(error));
   };
@@ -100,21 +118,48 @@ function PastItineraryHome({ navigation }) {
     const emptyStars = totalStars - fullStars - halfStars;
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
+        <Image
+          key={`empty${i}`}
+          source={require("../../assets/EmptyStar.png")}
+          style={[styles.starIcon, { width: starSize, height: starSize }]}
+        />
+      );
+    }
+
+    return (
+      <View style={{ flexDirection: "row" }}>
+        <Text style={{ marginTop: 0, fontSize: 20, marginRight: 3 }}>
+          <Text>{totalRatings > 0 ? averageRating.toFixed(1) : ""}</Text>
+        </Text>
+
+        {stars}
+        <Text style={{ marginTop: 0, fontSize: 20, marginLeft: 3 }}>
+          {totalRatings > 0 ? `(${totalRatings})` : "Not yet rated"}
+        </Text>
+      </View>
+    );
+  };
+
+  const renderEmptyStars = (rating) => {
+    const starsEmpty = [];
+    for (let i = 0; i < 5; i++) {
+      starsEmpty.push(
         <TouchableOpacity onPress={() => handleRatingSelect(i + 1)}>
           <Image
             key={`empty${i}`}
             source={require("../../assets/EmptyStar.png")}
-            style={[styles.starIcon, { width: starSize, height: starSize }]}
+            style={styles.emptyStarIcon}
           />
         </TouchableOpacity>
       );
     }
 
-    return <View style={{ flexDirection: "row" }}>{stars}</View>;
+    return <View style={{ flexDirection: "row" }}>{starsEmpty}</View>;
   };
 
   const averageRating = calculateAverageRating();
   const stars = renderStars(averageRating);
+  const emptyStars = renderEmptyStars(averageRating);
 
   useEffect(() => {
     console.log("We here", trip_id);
@@ -131,6 +176,17 @@ function PastItineraryHome({ navigation }) {
           </View>
         </View>
       )}
+
+      {isPublic && !hasRated && (
+        <View style={[styles.ratingContainer, { justifyContent: "center" }]}>
+          <View
+            style={[styles.starsContainer, { justifyContent: "center" }]}
+          ></View>
+          <Text style={styles.createdBy}>Add your rating </Text>
+          {emptyStars}
+        </View>
+      )}
+
       <Text style={styles.createdBy}>Created by {trip_details.createdBy}</Text>
 
       <PastTrip
@@ -179,6 +235,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#412a47",
     margin: 10,
+  },
+  emptyStarIcon: {
+    width: 30,
+    height: 30,
   },
 });
 
