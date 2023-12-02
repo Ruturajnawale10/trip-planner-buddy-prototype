@@ -29,8 +29,12 @@ const HomePage = ({ navigation }) => {
       "https://media.istockphoto.com/id/1489924466/photo/beautiful-aerial-view-of-the-national-theater-of-costa-rica-and-plaza-de-la-cultura.jpg?s=1024x1024&w=is&k=20&c=HzAMDX1cGyJO1FTWv5cEzXc2EDJ6DTVjXDHL0Bw2HG4=",
     "San Francisco":
       "https://images.squarespace-cdn.com/content/v1/5c7f5f60797f746a7d769cab/ed578728-b35e-4336-ba27-8eced4e968f9/golden+gate+bridge+sarowly.jpg",
-    Vegas:
+    "Las Vegas":
       "https://media.istockphoto.com/id/954500850/photo/las-vegas.jpg?s=1024x1024&w=is&k=20&c=0wrHqkorBeV4IiQjQQioIAjrc191xQYBsqq5FMWx0xw=",
+    "Seattle":
+      "https://media.istockphoto.com/id/464852512/photo/seattle-skyline-at-night-with-mt-rainier-in-the-distance.jpg?s=1024x1024&w=is&k=20&c=79NDoDIquAXh6fjcpOawbtGLeR2IpsD3OLXLd6saKks=",
+      
+
   };
 
   const trip_img_url =
@@ -176,7 +180,7 @@ const HomePage = ({ navigation }) => {
             setIsTopRatedTripsPresent={setIsTopRatedTripsPresent}
           />
 
-          {isTopRatedTripsPresent ?
+          {isTopRatedTripsPresent ? (
             topRatedTrips.map((trip, index) => (
               <TouchableOpacity
                 key={index}
@@ -197,9 +201,13 @@ const HomePage = ({ navigation }) => {
                   totalRatings={trip.userRatings.length - 1}
                 />
               </TouchableOpacity>
-            )) : (
-              <Text style={styles.message}> No trip plans shared for this city </Text>
-            )}
+            ))
+          ) : (
+            <Text style={styles.message}>
+              {" "}
+              No trip plans shared for this city{" "}
+            </Text>
+          )}
         </ScrollView>
       )}
       <NavigationBar navigation={navigation} />

@@ -23,6 +23,13 @@ import PastTrips from "./components/POIs/PastTrips";
 import SharedTrips from "./components/POIs/SharedTrips";
 import PastItineraryHome from "./components/POIs/PastItineraryHome";
 import { RecoilRoot } from "recoil";
+import {LogBox} from 'react-native';
+
+// Ignore log notification by message:
+LogBox.ignoreLogs(['Warning: ...']);
+
+// Ignore all log notifications:
+LogBox.ignoreAllLogs();
 
 const App = () => {
   const [isLogoLoading, setLogoLoading] = useState(false);
