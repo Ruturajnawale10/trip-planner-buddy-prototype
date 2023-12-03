@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from configs.configs import settings
 from datetime import datetime, timedelta
 import requests
-from utils.poi_util import get_coordinates_from_address_google_api, get_coordinate_info_from_address
+from utils.poi_util import get_coordinates_from_address_google_api, get_coordinate_info_from_address_open_street_map
 
 from openai import OpenAI
 
@@ -31,7 +31,7 @@ def weather_recommendation(location: str, start_date: date, end_date: date):
         is_forecast_available = True
         print("Fetching weather data...")
         lat = lon = 0
-        coordinate_info = get_coordinate_info_from_address(location)
+        coordinate_info = get_coordinate_info_from_address_open_street_map(location)
         if coordinate_info is not None:
             print("Wow")
             lat, lon = coordinate_info

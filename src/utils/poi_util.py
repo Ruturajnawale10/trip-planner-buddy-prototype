@@ -28,7 +28,7 @@ def add_mongo_entries_from_wanderlog(cname, placeId):
     except DuplicateKeyError:
         print("Record with the same city already exists, skipping.")
     
-def get_coordinate_info_from_address(address, limit=1):
+def get_coordinate_info_from_address_open_street_map(address, limit=1):
     base_url = "https://nominatim.openstreetmap.org/search"
     params = {
         "addressdetails": 1,
@@ -235,3 +235,17 @@ def get_poi_from_poi_id(poi_id):
     collection_poi = db['poi']
     poi = collection_poi.find_one({'poi_id': poi_id}, {'_id': 0})
     return poi
+
+def get_coordinates_from_address(user_address):
+    latitude, longitude = get_coordinate_info_from_address_open_street_map(user_address)
+    if latitude == None or longitude == None:
+        print("Address not found from open street map")
+        print("getting address from google api")
+        latitude, longitude = get_coordinates_from_address_google_api(user_address)
+    if latitude == None or longitude == None:
+        print("Address not found")
+        return "Address not found"
+    print("latitude: ", latitude, "longitude: ", longitude)
+    latitude = float(latitude)
+    longitude = float(longitude)
+    return latitude, longitude
