@@ -14,13 +14,17 @@ from models.trip import Trip
 from models.user import User
 import json
 from typing import Optional
+from utils.geo_hash_util import get_nearby_poi_ids
+from utils.poi_util import get_coordinates_from_address
+from utils.prompt_util import generate_gpt_prompt_for_runtime_recommendation, generate_gpt_prompt_for_runtime_recommendation_with_address
 
 openai.api_key = settings.gpt_key
 
 
 router = APIRouter(
-    tags=['Generate data for fine']
+    tags=['Fine Tuning']
 )
+collection_poi = db['poi']
 
 # The function below is used to generate training data for gpt model.
 @router.post("/api/finetune/generate/recommendation")
@@ -168,3 +172,32 @@ def create_trip_recommendation(file_key : str):
 
 #     itinerary = response.choices[0].text
 #     return itinerary
+
+# # This function will be used to create a finetuining job for gpt model for runtime recommendation based on user input
+@router.post("/api/finetune/generate/traindata")
+def create_training_prompt_for_runtime_recommencations(user_input_string, address, radius : int):
+    print("Creating training prompt for runtime recommendation")
+    print("User input string: ", user_input_string)
+
+    latitude, longitude = get_coordinates_from_address(address)
+    nearby_poi_ids = get_nearby_poi_ids(latitude, longitude, radius)
+    if len(nearby_poi_ids) == 0:
+        print("No nearby pois found")
+    poi_list = []
+    for poi_id in nearby_poi_ids:
+        poi = collection_poi.find_one({'poi_id': poi_id} , {'_id': 0})
+        if poi != None:
+            poi_list.append(poi)
+    
+    training_propmt = '{"messages": [{"role": "system", "content": "Marv is a recommendation engine which is able to recommend tourist places to users based on the given user input string."}, {"role": '
+    training_propmt += '"user","content": '
+    # training_propmt += generate_gpt_prompt_for_runtime_recommendation(user_input_string, poi_list)
+    user_prompt = generate_gpt_prompt_for_runtime_recommendation_with_address(user_input_string, poi_list)
+    training_propmt += user_prompt
+    training_propmt += '}'
+    training_propmt += ' , {"role": "assistant", "content": "[418371, 47435, 28163, 112861, 112897]"}]}'
+    print('-------------------------------------------------------------------------')
+    file_util.write_string_to_file("runtime_train.jsonl", training_propmt)
+    file_util.write_string_to_file("user_prompt.josnl", user_prompt)
+
+    return {"data" : poi_list}

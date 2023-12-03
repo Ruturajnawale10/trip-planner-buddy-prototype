@@ -7,8 +7,11 @@ from configs.configs import settings
 from utils import poi_util, user_util, prompt_util, file_util
 from typing import Optional
 
+from utils.geo_hash_util import get_nearby_poi_ids
+
 
 client = OpenAI(api_key=settings.gpt_key)
+collection_poi = db['poi']
 
 router = APIRouter(
     tags=['GPT Recommender']
@@ -92,4 +95,28 @@ def generate_recommnedation_from_city_object(city, user_name):
     gpt_prompt += 'gpt_response : ' + gpt_output
     file_util.write_string_to_file("prompt.josnl", gpt_prompt)
 
+    return gpt_output
+
+@router.post("/api/get/gpt/runtime/recommendation")
+def get_runtime_recommendations(user_input: str, address: str, radius: int):
+    latitude, longitude = poi_util.get_coordinates_from_address(address)
+    nearby_poi_ids = get_nearby_poi_ids(latitude, longitude, radius)
+    if len(nearby_poi_ids) == 0:
+        print("No nearby pois found")
+    poi_list = []
+    for poi_id in nearby_poi_ids:
+        poi = collection_poi.find_one({'poi_id': poi_id} , {'_id': 0})
+        if poi != None:
+            poi_list.append(poi)
+    print("poi_list: --------------------------------------------------")
+    print("poi_list: ", poi_list)
+    gpt_prompt = prompt_util.generate_gpt_prompt_for_runtime_recommendation_with_address(user_input, poi_list)
+    response = client.chat.completions.create(
+        model= settings.gpt_model,
+        messages=[
+            {"role": "user", "content": gpt_prompt}
+        ]
+    )
+    gpt_output = str(response.choices[0].message.content)
+    file_util.write_string_to_file("runtime_gpt_prompts.jsonl", gpt_prompt + "gpt_response : " + gpt_output)
     return gpt_output
