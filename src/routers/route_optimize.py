@@ -20,6 +20,7 @@ collection_trip = db['trip']
 @router.post("/api/trip/route/optimize")
 def optimize_routes(poi_list: TripPOI):
     print("Inside optimize_routes")
+    print(poi_list)
     optimized_poi_order = get_route(poi_list)
     day = poi_list.day
     optimized_poi_ids = []
