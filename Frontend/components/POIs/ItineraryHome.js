@@ -39,7 +39,6 @@ function ItineraryTabs({ navigation }) {
     })
       .then((response) => response.json())
       .then((json) => {
-        console.log("json", json);
         for (let i = 0; i < json["pois"].length; i++) {
           let day = json["pois"][i][0]["pois"];
           let formattedDay = [];

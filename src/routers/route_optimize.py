@@ -20,6 +20,9 @@ collection_trip = db['trip']
 @router.post("/api/trip/route/optimize")
 def optimize_routes(poi_list: TripPOI):
     print("Inside optimize_routes")
+    if poi_list.pois == None or len(poi_list.pois) <= 2:
+        print("Not enough POIs to optimize")
+        return {"error": "Not enough POIs to optimize"}
     optimized_poi_order = get_route(poi_list)
     day = poi_list.day
     optimized_poi_ids = []

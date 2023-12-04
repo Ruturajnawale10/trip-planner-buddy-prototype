@@ -108,8 +108,6 @@ def get_runtime_recommendations(user_input: str, address: str, radius: int):
         poi = collection_poi.find_one({'poi_id': poi_id} , {'_id': 0})
         if poi != None:
             poi_list.append(poi)
-    print("poi_list: --------------------------------------------------")
-    print("poi_list: ", poi_list)
     gpt_prompt = prompt_util.generate_gpt_prompt_for_runtime_recommendation_with_address(user_input, poi_list)
     response = client.chat.completions.create(
         model= settings.gpt_model,
