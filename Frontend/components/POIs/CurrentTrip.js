@@ -60,12 +60,9 @@ const CurrentTrip = ({
       }
     });
 
-    Array.from(data, ([key, value]) => {
-      if (key == day) {
-        let newData = value.concat([newItem]);
-        setData((data) => data.set(key, newData));
-      }
-    });
+    let pois_list = data.get(day + 1)
+    pois_list.push(newItem)
+    setData((data) => data.set(day + 1, pois_list));
     setReload(!reload);
 
     fetch("http://127.0.0.1:8000/api/trip/add/poi", {
