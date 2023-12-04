@@ -44,6 +44,9 @@ def get_route(poi_list: TripPOI):
         for location in route[0]["legs"]
         ]
 
+        start_unique_poi_ids = set()
+        end_unique_poi_ids = set()
+        
         for i, path in enumerate(optimized_poi_order):
             startFound = False
             endFound = False
@@ -52,12 +55,14 @@ def get_route(poi_list: TripPOI):
                     break
                 if not startFound:
                     dist = haversine((path["start_location"]["lat"], path["start_location"]["lng"]), (poi[1], poi[2]))
-                    if dist < 0.1:
+                    if dist < 0.1 and poi[0] not in start_unique_poi_ids:
+                        start_unique_poi_ids.add(poi[0])
                         optimized_poi_order[i]["start_poi_id"] = poi[0]
                         startFound = True
                 if not endFound:
                     dist = haversine((path["end_location"]["lat"], path["end_location"]["lng"]), (poi[1], poi[2]))
-                    if dist < 0.1:
+                    if dist < 0.1 and poi[0] not in end_unique_poi_ids:
+                        end_unique_poi_ids.add(poi[0])
                         optimized_poi_order[i]["end_poi_id"] = poi[0]
                         endFound = True                
         return optimized_poi_order
