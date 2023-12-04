@@ -43,8 +43,6 @@ def get_route(poi_list: TripPOI):
         }
         for location in route[0]["legs"]
         ]
-        
-        print("optimized_poi_order2", optimized_poi_order)
 
         start_unique_poi_ids = set()
         end_unique_poi_ids = set()
