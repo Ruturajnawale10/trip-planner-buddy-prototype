@@ -31,6 +31,8 @@ const CurrentTrip = ({
   route_transport,
   setRouteLoading,
   route_loading,
+  address,
+  radius,
 }) => {
   const [username, setUsername] = useRecoilState(userName);
   const scrollViewRef = useRef();
@@ -227,6 +229,8 @@ const CurrentTrip = ({
                     addPOI={addPOI}
                     setScrollX={setScrollX}
                     scrollViewRef={scrollViewRef}
+                    address={address}
+                    radius={radius}
                   />
                 )}
               </View>

@@ -9,7 +9,7 @@ from bson import ObjectId
 from routers.gpt_recommender import generate_recommnedation_from_city_object
 
 from utils.geo_hash_util import get_nearby_poi_ids
-from utils.poi_util import get_coordinate_info_from_address, get_coordinates_from_address_google_api
+from utils.poi_util import get_coordinates_from_address
 
 router = APIRouter(
     tags=['Destination']
@@ -61,17 +61,7 @@ def places_list(city_id: int):
 def get_nearby(user_address: str, radius: int, user_name: Optional[str] = None):
     print("get nearby entries api called")
 
-    latitude, longitude = get_coordinate_info_from_address(user_address)
-    if latitude == None or longitude == None:
-        print("Address not found from open street map")
-        print("getting address from google api")
-        latitude, longitude = get_coordinates_from_address_google_api(user_address)
-    if latitude == None or longitude == None:
-        print("Address not found")
-        return "Address not found"
-    print("latitude: ", latitude, "longitude: ", longitude)
-    latitude = float(latitude)
-    longitude = float(longitude)
+    latitude, longitude = get_coordinates_from_address(user_address)
     nearby_poi_ids = get_nearby_poi_ids(latitude, longitude, radius)
     if len(nearby_poi_ids) == 0:
         print("No nearby pois found")
@@ -86,7 +76,7 @@ def get_nearby(user_address: str, radius: int, user_name: Optional[str] = None):
     gpt_recommendations = ""
     if user_name != None:
         gpt_recommendations = generate_recommnedation_from_city_object(dummy_city, user_name)
-    dummy_city.update({'gpt_recommendations': gpt_recommendations})
+        dummy_city.update({'gpt_recommendations': gpt_recommendations})
     return dummy_city
 
 

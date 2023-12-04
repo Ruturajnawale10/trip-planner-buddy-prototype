@@ -23,10 +23,11 @@ import PastTrips from "./components/POIs/PastTrips";
 import SharedTrips from "./components/POIs/SharedTrips";
 import PastItineraryHome from "./components/POIs/PastItineraryHome";
 import { RecoilRoot } from "recoil";
-import {LogBox} from 'react-native';
+import { LogBox } from "react-native";
+import ChatBot from "./components/ChatBot/ChatBot";
 
 // Ignore log notification by message:
-LogBox.ignoreLogs(['Warning: ...']);
+LogBox.ignoreLogs(["Warning: ..."]);
 
 // Ignore all log notifications:
 LogBox.ignoreAllLogs();
@@ -70,6 +71,7 @@ const AppNavigator = createAppContainer(
       PastTrips: PastTrips,
       SharedTrips: SharedTrips,
       PastItineraryHome: PastItineraryHome,
+      ChatBot: ChatBot,
     },
     {
       initialRouteName: "Login", // Starts with the login/signup screens

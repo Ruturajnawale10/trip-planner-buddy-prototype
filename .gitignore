@@ -2,3 +2,6 @@ src/configs
 src/prompt.josnl
 *.jsonl
 *.py[cod]
+src/new_train.josnl
+src/runtime_recommendation_train.josnl
+src/user_prompt.josnl
