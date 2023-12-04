@@ -191,6 +191,8 @@ function ItineraryTabs({ navigation }) {
             route_transport={route_transport}
             setRouteLoading={setRouteLoading}
             route_loading={route_loading}
+            address={address}
+            radius={radius}
           />
         )}
       />

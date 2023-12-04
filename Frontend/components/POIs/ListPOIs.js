@@ -1,6 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import { View, StyleSheet, ScrollView, Text, Dimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
 
 import { SafeAreaView } from "react-native";
 import POIsCard from "./POIsCard";
@@ -17,6 +24,8 @@ const ListPOIs = ({
   addPOI,
   setScrollX,
   scrollViewRef,
+  address,
+  radius,
 }) => {
   const { location, startDate, endDate, trip_id } = navigation.state.params;
   const [load, setLoad] = useState(false);
@@ -64,26 +73,42 @@ const ListPOIs = ({
   };
 
   const tagSearch = (text) => {
-    text = text.toLowerCase();
-    console.log(text);
-
-    if (text == "") {
-      onTagPress("All")();
+    setLoad(false);
+    if (text === "") {
+      data.pois.map((item) => {
+        item.show = true;
+      });
+      setLoad(true);
       return;
     }
-
-    if (text.includes("mexican")) {
-      onTagPress("Mexican restaurant")();
-    }
-    if (text.includes("hamburger")) {
-      onTagPress("Hamburger restaurant")();
-    }
-    if (text.includes("pray") || text.includes("church")) {
-      onTagPress("Churches & Cathedrals")();
-    }
-    if (text.includes("museum")) {
-      onTagPress("Museum")();
-    }
+    fetch(
+      "http://127.0.0.1:8000/api/get/gpt/runtime/recommendation?user_input=" +
+        text +
+        "&address=" +
+        address +
+        "&radius=" +
+        radius,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        data.pois.map((item) => {
+          if (json.includes(item.poi_id)) {
+            item.show = true;
+          } else {
+            item.show = false;
+          }
+        });
+        setLoad(true);
+      })
+      .catch((error) => console.error(error));
   };
 
   const onChangeTagSearch = (e) => {
@@ -169,7 +194,7 @@ const ListPOIs = ({
           )}
         </ScrollView>
       ) : (
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" color="#0000ff" />
       )}
     </SafeAreaView>
   );

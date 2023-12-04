@@ -150,6 +150,38 @@ export default function POIs({ navigation }) {
               )}
             </View>
             <Text style={styles.description}>{item.description}</Text>
+            <View
+              style={{
+                marginLeft: 8,
+                marginRight: 8,
+                flexDirection: "row",
+                height: 90,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "column",
+                  marginRight: 70,
+                }}
+              >
+                <Text style={styles.chatBotDescription}>
+                  Have more questions?
+                </Text>
+                <Text style={styles.chatBotDescription}>Chat with Trippy!</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.links}
+                onPress={() => {
+                  navigation.navigate("ChatBot", {
+                    poi_name: item.name,
+                  });
+                }}
+              >
+                <Icon name="chat" />
+
+                <Text>AI Chat Bot</Text>
+              </TouchableOpacity>
+            </View>
             {recommended && (
               <View>
                 <Text style={styles.whyText}>
@@ -417,6 +449,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     margin: 8,
     padding: 8,
+  },
+  chatBotDescription: {
+    fontSize: 16,
+    padding: 8,
+    fontWeight: "bold",
   },
   whyText: {
     fontSize: 16,
