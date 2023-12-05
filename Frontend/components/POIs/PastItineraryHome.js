@@ -95,35 +95,18 @@ function PastItineraryHome({ navigation }) {
     const stars = [];
     const starSize = 20; // Set the desired size for your stars
 
+    let starTypeSrc = [];
     for (let i = 0; i < fullStars; i++) {
-      stars.push(
-        <Image
-          key={i}
-          source={require("../../assets/SingleStar.png")}
-          style={[styles.starIcon, { width: starSize, height: starSize }]}
-        />
-      );
+      starTypeSrc.push(require("../../assets/SingleStar.png"));
     }
 
     if (halfStars === 1) {
-      stars.push(
-        <Image
-          key="half"
-          source={require("../../assets/HalfStar.png")}
-          style={[styles.starIcon, { width: starSize, height: starSize }]}
-        />
-      );
+      starTypeSrc.push(require("../../assets/HalfStar.png"));
     }
 
     const emptyStars = totalStars - fullStars - halfStars;
     for (let i = 0; i < emptyStars; i++) {
-      stars.push(
-        <Image
-          key={`empty${i}`}
-          source={require("../../assets/EmptyStar.png")}
-          style={[styles.starIcon, { width: starSize, height: starSize }]}
-        />
-      );
+      starTypeSrc.push(require("../../assets/EmptyStar.png"));
     }
 
     return (
@@ -132,7 +115,26 @@ function PastItineraryHome({ navigation }) {
           <Text>{totalRatings > 0 ? averageRating.toFixed(1) : ""}</Text>
         </Text>
 
-        {stars}
+        <Image
+          source={starTypeSrc[0]}
+          style={[styles.starIcon, { width: starSize, height: starSize }]}
+        />
+        <Image
+          source={starTypeSrc[1]}
+          style={[styles.starIcon, { width: starSize, height: starSize }]}
+        />
+        <Image
+          source={starTypeSrc[2]}
+          style={[styles.starIcon, { width: starSize, height: starSize }]}
+        />
+        <Image
+          source={starTypeSrc[3]}
+          style={[styles.starIcon, { width: starSize, height: starSize }]}
+        />
+        <Image
+          source={starTypeSrc[4]}
+          style={[styles.starIcon, { width: starSize, height: starSize }]}
+        />
         <Text style={{ marginTop: 0, fontSize: 20, marginLeft: 3 }}>
           {totalRatings > 0 ? `(${totalRatings})` : "Not yet rated"}
         </Text>
