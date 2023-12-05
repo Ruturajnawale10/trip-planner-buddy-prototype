@@ -17,6 +17,7 @@ import { useRecoilState } from "recoil";
 import { color } from "../../custom_colors/colors";
 import { Icon } from "@rneui/themed";
 import YelpLogo from "../POIs/Logos/YelpLogo";
+import { HeaderBackButton } from "react-navigation-stack";
 
 export default function POIs({ navigation }) {
   // Extract the POI data from the route params
@@ -119,6 +120,15 @@ export default function POIs({ navigation }) {
   }, []);
   return (
     <SafeAreaView>
+      <View style={styles.header}>
+        <HeaderBackButton
+          tintColor={color.purple} // Adjust the color as needed
+          onPress={() => navigation.goBack()}
+          label="Trip"
+        />
+        <Text style={styles.title}>{item.name}</Text>
+        <View style={{ width: 50 }} />
+      </View>
       <ScrollView>
         {load ? (
           <SafeAreaView style={styles.container}>
@@ -130,7 +140,6 @@ export default function POIs({ navigation }) {
               ))}
             </Swiper>
             {/* Destination details */}
-            <Text style={styles.title}>{item.name}</Text>
             <View style={{ flexDirection: "row", margin: 8 }}>
               {placeDetails.data.price_level && (
                 <TouchableOpacity style={styles.pricelevel}>
@@ -391,12 +400,6 @@ export default function POIs({ navigation }) {
                 <Text style={styles.buttonText}>Remove from Itinerary</Text>
               </TouchableOpacity>
             )}
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-            >
-              <Text style={styles.buttonText}>Go Back</Text>
-            </TouchableOpacity>
             <View style={{ height: 100 }} />
           </SafeAreaView>
         ) : (
@@ -412,14 +415,11 @@ export default function POIs({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center",
     justifyContent: "flex-start",
-    // Adjust the vertical alignment as needed
   },
   image: {
     width: "100%", // Adjust the image width as needed
     height: 400, // Adjust the image height as needed
-    marginTop: 16,
     marginBottom: 16,
   },
   title: {
@@ -427,6 +427,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 8,
     margin: 16,
+    flex: 1,
+    textAlign: "center",
   },
   description: {
     fontSize: 16,
@@ -499,5 +501,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
     margin: 8,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: color.purpleLight, // Adjust the background color as needed
   },
 });
