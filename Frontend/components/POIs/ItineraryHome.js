@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Text, StyleSheet, Alert, View, TextInput } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  Alert,
+  View,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import CurrentTrip from "./CurrentTrip";
 import Weather from "./Weather";
-import NavigationBar from "../NavigationButton/NavigationBar";
 import { SafeAreaView } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import MapViewPage from "./MapViewPage";
@@ -10,6 +16,7 @@ import { useRecoilState } from "recoil";
 import { userName } from "../RecoilStore/RecoilStore";
 import EditIcon from "react-native-vector-icons/AntDesign";
 import { DateFormat } from "../../utils/dateFormat.js";
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -270,6 +277,9 @@ function ItineraryHome({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titlebar}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <SimpleLineIcons style={{ marginLeft: 10 }} name="home" size={30} />
+        </TouchableOpacity>
         {editMode ? (
           <TextInput
             style={styles.titleInput}
@@ -291,7 +301,6 @@ function ItineraryHome({ navigation }) {
         {formatted_start_date} - {formatted_end_date} {year}
       </Text>
       <ItineraryTabs navigation={navigation} />
-      <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
 }
@@ -310,11 +319,11 @@ const styles = StyleSheet.create({
     color: "#412a47",
     fontWeight: "bold",
     margin: 10,
+    marginLeft: 30,
   },
   titlebar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
   },
   date: {
     fontSize: 18,

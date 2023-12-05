@@ -1,6 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
-import { Text, StyleSheet, Image, View, TouchableOpacity } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  Image,
+  View,
+  TouchableOpacity,
+  Animated,
+  ScrollView,
+} from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
 import { SafeAreaView } from "react-native";
 import PastTrip from "./PastTrip";
@@ -27,6 +35,8 @@ function PastItineraryHome({ navigation }) {
   const [trip_details, setTripDetails] = useState({});
   const [username, setUsername] = useRecoilState(userName);
   const [hasRated, setHasRated] = useState(true);
+
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   const getCurrentTrip = () => {
     fetch("http://127.0.0.1:8000/api/trip/poi_list_1/", {
@@ -163,48 +173,78 @@ function PastItineraryHome({ navigation }) {
   const stars = renderStars(averageRating);
   const emptyStars = renderEmptyStars(averageRating);
 
+  const getHeaderHeight = () => {
+    let height = 0;
+
+    if (isPublic) {
+      height += 60;
+      if (!hasRated) {
+        height += 70;
+      }
+    }
+
+    return height;
+  };
+
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, 200],
+    outputRange: [getHeaderHeight(), 0],
+    extrapolate: "clamp",
+  });
+
   useEffect(() => {
-    console.log("We here", trip_id);
     getCurrentTrip();
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Trip to {location}</Text>
-      {isPublic && (
-        <View style={[styles.ratingContainer, { justifyContent: "center" }]}>
-          <View style={[styles.starsContainer, { justifyContent: "center" }]}>
-            {stars}
+      <Animated.View style={[styles.animatedHeader, { height: headerHeight }]}>
+        {isPublic && (
+          <View style={[styles.ratingContainer, { justifyContent: "center" }]}>
+            <View style={[styles.starsContainer, { justifyContent: "center" }]}>
+              {stars}
+            </View>
           </View>
-        </View>
-      )}
+        )}
 
-      {isPublic && !hasRated && (
-        <View style={[styles.ratingContainer, { justifyContent: "center" }]}>
-          <View
-            style={[styles.starsContainer, { justifyContent: "center" }]}
-          ></View>
-          <Text style={styles.createdBy}>Add your rating </Text>
-          {emptyStars}
-        </View>
-      )}
+        {isPublic && !hasRated && (
+          <View style={[styles.ratingContainer, { justifyContent: "center" }]}>
+            <View
+              style={[styles.starsContainer, { justifyContent: "center" }]}
+            ></View>
+            <Text style={styles.createdBy}>Add your rating </Text>
+            {emptyStars}
+          </View>
+        )}
 
-      <Text style={styles.createdBy}>Created by {trip_details.createdBy}</Text>
+        <Text style={styles.createdBy}>
+          Created by {trip_details.createdBy}
+        </Text>
+      </Animated.View>
 
-      <PastTrip
-        navigation={navigation}
-        data={data}
-        setData={setData}
-        reload={reload}
-        setReload={setReload}
-        recommendations={recommendations}
-        loading={loading}
-        trip_id={trip_id}
-        setRouteTransport={setRouteTransport}
-        route_transport={route_transport}
-        setRouteLoading={setRouteLoading}
-        route_loading={route_loading}
-      />
+      <ScrollView
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
+      >
+        <PastTrip
+          navigation={navigation}
+          data={data}
+          setData={setData}
+          reload={reload}
+          setReload={setReload}
+          recommendations={recommendations}
+          loading={loading}
+          trip_id={trip_id}
+          setRouteTransport={setRouteTransport}
+          route_transport={route_transport}
+          setRouteLoading={setRouteLoading}
+          route_loading={route_loading}
+        />
+      </ScrollView>
       <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );

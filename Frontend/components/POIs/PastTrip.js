@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native";
@@ -37,35 +36,33 @@ const PastTrip = ({
   return (
     <SafeAreaView style={styles.container}>
       {!loading ? (
-        <ScrollView>
-          <View style={styles.container}>
-            <Text style={{ height: 0, width: 0 }}>
-              {data.length} {route_transport} {loading}
-            </Text>
-            {Array.from(data, ([key, value]) => (
-              <View key={key} style={styles.container}>
-                <View style={styles.toprow}>
-                  <Text style={styles.text}>Day {key}</Text>
-                </View>
-                {value.map((item, index) => (
-                  <View key={item.name + index}>
-                    <TouchableOpacity
-                      onPress={() => handleDetailsPress(item, key)}
-                    >
-                      <POIAddedCardForPastTrip
-                        item={item}
-                        index={index}
-                        day={key}
-                        route_transport={route_transport}
-                        route_loading={route_loading}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                ))}
+        <View style={styles.container}>
+          <Text style={{ height: 0, width: 0 }}>
+            {data.length} {route_transport} {loading}
+          </Text>
+          {Array.from(data, ([key, value]) => (
+            <View key={key} style={styles.container}>
+              <View style={styles.toprow}>
+                <Text style={styles.text}>Day {key}</Text>
               </View>
-            ))}
-          </View>
-        </ScrollView>
+              {value.map((item, index) => (
+                <View key={item.name + index}>
+                  <TouchableOpacity
+                    onPress={() => handleDetailsPress(item, key)}
+                  >
+                    <POIAddedCardForPastTrip
+                      item={item}
+                      index={index}
+                      day={key}
+                      route_transport={route_transport}
+                      route_loading={route_loading}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          ))}
+        </View>
       ) : (
         <ActivityIndicator size="large" color="#0000ff" />
       )}
