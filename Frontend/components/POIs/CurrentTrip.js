@@ -60,8 +60,8 @@ const CurrentTrip = ({
       }
     });
 
-    let pois_list = data.get(day + 1)
-    pois_list.push(newItem)
+    let pois_list = data.get(day + 1);
+    pois_list.push(newItem);
     setData((data) => data.set(day + 1, pois_list));
     setReload(!reload);
 
@@ -220,6 +220,7 @@ const CurrentTrip = ({
                     navigation={navigation}
                     data={POIListData}
                     setData={setPOIListData}
+                    currentData={data}
                     recommendations={recommendations}
                     day={key - 1}
                     removePOI={removePOI}

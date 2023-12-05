@@ -18,6 +18,7 @@ const ListPOIs = ({
   navigation,
   data,
   setData,
+  currentData,
   recommendations,
   day,
   removePOI,
@@ -115,8 +116,24 @@ const ListPOIs = ({
     setTagSearchText(e.nativeEvent.text);
   };
 
+  const removeExistingPOIs = () => {
+    var pois = [];
+    Array.from(currentData, ([key, value]) => {
+      value.map((item) => {
+        pois.push(item.poi_id);
+      });
+    });
+    console.log(pois);
+    data.pois.map((item) => {
+      if (pois.includes(item.poi_id)) {
+        item.added = true;
+      }
+    });
+  };
+
   useEffect(() => {
     integrateRecommendations();
+    removeExistingPOIs();
   }, [data]);
 
   return (
@@ -175,7 +192,8 @@ const ListPOIs = ({
         >
           {data.pois.map(
             (item, index) =>
-              item.show && (
+              item.show &&
+              !item.added && (
                 <View key={item.poi_id} style={styles.poiCard}>
                   <POIsCard
                     imageID={item.images[0]}
