@@ -406,8 +406,6 @@ export default function POIs({ navigation }) {
           <ActivityIndicator size="large" color="#0000ff" />
         )}
       </ScrollView>
-
-      <NavigationBar navigation={navigation} />
     </SafeAreaView>
   );
 }
