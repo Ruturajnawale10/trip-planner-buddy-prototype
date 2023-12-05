@@ -1,22 +1,14 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
   StyleSheet,
-  ScrollView,
   ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { userName } from "../RecoilStore/RecoilStore";
-import { useRecoilState } from "recoil";
 import { Dimensions } from "react-native";
 import MapView, { Circle, Marker } from "react-native-maps";
 import DropDownPicker from "react-native-dropdown-picker";
 import MapViewCard from "./MapViewCard";
-import CustomMarker from "./CustomMarker";
-
-// import Dropdown from "./Dropdown";
 
 const MapViewPage = ({
   navigation,
@@ -44,7 +36,6 @@ const MapViewPage = ({
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([{ label: "All Locations", value: 0 }]);
   const [currentItem, setCurrentItem] = useState(null);
-  const [load, setLoad] = useState(false);
 
   const showPOI = () => {
     if (currentItem) {
@@ -71,9 +62,7 @@ const MapViewPage = ({
                 console.log(item);
                 setCurrentItem(item);
               }}
-            >
-              {/* <CustomMarker /> */}
-            </Marker>
+            ></Marker>
           ))}
         </>
       );
@@ -117,6 +106,22 @@ const MapViewPage = ({
       {loading ? (
         <View>
           <View style={styles.container}>
+            <DropDownPicker
+              placeholder="All Locations"
+              open={open}
+              value={value}
+              items={items}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={setItems}
+              zoomControlEnabled={true}
+              style={{
+                zIndex: 100,
+                position: "absolute",
+                top: 10,
+                width: 150,
+              }}
+            />
             <MapView
               style={styles.map}
               initialRegion={
@@ -133,22 +138,6 @@ const MapViewPage = ({
                   : initialRegion
               }
             >
-              <DropDownPicker
-                placeholder="All Locations"
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-                zoomControlEnabled={true}
-                style={{
-                  zIndex: 100,
-                  position: "absolute",
-                  top: 10,
-                  width: 150,
-                }}
-              />
               <Circle
                 center={{
                   latitude: POIListData.geo.latitude,

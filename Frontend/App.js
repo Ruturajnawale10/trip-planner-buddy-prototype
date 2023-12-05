@@ -1,13 +1,10 @@
-import React, { useState, useEffect, Suspense } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
-import { SafeAreaView } from "react-native";
-import { Image } from "react-native";
+import React, { useState, Suspense } from "react";
+import { ActivityIndicator } from "react-native";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import LoginScreen from "./components/LoginScreen";
 import SignupScreen from "./components/SignupScreen";
-import MapViewPage from "./components/MapViewPage";
 import HomePage from "./components/HomePage/HomePage";
 import SearchPage from "./components/SearchPage";
 import ListPOIs from "./components/POIs/ListPOIs";
@@ -55,7 +52,6 @@ const AppNavigator = createAppContainer(
     {
       Login: LoginScreen,
       Signup: SignupScreen,
-      MapView: MapViewPage,
       HomePage: HomePage,
       SearchPage: SearchPage,
       ListPOIs: ListPOIs,
@@ -64,7 +60,6 @@ const AppNavigator = createAppContainer(
       ItineraryHome: ItineraryHome,
       PreferenceScreen1: PreferenceScreen1,
       PreferenceScreen2: PreferenceScreen2,
-      MapViewPage: MapViewPage,
       ProfilePage: ProfilePage,
       EditProfile: EditProfile,
       UpcomingTrips: UpcomingTrips,
@@ -74,8 +69,8 @@ const AppNavigator = createAppContainer(
       ChatBot: ChatBot,
     },
     {
-      initialRouteName: "Login", // Starts with the login/signup screens
-      headerMode: "none", // Hide the navigation header
+      initialRouteName: "Login",
+      headerMode: "none",
     }
   )
 );
