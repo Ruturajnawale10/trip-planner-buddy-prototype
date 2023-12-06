@@ -53,9 +53,9 @@ function ItineraryTabs({ navigation }) {
             formattedDay.push(day[j]);
           }
           setData((data) => data.set(i + 1, formattedDay));
-          setRouteLoading(false);
-          setCurrentTripLoading(false);
         }
+        setRouteLoading(false);
+        setCurrentTripLoading(false);
       })
       .catch((error) => console.error(error));
   };
