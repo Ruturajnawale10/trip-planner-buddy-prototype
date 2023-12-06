@@ -22,16 +22,16 @@ const Tab = createMaterialTopTabNavigator();
 
 function ItineraryTabs({ navigation }) {
   const [data, setData] = useState(new Map());
-  const [loading, setLoading] = useState(false);
   const [username, setUsername] = useRecoilState(userName);
   const [POIListData, setPOIListData] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
-  const [flag, setFlag] = useState(false);
   const [reload, setReload] = useState(false);
   const { location, address, radius, startDate, endDate, trip_id } =
     navigation.state.params;
   const [route_transport, setRouteTransport] = useState("driving");
   const [route_loading, setRouteLoading] = useState(false);
+  const [currentTripLoading, setCurrentTripLoading] = useState(true);
+  const [poiListLoading, setPOIListLoading] = useState(true);
 
   const getCurrentTrip = () => {
     fetch("http://127.0.0.1:8000/api/trip/poi_list_1/", {
@@ -54,6 +54,7 @@ function ItineraryTabs({ navigation }) {
           }
           setData((data) => data.set(i + 1, formattedDay));
           setRouteLoading(false);
+          setCurrentTripLoading(false);
         }
       })
       .catch((error) => console.error(error));
@@ -78,8 +79,7 @@ function ItineraryTabs({ navigation }) {
         setPOIListData(json);
 
         setRecommendations(json.gpt_recommendations);
-        setFlag(true);
-        setLoading(true);
+        setPOIListLoading(false);
       })
       .catch((error) => console.error(error));
   };
@@ -87,10 +87,6 @@ function ItineraryTabs({ navigation }) {
     getCurrentTrip();
     getPOIs();
   }, [reload]);
-
-  useEffect(() => {
-    console.log("**************data", data.size);
-  }, [loading]);
 
   useEffect(() => {
     const currentDate = new Date();
@@ -187,11 +183,9 @@ function ItineraryTabs({ navigation }) {
             setData={setData}
             POIListData={POIListData}
             setPOIListData={setPOIListData}
-            flag={flag}
             reload={reload}
             setReload={setReload}
             recommendations={recommendations}
-            loading={loading}
             trip_id={trip_id}
             setRouteTransport={setRouteTransport}
             route_transport={route_transport}
@@ -199,6 +193,8 @@ function ItineraryTabs({ navigation }) {
             route_loading={route_loading}
             address={address}
             radius={radius}
+            currentTripLoading={currentTripLoading}
+            poiListLoading={poiListLoading}
           />
         )}
       />
@@ -206,13 +202,12 @@ function ItineraryTabs({ navigation }) {
         name="Map View"
         children={() => (
           <MapViewPage
-            navigation={navigation}
             data={data}
-            setData={setData}
             POIListData={POIListData}
-            loading={loading}
             recommendations={recommendations}
             radius={radius}
+            currentTripLoading={currentTripLoading}
+            poiListLoading={poiListLoading}
           />
         )}
       />

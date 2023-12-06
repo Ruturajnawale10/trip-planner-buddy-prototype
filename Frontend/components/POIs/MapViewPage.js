@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native";
 import { Dimensions } from "react-native";
 import MapView, { Circle, Marker } from "react-native-maps";
@@ -11,13 +7,12 @@ import DropDownPicker from "react-native-dropdown-picker";
 import MapViewCard from "./MapViewCard";
 
 const MapViewPage = ({
-  navigation,
   data,
-  setData,
   POIListData,
-  loading,
   recommendations,
   radius,
+  currentTripLoading,
+  poiListLoading,
 }) => {
   function degreesToRadians(angle) {
     return angle * (Math.PI / 180);
@@ -94,16 +89,14 @@ const MapViewPage = ({
   };
 
   useEffect(() => {
-    console.log("Size of data: ", data.size);
     for (let i = 1; i <= data.size; i++) {
       setItems((items) => [...items, { label: "day " + i, value: i }]);
     }
-    console.log("Dropdown Reloaded", items);
-  }, [loading]);
+  }, [currentTripLoading, poiListLoading]);
 
   return (
     <SafeAreaView>
-      {loading ? (
+      {!currentTripLoading && !poiListLoading ? (
         <View>
           <View style={styles.container}>
             <DropDownPicker
