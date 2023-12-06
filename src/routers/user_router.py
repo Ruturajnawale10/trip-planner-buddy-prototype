@@ -1,13 +1,21 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from models.user import User
 from configs.db import db
 from bson import ObjectId
 from fastapi.responses import JSONResponse
 from bson import json_util
+import redis
+
 router = APIRouter(
     tags=['User']
 )
+
+def get_redis():
+    rd = redis.Redis(host='localhost', port=6379, db=0)
+    return rd
+
+router_dependency = Depends(get_redis)
 
 class UserSignupRequest(BaseModel):
     username: str
@@ -70,8 +78,20 @@ def signin(user_data: UserSignupRequest):
         username=user_valid['username'],
     )
 
+def clear_cache_with_prefix(redis_client, prefix):
+    print("Attempting to clear cache with prefix: ", prefix)
+    count = 0
+    
+    ns_keys = redis_client.keys(prefix + '*')
+    for key in ns_keys:
+        count += 1
+        print("key: ", key)
+        redis_client.delete(key)
+    
+    return count
+        
 @router.put("/update/preferences/{username}", response_model=UserResponse)
-def update_preferences(username: str, preferences_data: UserUpdatePreferencesRequest):
+def update_preferences(username: str, preferences_data: UserUpdatePreferencesRequest, rd: redis.Redis = router_dependency):
     collection = db['user']
     existing_user = collection.find_one({'username': username})
     if not existing_user:
@@ -84,6 +104,11 @@ def update_preferences(username: str, preferences_data: UserUpdatePreferencesReq
     }
     collection.update_one({'username': username}, update_query)
     updated_user = collection.find_one({'username': username})
+    
+    # clear cache
+    cnt = clear_cache_with_prefix(rd, username)
+    print("Cleared cache for ", cnt, " keys")
+    
     return UserResponse(
         username=updated_user['username'],
     )
