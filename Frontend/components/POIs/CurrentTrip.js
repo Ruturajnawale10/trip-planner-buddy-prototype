@@ -11,8 +11,6 @@ import { SafeAreaView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ListPOIs from "./ListPOIs";
 import POIAddedCard from "./POIAddedCard";
-import { userName } from "../RecoilStore/RecoilStore";
-import { useRecoilState } from "recoil";
 import DropDownPicker from "react-native-dropdown-picker";
 
 const CurrentTrip = ({
@@ -21,11 +19,9 @@ const CurrentTrip = ({
   setData,
   POIListData,
   setPOIListData,
-  flag,
   reload,
   setReload,
   recommendations,
-  loading,
   trip_id,
   setRouteTransport,
   route_transport,
@@ -33,8 +29,9 @@ const CurrentTrip = ({
   route_loading,
   address,
   radius,
+  currentTripLoading,
+  poiListLoading,
 }) => {
-  const [username, setUsername] = useRecoilState(userName);
   const scrollViewRef = useRef();
   const [scrollX, setScrollX] = useState(0);
   const [open, setOpen] = useState(false);
@@ -170,7 +167,7 @@ const CurrentTrip = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      {loading ? (
+      {!currentTripLoading && !poiListLoading ? (
         <ScrollView>
           <View style={styles.container}>
             {/*using data object below to reflect change in data without reloading entire page*/}
@@ -215,22 +212,20 @@ const CurrentTrip = ({
                     </TouchableOpacity>
                   </View>
                 ))}
-                {flag && (
-                  <ListPOIs
-                    navigation={navigation}
-                    data={POIListData}
-                    setData={setPOIListData}
-                    currentData={data}
-                    recommendations={recommendations}
-                    day={key - 1}
-                    removePOI={removePOI}
-                    addPOI={addPOI}
-                    setScrollX={setScrollX}
-                    scrollViewRef={scrollViewRef}
-                    address={address}
-                    radius={radius}
-                  />
-                )}
+                <ListPOIs
+                  navigation={navigation}
+                  data={POIListData}
+                  setData={setPOIListData}
+                  currentData={data}
+                  recommendations={recommendations}
+                  day={key - 1}
+                  removePOI={removePOI}
+                  addPOI={addPOI}
+                  setScrollX={setScrollX}
+                  scrollViewRef={scrollViewRef}
+                  address={address}
+                  radius={radius}
+                />
               </View>
             ))}
           </View>
