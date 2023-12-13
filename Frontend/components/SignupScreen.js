@@ -1,6 +1,7 @@
 // SignupScreen.js
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity,Image, StyleSheet } from 'react-native';
+import { settings } from "../configs/config";
 
 const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -19,7 +20,7 @@ const SignupScreen = ({ navigation }) => {
     };
 
     // Make a POST request to the sign-up API
-    fetch('http://127.0.0.1:8000/signup', {
+    fetch('http://3.21.171.214:8000/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

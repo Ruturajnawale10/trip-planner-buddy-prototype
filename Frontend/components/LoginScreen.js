@@ -4,6 +4,7 @@ import { View, Text, TextInput, Image, Button, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRecoilState } from "recoil";
 import { userName } from "../components/RecoilStore/RecoilStore";
+import { settings } from "../configs/config";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -33,8 +34,9 @@ const LoginScreen = ({ navigation }) => {
       password: password,
     };
     console.log(requestBody);
+    console.log(settings.BACKEND_URL + "/signin");
     // Make a POST request to the sign-in API
-    fetch("http://127.0.0.1:8000/signin", {
+    fetch(settings.BACKEND_URL + "/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native";
 import POIsCard from "./POIsCard";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Icon } from "@rneui/themed";
+import { settings } from "../../configs/config";
 
 const ListPOIs = ({
   navigation,
@@ -83,7 +84,7 @@ const ListPOIs = ({
       return;
     }
     fetch(
-      "http://127.0.0.1:8000/api/get/gpt/runtime/recommendation?user_input=" +
+      settings.BACKEND_URL + "/api/get/gpt/runtime/recommendation?user_input=" +
         text +
         "&address=" +
         address +

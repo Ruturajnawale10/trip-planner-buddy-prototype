@@ -5,6 +5,7 @@ import { ActivityIndicator } from "react-native";
 import { userName } from "../RecoilStore/RecoilStore";
 import NavigationBar from "../NavigationButton/NavigationBar";
 import { useRecoilState } from "recoil";
+import { settings } from "../../configs/config";
 
 const PreferenceScreen1 = ({ navigation }) => {
   const [questions, setQuestions] = useState([]);
@@ -50,7 +51,7 @@ const PreferenceScreen1 = ({ navigation }) => {
   // Sample data for the question and answer options
   useEffect(() => {
     if (questions.length === 0) {
-      fetch("http://127.0.0.1:8000/api/preference/questions", {
+      fetch(settings.BACKEND_URL + "/api/preference/questions", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +89,7 @@ const PreferenceScreen1 = ({ navigation }) => {
       setIndex(index + 1);
     } else {
       console.log(uniqueSelectedAnswers);
-      fetch("http://127.0.0.1:8000/update/preferences/" + username, {
+      fetch(settings.BACKEND_URL + "/update/preferences/" + username, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

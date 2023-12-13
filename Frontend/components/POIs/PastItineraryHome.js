@@ -14,6 +14,7 @@ import { SafeAreaView } from "react-native";
 import PastTrip from "./PastTrip";
 import { userName } from "../../components/RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
+import { settings } from "../../configs/config";
 
 function PastItineraryHome({ navigation }) {
   const {
@@ -39,7 +40,7 @@ function PastItineraryHome({ navigation }) {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const getCurrentTrip = () => {
-    fetch("http://127.0.0.1:8000/api/trip/poi_list_1/", {
+    fetch(settings.BACKEND_URL + "/api/trip/poi_list_1/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -80,7 +81,7 @@ function PastItineraryHome({ navigation }) {
   };
 
   const handleRatingSelect = (rating) => {
-    fetch("http://127.0.0.1:8000/api/trip/rate", {
+    fetch(settings.BACKEND_URL + "/api/trip/rate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

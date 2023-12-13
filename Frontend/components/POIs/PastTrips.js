@@ -8,6 +8,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { userName } from "../RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
 import GetLocation from "react-native-get-location";
+import { settings } from "../../configs/config";
 
 const PastTrips = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -39,7 +40,7 @@ const PastTrips = ({ navigation }) => {
     "https://helios-i.mashable.com/imagery/articles/06zoscMHTZxU5KEFx8SRyDg/hero-image.fill.size_1200x900.v1630023012.jpg";
 
   const getUpcomingTrips = () => {
-    fetch("http://127.0.0.1:8000/api/trip/list/past/" + username, {
+    fetch(settings.BACKEND_URL + "/api/trip/list/past/" + username, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

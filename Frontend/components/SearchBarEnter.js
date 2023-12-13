@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, StyleSheet, Dimensions } from "react-native";
+import { settings } from "../configs/config";
 
 const SearchBarEnter = ({
   topRatedTrips,
@@ -15,7 +16,7 @@ const SearchBarEnter = ({
 
   const performSearch = async () => {
     const capitalizedString = capitalizeEachWord(searchTerm.toString());
-    fetch("http://127.0.0.1:8000/api/trip/list/toprated/" + capitalizedString, {
+    fetch(settings.BACKEND_URL + "/api/trip/list/toprated/" + capitalizedString, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

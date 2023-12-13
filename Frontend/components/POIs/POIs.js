@@ -18,6 +18,7 @@ import { color } from "../../custom_colors/colors";
 import { Icon } from "@rneui/themed";
 import YelpLogo from "../POIs/Logos/YelpLogo";
 import { HeaderBackButton } from "react-navigation-stack";
+import { settings } from "../../configs/config";
 
 export default function POIs({ navigation }) {
   // Extract the POI data from the route params
@@ -38,7 +39,7 @@ export default function POIs({ navigation }) {
     console.log(POIid);
     console.log(day);
 
-    fetch("http://127.0.0.1:8000/api/trip/delete/poi", {
+    fetch(settings.BACKEND_URL + "/api/trip/delete/poi", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +59,7 @@ export default function POIs({ navigation }) {
 
   const fetchRecommendedDescription = (city, username, poi_id) => {
     fetch(
-      "http://127.0.0.1:8000/api/gpt/personalized/description?city_name=" +
+      settings.BACKEND_URL + "/api/gpt/personalized/description?city_name=" +
         city +
         "&user_name=" +
         username +

@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import { Icon } from "@rneui/themed";
+import { settings } from "../../configs/config";
 
 const ChatBot = ({ navigation }) => {
   const { poi_name } = navigation.state.params;
@@ -34,7 +35,7 @@ const ChatBot = ({ navigation }) => {
     console.log(messages);
     // Handle sending messages to your chatbot backend here
     fetch(
-      "http://127.0.0.1:8000/api/gpt/response?input=" +
+      settings.BACKEND_URL + "/api/gpt/response?input=" +
         newMessages[0].text +
         +"\nIn context of " +
         poi_name,

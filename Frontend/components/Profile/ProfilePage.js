@@ -3,8 +3,12 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native";
 import NavigationBar from "../NavigationButton/NavigationBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { userName } from "../../components/RecoilStore/RecoilStore";
+import { useRecoilState } from "recoil";
 
 const ProfilePage = ({ navigation }) => {
+  const [username, setUsername] = useRecoilState(userName);
+
   const handleEditProfile = () => {
     navigation.navigate("EditProfile");
   };
@@ -30,9 +34,7 @@ const ProfilePage = ({ navigation }) => {
           source={require("../../assets/profile.jpg")}
           style={styles.logo}
         />
-        <Text style={styles.username}>Roshan</Text>
-        <Text style={styles.contactInfo}>roshan.chokshi@gmail.com</Text>
-        <Text style={styles.contactInfo}>669-987-8233</Text>
+        <Text style={styles.username}>{username}</Text>
       </View>
       <View style={styles.linksContainer}>
         <TouchableOpacity onPress={() => handleNavigate("EditProfile")}>

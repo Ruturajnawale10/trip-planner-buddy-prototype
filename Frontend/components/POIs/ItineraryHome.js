@@ -17,6 +17,7 @@ import { userName } from "../RecoilStore/RecoilStore";
 import EditIcon from "react-native-vector-icons/AntDesign";
 import { DateFormat } from "../../utils/dateFormat.js";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import { settings } from "../../configs/config";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -34,7 +35,7 @@ function ItineraryTabs({ navigation }) {
   const [poiListLoading, setPOIListLoading] = useState(true);
 
   const getCurrentTrip = () => {
-    fetch("http://127.0.0.1:8000/api/trip/poi_list_1/", {
+    fetch(settings.BACKEND_URL + "/api/trip/poi_list_1/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -61,7 +62,7 @@ function ItineraryTabs({ navigation }) {
   };
   const getPOIs = () => {
     fetch(
-      "http://127.0.0.1:8000/api/getnearby/?user_address=" +
+      settings.BACKEND_URL + "/api/getnearby/?user_address=" +
         address +
         "&radius=" +
         radius +
@@ -134,7 +135,7 @@ function ItineraryTabs({ navigation }) {
   };
 
   const shareTrip = () => {
-    fetch("http://127.0.0.1:8000/api/trip/mark/complete/share", {
+    fetch(settings.BACKEND_URL + "/api/trip/mark/complete/share", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -148,7 +149,7 @@ function ItineraryTabs({ navigation }) {
   };
 
   const onlyMoveToPastTrips = () => {
-    fetch("http://127.0.0.1:8000/api/trip/mark/complete", {
+    fetch(settings.BACKEND_URL + "/api/trip/mark/complete", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -249,7 +250,7 @@ function ItineraryHome({ navigation }) {
 
   const handleSavePress = () => {
     console.log("Saving new title...");
-    fetch("http://127.0.0.1:8000/api/trip/update/title", {
+    fetch(settings.BACKEND_URL + "/api/trip/update/title", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -272,7 +273,11 @@ function ItineraryHome({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titlebar}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("HomePage", { userIsLoggedIn: true })
+          }
+        >
           <SimpleLineIcons style={{ marginLeft: 10 }} name="home" size={30} />
         </TouchableOpacity>
         {editMode ? (

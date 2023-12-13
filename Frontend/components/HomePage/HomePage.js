@@ -10,6 +10,7 @@ import { userName } from "../RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
 import TopRatedCard from "./TopRatedCard";
 import SearchBarEnter from "../SearchBarEnter";
+import { settings } from "../../configs/config";
 
 const HomePage = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -56,7 +57,7 @@ const HomePage = ({ navigation }) => {
       username: username,
     };
 
-    fetch("http://127.0.0.1:8000/api/trip/list/upcoming", {
+    fetch(settings.BACKEND_URL + "/api/trip/list/upcoming", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +77,7 @@ const HomePage = ({ navigation }) => {
   };
 
   const getTopRatedTrips = () => {
-    fetch("http://127.0.0.1:8000/api/trip/list/toprated/", {
+    fetch(settings.BACKEND_URL + "/api/trip/list/toprated/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

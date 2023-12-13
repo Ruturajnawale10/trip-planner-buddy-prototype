@@ -12,6 +12,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import ListPOIs from "./ListPOIs";
 import POIAddedCard from "./POIAddedCard";
 import DropDownPicker from "react-native-dropdown-picker";
+import { settings } from "../../configs/config";
 
 const CurrentTrip = ({
   navigation,
@@ -62,7 +63,7 @@ const CurrentTrip = ({
     setData((data) => data.set(day + 1, pois_list));
     setReload(!reload);
 
-    fetch("http://127.0.0.1:8000/api/trip/add/poi", {
+    fetch(settings.BACKEND_URL + "/api/trip/add/poi", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -101,7 +102,7 @@ const CurrentTrip = ({
       }
     });
     setReload(!reload);
-    fetch("http://127.0.0.1:8000/api/trip/delete/poi", {
+    fetch(settings.BACKEND_URL + "/api/trip/delete/poi", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +145,7 @@ const CurrentTrip = ({
       day: dayNo,
     };
 
-    fetch("http://127.0.0.1:8000/api/trip/route/optimize", {
+    fetch(settings.BACKEND_URL + "/api/trip/route/optimize", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

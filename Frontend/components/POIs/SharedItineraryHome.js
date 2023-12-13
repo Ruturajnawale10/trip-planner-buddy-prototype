@@ -9,6 +9,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import MapViewPage from "./MapViewPage";
 import { useRecoilState } from "recoil";
 import { userName } from "../RecoilStore/RecoilStore";
+import { settings } from "../../configs/config";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -20,7 +21,7 @@ function ItineraryTabs({ navigation }) {
     navigation.state.params;
 
   const getCurrentTrip = () => {
-    fetch("http://127.0.0.1:8000/api/trip/poi_list/", {
+    fetch(settings.BACKEND_URL + "/api/trip/poi_list/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

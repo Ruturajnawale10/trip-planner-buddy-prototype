@@ -14,6 +14,7 @@ import CalendarPicker from "react-native-calendar-picker"; // Import the calenda
 import moment from "moment";
 import { userName } from "./RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
+import { settings } from "../configs/config";
 
 const SearchPage = ({ navigation, getUpcomingTrips }) => {
   const [selectedStartDate, setSelectedStartDate] = useState("");
@@ -128,7 +129,7 @@ const SearchPage = ({ navigation, getUpcomingTrips }) => {
             address: address,
             radius: radius * 1000,
           };
-          fetch("http://127.0.0.1:8000/api/trip/create/own", {
+          fetch(settings.BACKEND_URL + "/api/trip/create/own", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

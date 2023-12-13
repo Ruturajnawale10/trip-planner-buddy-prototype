@@ -8,6 +8,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { userName } from "../RecoilStore/RecoilStore";
 import { useRecoilState } from "recoil";
 import GetLocation from "react-native-get-location";
+import { settings } from "../../configs/config";
 
 const SharedTrips = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -40,7 +41,7 @@ const toggleAllTrips = () => {
       username: username,
     };
 
-    fetch("http://127.0.0.1:8000/api/trip/list/shared/" + username, {
+    fetch(settings.BACKEND_URL + "/api/trip/list/shared/" + username, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
